@@ -97,3 +97,7 @@ The display uses **no food prices** because none were shown on the photo, and it
 ## Bilingual presentation / 中英文排版
 
 Chinese (Simplified, `zh-Hans`) is the primary interface language, with smaller English subtitles immediately beneath the restaurant name, navigation items, prominent buttons, section headings, and menu item names. Search continues to match both English and Chinese names. This is a presentation hierarchy, **not** a machine translation service, and the photographed source remains the reference for item details.
+
+## Real-photo enhancement (no generated replacements)
+
+The existing restaurant dish, storefront, and interior URLs remain unchanged. We apply restrained, non-destructive browser-side exposure, contrast, saturation, slight warm grading, soft edge falloff, sensible crops and improved editorial framing in CSS. This is **not** AI recreation or AI upscaling. The source photographs and details are untouched; appearance can vary slightly across browsers. High-resolution owner-provided originals would enable better native editing and faster self-hosting without relying on external sites. No generated food images are included.
