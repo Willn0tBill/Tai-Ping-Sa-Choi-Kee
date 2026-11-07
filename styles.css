@@ -511,3 +511,77 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
  .nav.is-open,.menu-card-enter{animation:none!important}
  .mobile-action-bar a,.quicklys-shortcuts a{transition:none}
 }
+
+
+/* Customer conversion hub — links to the correct business, not another menu. */
+.service-hub{background:#f4f2ec;border-block:1px solid #e6e6dd}
+.service-heading{margin-bottom:29px}
+.service-side-note{flex:0 0 auto;display:block;border-left:2px solid #d5d9cf;padding-left:17px;color:#426654;font:650 13px/1.65 var(--font);font-variant-numeric:tabular-nums}
+.service-side-note small{font:450 11px/1.5 var(--font);color:#839188}
+.service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.service-card{
+  min-width:0;display:flex;flex-direction:column;justify-content:space-between;
+  gap:20px;padding:25px 23px 21px;border:1px solid #dfe5dc;border-radius:13px;
+  background:#fffefa;box-shadow:0 2px 15px rgba(30,57,41,.025);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease
+}
+.service-card:hover{transform:translateY(-2px);border-color:#bdcec0;box-shadow:0 14px 30px rgba(31,58,39,.07)}
+.service-order{background:#eaf0e7;border-color:#d6e5d8}
+.service-reviews{background:#fffdfa}
+.service-map{background:#fdf8ee;border-color:#eadfce}
+.service-number{font:700 10px/1.4 var(--font);color:#7c907f;letter-spacing:.085em}
+.service-card-body{display:flex;flex-direction:column;gap:5px}
+.service-card h3{font:750 clamp(23px,2.3vw,30px)/1.35 var(--zh-font);color:var(--green);margin:0 0 3px}
+.service-card-body>p{margin:0 0 10px;color:#79897e;font:600 12px/1.5 var(--font)}
+.service-description{display:flex;flex-direction:column;gap:4px;color:#557365;font:450 13px/1.7 var(--zh-font)}
+.service-card-body>small,.service-description>small{font:450 11px/1.65 var(--font);color:#849088}
+.service-description span[lang="zh-Hans"]{font:450 13px/1.7 var(--zh-font)}
+.service-card-link{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 8px;
+  padding:12px 15px;min-height:54px;border-radius:9px;
+  background:var(--green);color:#fff;transition:background .22s ease
+}
+.service-card-link:hover{background:#275546}
+.service-card-link span[lang="zh-Hans"]{font:700 14px/1.3 var(--zh-font)}
+.service-card-link small{grid-column:1;display:block;font:450 10px/1.4 var(--font);opacity:.8}
+.service-card-link span[aria-hidden]{grid-row:1/3;grid-column:2;font:600 19px/1 var(--font)}
+.service-address{font:600 13px/1.65 var(--font);font-style:normal;color:#3b5849;margin:6px 0 10px;overflow-wrap:anywhere}
+.service-map-links{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.service-map-links a{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 3px;
+  min-height:55px;padding:9px 10px;background:#fffefa;border:1px solid #d6dfd5;
+  border-radius:9px;color:var(--green);transition:border-color .2s,background .2s
+}
+.service-map-links a:hover{background:#f0f5ee;border-color:#8ead9b}
+.service-map-links a span[lang="zh-Hans"]{font:650 12px/1.3 var(--zh-font)}
+.service-map-links a small{font:450 10px/1.3 var(--font);color:#6d8074}
+.service-map-links a span[aria-hidden]{grid-column:2;grid-row:1/3;font:650 16px/1 var(--font)}
+.service-footnote{margin:18px 0 0;display:flex;flex-direction:column;gap:2px;color:#677a6c;font:450 11px/1.7 var(--zh-font)}
+.service-footnote [lang="en"]{color:#88968b;font:450 10px/1.6 var(--font)}
+/* The two businesses share an address, but we never combine their order links. */
+@media(max-width:1100px){
+ .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .service-map{grid-column:span 2}
+ .service-map-links{max-width:410px}
+}
+@media(max-width:740px){
+ .service-hub{padding-block:58px}
+ .service-heading{margin-bottom:22px}
+ .service-side-note{font-size:12px}
+ .service-grid{grid-template-columns:1fr;gap:12px}
+ .service-map{grid-column:auto}
+ .service-card{padding:21px 20px;gap:16px}
+ .service-card h3{font-size:25px}
+ .service-card-body>p{margin-bottom:5px}
+ .service-card:hover{transform:none}
+ .service-map-links{max-width:none}
+}
+@media(max-width:360px){
+ .service-map-links a{padding:8px 7px}
+ .service-map-links a span[lang="zh-Hans"]{font-size:11px}
+ .service-map-links a small{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .service-card,.service-card-link,.service-map-links a{transition:none!important}
+ .service-card:hover{transform:none}
+}

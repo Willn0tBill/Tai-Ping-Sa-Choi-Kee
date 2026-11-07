@@ -273,8 +273,8 @@ test('Quickly’s starts with Chinese brand name, not English-first typography',
 
 test('mobile-first navigation and shortcuts work with independent brands', () => {
   for(const doc of [html,quicklyHtml]) assert.match(doc,/class="mobile-action-bar"/);
-  assert.match(html,/class="mobile-action-primary" href="#kitchen"/);
-  assert.match(quicklyHtml,/class="mobile-action-primary" href="#menu"/);
+  assert.match(html,/class="mobile-action-primary" href="https:\/\/www\.fantuanorder\.com\/en-US\/store\/tai-ping-sa-choi-kee\/us-1364034559"/);
+  assert.match(quicklyHtml,/class="mobile-action-primary" href="https:\/\/www\.fantuanorder\.com\/en-US\/store\/quickly\/us-28952"/);
   assert.match(html,/mobile-action-bar"[\s\S]*?tel:\+16269376555/);
   assert.match(quicklyHtml,/mobile-action-bar"[\s\S]*?tel:\+16269376552/);
   assert.match(quicklyHtml,/class="quicklys-shortcuts"/);
@@ -324,4 +324,46 @@ test('reveals show content only in capable motion-enabled browsers', () => {
   const legacy=new FakeElement('html');
   vm.runInNewContext(js,{document:{...fakeDocument,documentElement:legacy},window:fakeWindow,Date,console});
   assert.equal(legacy.classList.contains('has-motion'),false);
+});
+
+test('both businesses have the correct and distinct Fantuan online ordering links', () => {
+  const tai = 'https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559';
+  const quickly = 'https://www.fantuanorder.com/en-US/store/quickly/us-28952';
+  assert.ok(html.includes(tai));
+  assert.ok(quicklyHtml.includes(quickly));
+  assert.ok(!html.includes(quickly), 'Tai Ping site must not accidentally order from Quickly’s Fantuan');
+  assert.ok(!quicklyHtml.includes(tai), 'Quickly’s site must not accidentally order from Tai Ping Fantuan');
+  assert.match(html, /饭团在线点餐/);
+  assert.match(quicklyHtml, /饭团在线点餐/);
+  assert.match(html, /class="service-order"/);
+  assert.match(quicklyHtml, /class="service-order"/);
+  assert.match(html, /class="service-card-link" href="https:\/\/www\.fantuanorder\.com\/en-US\/store\/tai-ping-sa-choi-kee\/us-1364034559" target="_blank" rel="noopener noreferrer"/);
+  assert.match(quicklyHtml, /class="service-card-link" href="https:\/\/www\.fantuanorder\.com\/en-US\/store\/quickly\/us-28952" target="_blank" rel="noopener noreferrer"/);
+});
+
+test('both pages have Yelp, complete address, Apple Maps and Google Maps links', () => {
+  const address = '15848 Halliburton Rd';
+  const yelpTai = 'https://www.yelp.com/biz/tai-ping-sa-choi-kee-hacienda-heights';
+  const yelpQuicklySearch = 'https://www.yelp.com/search?find_desc=Quickly&amp;find_loc=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745';
+  assert.match(html, /<section class="service-hub section-pad" id="order"/);
+  assert.match(quicklyHtml, /<section class="service-hub section-pad" id="order"/);
+  assert.ok(html.includes(yelpTai));
+  assert.ok(quicklyHtml.includes(yelpQuicklySearch));
+  assert.ok(!quicklyHtml.includes(yelpTai));
+  assert.match(quicklyHtml, /exact listing URL is unverified/);
+  for(const doc of [html, quicklyHtml]){
+    assert.match(doc, /<address class="service-address">15848 Halliburton Rd<br>Hacienda Heights, CA 91745<\/address>/);
+    assert.ok(doc.includes(address));
+    assert.match(doc, /href="https:\/\/maps\.apple\.com\/\?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&amp;dirflg=d"/);
+    assert.match(doc, /href="https:\/\/www\.google\.com\/maps\/dir\/\?api=1&amp;destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745"/);
+    assert.match(doc, /aria-label="Apple 地图导航/);
+    assert.match(doc, /aria-label="Google 地图导航/);
+    assert.match(doc, /class="service-grid"/);
+    assert.match(doc, /href="#order"/);
+    assert.match(doc, /rel="noopener noreferrer"/);
+  }
+  assert.match(css, /\.service-grid\{display:grid/);
+  assert.match(css, /\.service-map-links\{display:grid/);
+  assert.match(css, /\.service-map-links a\{/);
+  assert.match(css, /@media\(max-width:740px\)\{[\s\S]*?\.service-grid\{grid-template-columns:1fr/);
 });

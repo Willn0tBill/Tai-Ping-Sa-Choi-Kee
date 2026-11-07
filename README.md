@@ -135,3 +135,22 @@ The two businesses continue to have separate pages, menus, and telephone numbers
 - Kept actual restaurant photos and Chinese/English text; no invented logos, AI food replacements, fabricated ratings, fake testimonials, or prices were added.
 
 The code is tested with Node's simulated DOM and GitHub Actions. A final real-device visual review, especially Safari on iPhone and Chrome on Android, remains necessary before treating it as production-ready.
+
+
+## Verified ordering, Yelp and directions links
+
+Both business pages now expose an accessible **online ordering + reviews + directions** section near the top, a direct Fantuan CTA in the hero, and a phone-friendly persistent order button. The source links were checked against the actual Hacienda Heights businesses rather than generated from guesses.
+
+| Business | Fantuan online order | Yelp | Phone |
+|---|---|---|---|
+| 太平沙财记 / Tai Ping Sa Choi Kee | https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559 | https://www.yelp.com/biz/tai-ping-sa-choi-kee-hacienda-heights (direct listing confirmed via Eater LA) | (626) 937-6555 |
+| 快可立 / Quickly’s | https://www.fantuanorder.com/en-US/store/quickly/us-28952 | Yelp **search** scoped to Quickly at 15848 Halliburton Road (not a verified direct listing) | (626) 937-6552 |
+
+Address on both: **15848 Halliburton Rd, Hacienda Heights, CA 91745**.
+
+- Apple Maps directions: `https://maps.apple.com/?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&dirflg=d`
+- Google Maps directions: `https://www.google.com/maps/dir/?api=1&destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745`
+- **Caution:** Yelp search is used for Quickly’s because its exact direct business URL could not be confirmed (Yelp blocks web inspection). Do **not** replace the search with a guessed `/biz/quickly-...` slug. The exact restaurant Yelp URL is known.
+- Both ordering links are to third-party Fantuan product pages. Availability, fees, prices, pickup/delivery options and service hours depend on Fantuan and customer location. Neither page claims to process payments itself.
+- Apple and Google map links use the address and open their respective apps where supported; they do not embed location tracking or require access to the visitor's GPS.
+- External links use `target="_blank" rel="noopener noreferrer"`. Both pages remain `noindex,nofollow` concept websites pending owner approval.
