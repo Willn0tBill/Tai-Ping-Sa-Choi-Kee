@@ -194,3 +194,13 @@ test('photo assets are genuinely associated with the restaurant, not stock-photo
   assert.match(html, /正式商用前须取得照片授权/);
   assert.equal((html.match(/<img\b/g) ?? []).length, 3);
 });
+
+test('photo enhancement preserves original image URLs and applies non-generative CSS only', () => {
+  assert.match(html, /src="https:\/\/cdn\.restaurants-us\.com\/3616-albums-2\.jpg"/);
+  assert.match(html, /src="https:\/\/cdn\.restaurants-us\.com\/3616-albums-1\.jpg"/);
+  assert.match(html, /src="https:\/\/s3-media0\.fl\.yelpcdn\.com\/bphoto\/ZBEJxeL9uK-M6cb3rGqtVw\/o\.jpg"/);
+  assert.match(css, /Authentic photo treatment: CSS-only adjustments/);
+  assert.match(css, /\.hero-photo\{[\s\S]*?filter:brightness\(1\.045\) contrast\(1\.085\) saturate\(1\.08\)/);
+  assert.match(css, /\.feature-image-wrap img\{[\s\S]*?filter:brightness\(1\.04\) contrast\(1\.08\) saturate\(1\.065\)/);
+  assert.ok(!html.includes('images.unsplash.com'));
+});
