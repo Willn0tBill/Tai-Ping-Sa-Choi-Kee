@@ -794,7 +794,12 @@ function renderMenu() {
     card.appendChild(makeTextElement('div', 'menu-card-top', item.tag));
     card.appendChild(makeTextElement('h3', '', item.name));
     card.appendChild(makeTextElement('p', 'menu-zh', item.zh, 'zh-Hans'));
-    const priceLabel = Number.isFinite(item.price) ? '
+    const priceLabel = Number.isFinite(item.price)
+      ? '$' + item.price.toFixed(2)
+      : (Number.isFinite(item.priceM) && Number.isFinite(item.priceL)
+        ? 'M $' + item.priceM.toFixed(2) + ' · L $' + item.priceL.toFixed(2)
+        : 'Ask in store / 请询价');
+    const foot = makeTextElement('div', 'menu-card-bottom menu-price', priceLabel);
     card.appendChild(foot);
     fragment.appendChild(card);
   }
