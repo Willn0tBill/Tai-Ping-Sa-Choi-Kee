@@ -82,3 +82,10 @@ This performs syntax and source smoke checks, **not** visual cross-browser QA. B
 - Quickly drinks/snacks counter phone photographed on drinks menu: **(626) 937-6552**.
 - Both menus show **15848 Halliburton Rd, Hacienda Heights, CA 91745**.
 - **Rename the GitHub repository** using its Settings > General > Repository name control to `Tai-Ping-Sa-Choi-Kee`. The GitHub integration used for code changes does not expose repository-settings mutations. This README and website have been rebranded, but GitHub repository rename is a separate administrative action. Update GitHub Pages and external links afterward.
+
+## Featured dishes from the in-store wall poster (November 2026 reference)
+
+The site showcases 13 bilingual dishes legible on the user-supplied **Tai Ping Sa Choi Kee / 太平沙财记** poster, including 干炒牛河, 港式生炒骨, 海鲜两面黄, 椒盐鲜鱿, 清平白切鸡（半只）, 鱼香茄子煲, 蚵仔煎蛋, 牛杂捞面, XO海鲜炒饭, 椒盐大虾, 招牌牛腩饭, 姜葱油泡猪肝 and 海鲜豆腐煲. One obscured dish was intentionally omitted rather than guessed.
+
+The display uses **no food prices** because none were shown on the photo, and its English dish names are proposed translations rather than owner-approved menu wording. The poster image is currently used as a design/content reference rather than published as a full-resolution site photo; obtain approved, high-quality individual food photos before launch. Do not treat the poster's anniversary promotion or a delivery-app advertisement as currently active without confirmation.
+
