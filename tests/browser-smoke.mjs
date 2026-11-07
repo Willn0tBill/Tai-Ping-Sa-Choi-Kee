@@ -339,6 +339,99 @@ async function visit(file, width, height, name, mobile) {
   console.log('PASS '+name+' '+JSON.stringify(animated));
 }
 
+
+async function verifyReloadStability(file,width,height,name) {
+  const page=await browser.newPage();
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.setCacheEnabled(false);
+  await page.setViewport({width,height,deviceScaleFactor:1.5,isMobile:width<740,hasTouch:width<740});
+  await page.goto(base+'/'+file,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.evaluate(()=>localStorage.setItem('restaurantMotionPreference','on'));
+  await page.evaluateOnNewDocument(()=>{
+    window.__initialMotion=null;
+    window.__heroStarts=0;
+    document.addEventListener('readystatechange',()=>{
+      if(document.readyState==='interactive'){
+        window.__initialMotion={
+          on:document.documentElement.classList.contains('motion-on'),
+          off:document.documentElement.classList.contains('motion-off')
+        };
+      }
+    });
+    document.addEventListener('animationstart',event=>{
+      if((event.target?.id==='hero-heading'||event.target?.id==='quicklys-heading') &&
+          event.animationName==='hero-text-rise') window.__heroStarts++;
+    },true);
+  });
+
+  try {
+    for (let round=1;round<=2;round++) {
+      await page.reload({waitUntil:'domcontentloaded',timeout:30000});
+      await page.waitForFunction(()=>
+        document.documentElement.classList.contains('motion-ready') &&
+        !!document.querySelector('.ticker.ticker-ready'),{timeout:12000});
+      const state=await page.evaluate(()=>{
+        const root=document.documentElement,ticker=document.querySelector('.ticker');
+        const track=ticker.querySelector('.ticker-track');
+        const copies=Array.from(ticker.querySelectorAll('.ticker-copy'));
+        const controls=document.querySelector('.motion-controls');
+        const rect=controls.getBoundingClientRect();
+        return {
+          early:window.__initialMotion,
+          ready:root.classList.contains('motion-ready'),
+          tickerReady:ticker.classList.contains('ticker-ready'),
+          tickerWidth:ticker.getBoundingClientRect().width,
+          strips:copies.map(c=>c.getBoundingClientRect().width),
+          tickerAnimation:getComputedStyle(track).animationName,
+          controlsDisplay:getComputedStyle(controls).display,
+          controlsHeight:rect.height,
+          overflow:root.scrollWidth-innerWidth
+        };
+      });
+      assert.equal(state.early?.on,true,name+': motion preference must apply before CSS paints');
+      assert.equal(state.early?.off,false);
+      assert.equal(state.ready,true);
+      assert.equal(state.tickerReady,true);
+      assert.match(state.tickerAnimation,/ticker-travel/,name+': ticker should animate once sized');
+      assert.ok(state.strips.every(w=>w>=state.tickerWidth+40),
+        name+': reload ticker strips must already span the full screen '+JSON.stringify(state));
+      assert.ok(state.controlsDisplay!=='none' && state.controlsHeight>=28,
+        name+': controls must reserve layout space '+JSON.stringify(state));
+      assert.ok(state.overflow<=2,name+': no reload horizontal overflow '+JSON.stringify(state));
+
+      // Remeasuring an unchanged width must not send the moving banner back
+      // to position zero, which looked like a glitch during font readiness.
+      const motion=await page.evaluate(async ()=>{
+        const track=document.querySelector('.ticker-track');
+        const animation=()=>track.getAnimations().find(a=>a.animationName==='ticker-travel');
+        const before=animation();
+        const beforeTime=Number(before?.currentTime);
+        dispatchEvent(new Event('resize'));
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        const after=animation();
+        return {
+          beforeTime,afterTime:Number(after?.currentTime),
+          duration:after?.effect?.getComputedTiming()?.duration
+        };
+      });
+      assert.ok(Number.isFinite(motion.beforeTime)&&Number.isFinite(motion.afterTime),
+        name+': ticker must have a measurable animation time');
+      const delta=Math.abs(motion.afterTime-motion.beforeTime);
+      assert.ok(delta<450 || (motion.duration>0 && Math.abs(delta-motion.duration)<450),
+        name+': ticker must not snap back on remeasurement '+JSON.stringify(motion));
+      await new Promise(resolve=>setTimeout(resolve,900));
+      const heroStarts=await page.evaluate(()=>window.__heroStarts);
+      assert.ok(heroStarts<=1,name+': hero should not restart mid-reload, starts='+heroStarts);
+      await page.screenshot({path:path.join(output,name+'-reload-'+round+'.png'),fullPage:false});
+    }
+    assert.deepEqual(errors,[],name+': unexpected browser exception during reload');
+    console.log('PASS '+name+' two hard reloads without ticker reset, UI jump, or doubled hero entrance');
+  } finally {
+    await page.close();
+  }
+}
+
 try {
   await visit('index.html',390,844,'tai-phone',true);
   await visit('quicklys.html',390,844,'quickly-phone',true);
@@ -348,6 +441,10 @@ try {
   await visit('quicklys.html',1500,900,'quickly-desktop',false);
   await visit('index.html',1900,900,'tai-wide',false);
   await visit('quicklys.html',1900,900,'quickly-wide',false);
+  await verifyReloadStability('index.html',390,844,'tai-phone');
+  await verifyReloadStability('quicklys.html',390,844,'quickly-phone');
+  await verifyReloadStability('index.html',1500,900,'tai-desktop');
+  await verifyReloadStability('quicklys.html',1500,900,'quickly-desktop');
   const reduced = await browser.newPage();
   await reduced.setViewport({width:390,height:844,isMobile:true,hasTouch:true});
   await reduced.emulateMediaFeatures([{name:'prefers-reduced-motion',value:'reduce'}]);

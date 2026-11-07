@@ -375,8 +375,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v10"/);
-    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v11"/);
+    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -575,8 +575,8 @@ test('floating hero cards use verified actions and keep business identities sepa
     assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
     assert.match(hero,/在线点餐/);
     assert.match(hero,/同一地址 · 独立菜单/);
-    assert.match(doc,/href="styles\.css\?v=motion-v10"/);
-    assert.match(doc,/src="app\.js\?v=motion-v10" defer/);
+    assert.match(doc,/href="styles\.css\?v=motion-v11"/);
+    assert.match(doc,/src="app\.js\?v=motion-v11" defer/);
   }
   const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
   const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
@@ -614,8 +614,8 @@ test('desktop and tablet editorial compositions use full-width action row withou
   assert.match(v7,/\.feature-image-wrap\{height:385px\}/);
   assert.match(v7,/\.quicklys-page \.menu-results \.menu-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   for(const page of [html,quicklyHtml]){
-    assert.match(page,/href="styles\.css\?v=motion-v10"/);
-    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v11"/);
+    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
     assert.equal((page.match(/class="float-card float-card-/g)||[]).length,3);
   }
   assert.match(v7,/@media\(prefers-reduced-motion:reduce\)/);
@@ -630,8 +630,8 @@ test('ticker groups are identical and dynamically expanded for a seamless wrap',
     assert.equal(copies.length,2,'marquee requires exactly two equal groups');
     assert.equal(copies[0],copies[1],'the sequence must be identical at the looping seam');
     assert.ok(copies[0].includes('<b>✳</b>'),'repeats should keep the separator');
-    assert.match(page,/href="styles\.css\?v=motion-v10"/);
-    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v11"/);
+    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
   }
   assert.match(js,/function initTickerLoop\(\)/);
   assert.match(js,/baseMarkup\.repeat\(repeats\)/);
@@ -657,8 +657,8 @@ test('every static card is watched separately for its first viewport entry',()=>
   assert.match(quicklyHtml,/data-card-reveal class="menu-side-panel"/);
   for(const page of [html,quicklyHtml]){
     assert.doesNotMatch(page,/class="hero-floating-actions"[^>]+data-reveal/);
-    assert.match(page,/href="styles\.css\?v=motion-v10"/);
-    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v11"/);
+    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
   }
   assert.match(css,/@keyframes card-enter-on-view/);
   assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view:not\(\.card-reveal-complete\)/);
@@ -752,4 +752,37 @@ test('card animation CSS pauses offscreen and is permanently stopped after compl
   assert.match(js,/card\.removeEventListener\?\.\('animationend', completed\)/);
   assert.ok(!css.includes('.motion-on .float-card-order{animation:float-card-drift'),
     'do not revive continuous floating card animation');
+});
+
+
+test('reload starts with correct motion state before stylesheet to avoid flash',()=>{
+  for(const page of [html,quicklyHtml]){
+    const boot=page.indexOf('Apply motion preference before CSS paints');
+    const sheet=page.indexOf('href="styles.css?v=motion-v11"');
+    const app=page.indexOf('src="app.js?v=motion-v11" defer');
+    assert.ok(boot>0 && boot<sheet && sheet<app, 'bootstrap must execute before CSS and deferred app');
+    assert.match(page,/saved === 'on' \|\| \(saved !== 'off' && !reduced\) \? 'motion-on' : 'motion-off'/);
+    assert.match(page,/getItem\('restaurantMotionPreference'\)/);
+    assert.match(page,/prefers-reduced-motion: reduce/);
+    assert.match(page,/display=optional/);
+    assert.ok(!page.includes('display=swap'), 'fonts must not swap after the hero paints');
+  }
+  assert.match(css,/\.motion-controls\{display:flex;visibility:hidden;align-items:stretch/);
+  assert.match(css,/html\.motion-ready \.motion-controls\{visibility:visible\}/);
+  assert.ok(!css.includes('.motion-controls{display:none'),
+    'late display:none->flex was shifting the hero on every refresh');
+  assert.match(css,/\.ticker:not\(\.ticker-ready\) \.ticker-track\{animation:none!important\}/);
+  assert.ok(!css.includes('filter:blur(2px)'), 'hero should animate with composited transform/opacity, not raster blur');
+});
+
+test('marquee sizes synchronously and preserves its animation phase after reflow',()=>{
+  assert.match(js,/function initTickerLoop\(\)/);
+  assert.match(js,/const phase = oldDuration > 0 && Number\.isFinite\(oldTime\)/);
+  assert.match(js,/nextAnimation\.currentTime = phase \* duration \* 1000/);
+  assert.match(js,/ticker\.classList\.add\('ticker-ready'\)/);
+  assert.match(js,/sizeTicker\(\);\s*window\.addEventListener\('resize', schedule, \{passive: true\}\)/);
+  assert.match(js,/document\.fonts\?\.ready\?\.then\(schedule/);
+  assert.match(css,/\.ticker:not\(\.ticker-ready\) \.ticker-track\{animation:none!important\}/);
+  assert.match(html,/href="styles\.css\?v=motion-v11"/);
+  assert.match(quicklyHtml,/href="styles\.css\?v=motion-v11"/);
 });

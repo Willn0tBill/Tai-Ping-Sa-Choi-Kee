@@ -617,8 +617,8 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
  to{opacity:1;transform:translate3d(0,0,0)}
 }
 @keyframes hero-photo-rise{
- from{opacity:.68;transform:translate3d(0,24px,0) scale(.975);filter:blur(2px)}
- to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+ from{opacity:.68;transform:translate3d(0,24px,0) scale(.975)}
+ to{opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
 @keyframes section-rise{
  from{opacity:.3;transform:translate3d(0,32px,0)}
@@ -650,8 +650,8 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
 /* Verified-motion state. No motion controls or animations require a CSS framework.
    Reduced-motion preference starts paused, but a deliberate user opt-in can
    enable/replay the experience even on a reduced-motion device. */
-.motion-controls{display:none;align-items:stretch;gap:8px;flex-wrap:wrap;margin:5px 0 20px}
-html.motion-ready .motion-controls{display:flex}
+.motion-controls{display:flex;visibility:hidden;align-items:stretch;gap:8px;flex-wrap:wrap;margin:5px 0 20px}
+html.motion-ready .motion-controls{visibility:visible}
 .motion-toggle,.motion-replay{
   border:1px solid #d0dcd1;border-radius:9px;background:#fffdf8;
   color:var(--green);cursor:pointer;min-height:44px;
@@ -1255,4 +1255,15 @@ html.motion-off *,html.motion-off *::before,html.motion-off *::after{
 }
 @media(prefers-reduced-motion:reduce){
   html:not(.motion-on) [data-card-reveal]{animation:none!important}
+}
+
+
+/* Reload stability: reserve control space from the first layout and wait
+   until the two repeat strips have been sized before starting the marquee. */
+.motion-controls{display:flex;visibility:hidden}
+html.motion-ready .motion-controls{visibility:visible}
+.ticker:not(.ticker-ready) .ticker-track{animation:none!important}
+.hero-visual,.quicklys-store-photo{backface-visibility:hidden}
+@media(prefers-reduced-motion:reduce){
+ html:not(.motion-on) .ticker-track{animation:none!important}
 }

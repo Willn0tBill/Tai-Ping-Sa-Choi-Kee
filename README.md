@@ -260,3 +260,16 @@ The v9 observer started a card when it entered the viewport and immediately unob
 - Only the actual `animationend` event marks a card complete. Complete cards become static and are unobserved, so they do not replay on every scroll. The existing Replay control explicitly re-arms them.
 - Motion-off, reduced-motion and no-JavaScript conditions preserve readable static content; dynamically filtered Quickly's menu items register and unregister cleanly.
 - Browser tests validate that an offscreen card is static, an in-view card is running, the animation's time stops advancing offscreen, it resumes on re-entry and remains still after finishing. Unit tests cover near-edge intersections, replay, completion and the motion toggle.
+
+## Smooth reload / hard-refresh stabilization (v11)
+
+This pass addresses first-load animation flicker and layout jumps on **both** restaurant pages:
+
+- A tiny synchronous motion-preference bootstrap runs **before the external stylesheet**, so the correct enabled/disabled state is present at the first CSS paint. The deferred JS control sync no longer introduces a second wave of hero animations partway through load. Reduced-motion preferences and the saved explicit override are still honored.
+- The motion controls now **reserve their layout space** before JavaScript initializes. Previously, changing them from `display:none` to `display:flex` caused a visible hero layout shift on reload.
+- Google Fonts use `display=optional` rather than `swap` to avoid late font replacement pushing around Chinese/English headings on slow connections. Fallback system fonts remain available.
+- Removed the hero photo's animating **blur filter**, keeping the existing transform and fade without expensive reload-time rasterization.
+- The marquee is sized **synchronously** on startup and cannot start moving until its two copies cover the viewport. When fonts finish loading or the window resizes, the current loop phase is preserved rather than restarting at the left edge.
+- Both static source tests and real Chrome hard-reload checks run on each page at **390px phone and 1500px desktop**, inspecting the motion bootstrap, reserved controls, full-width ticker and continuity during resize. Screenshots are retained in GitHub Actions artifacts.
+
+The site's real photos, Chinese-first content, menu items, verified ordering links, and strict on-screen card animations remain unchanged.

@@ -1211,9 +1211,19 @@ function initTickerLoop() {
       const currentGroupWidth = copies[0].getBoundingClientRect().width;
       if (viewportWidth < 1 || currentGroupWidth < 1) return;
 
+      // Save the current animation phase so font readiness or resize doesn't
+      // yank a visibly moving banner back to its beginning.
+      const oldAnimation = track.getAnimations?.().find(a => a.animationName === 'ticker-travel');
+      const oldDuration = oldAnimation?.effect?.getComputedTiming?.().duration ?? 0;
+      const oldTime = Number(oldAnimation?.currentTime);
+      const phase = oldDuration > 0 && Number.isFinite(oldTime)
+        ? ((oldTime % oldDuration) + oldDuration) % oldDuration / oldDuration
+        : null;
+
       const baseWidth = currentGroupWidth / repeats;
       const needed = Math.max(1, Math.min(64, Math.ceil((viewportWidth + 48) / baseWidth)));
-      if (needed !== repeats || copies[1].innerHTML !== copies[0].innerHTML) {
+      const changed = needed !== repeats || copies[1].innerHTML !== copies[0].innerHTML;
+      if (changed) {
         repeats = needed;
         const repeatedMarkup = baseMarkup.repeat(repeats);
         copies[0].innerHTML = repeatedMarkup;
@@ -1221,7 +1231,17 @@ function initTickerLoop() {
       }
       const groupWidth = copies[0].getBoundingClientRect().width;
       const duration = Math.max(12, Math.round(groupWidth / 65));
-      track.style.setProperty('--ticker-duration', duration + 's');
+      const nextDuration = duration + 's';
+      const durationChanged = track.style.getPropertyValue?.('--ticker-duration') !== nextDuration;
+      if (durationChanged) track.style.setProperty('--ticker-duration', nextDuration);
+
+      // CSS keeps motion paused until the first synchronous measurement.
+      // This runs before the browser gets another chance to paint.
+      ticker.classList.add('ticker-ready');
+      if (phase !== null && (changed || durationChanged)) {
+        const nextAnimation = track.getAnimations?.().find(a => a.animationName === 'ticker-travel');
+        if (nextAnimation) nextAnimation.currentTime = phase * duration * 1000;
+      }
     }
 
     function schedule() {
@@ -1234,13 +1254,14 @@ function initTickerLoop() {
       }
     }
 
-    schedule();
+    // Synchronous first pass avoids a one-frame short-text -> expanded-text
+    // flash on reload. Later layout/font changes are batched per frame.
+    sizeTicker();
     window.addEventListener('resize', schedule, {passive: true});
     if (typeof ResizeObserver === 'function') {
       const observer = new ResizeObserver(schedule);
       observer.observe(ticker);
     }
-    // Chinese and Latin fonts can change measured strip widths after loading.
     if (document.fonts?.ready?.then) document.fonts.ready.then(schedule, () => {});
   }
 }
