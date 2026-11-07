@@ -89,3 +89,7 @@ The site showcases 13 bilingual dishes legible on the user-supplied **Tai Ping S
 
 The display uses **no food prices** because none were shown on the photo, and its English dish names are proposed translations rather than owner-approved menu wording. The poster image is currently used as a design/content reference rather than published as a full-resolution site photo; obtain approved, high-quality individual food photos before launch. Do not treat the poster's anniversary promotion or a delivery-app advertisement as currently active without confirmation.
 
+
+## Bilingual presentation / 中英文排版
+
+Chinese (Simplified, `zh-Hans`) is the primary interface language, with smaller English subtitles immediately beneath the restaurant name, navigation items, prominent buttons, section headings, and menu item names. Search continues to match both English and Chinese names. This is a presentation hierarchy, **not** a machine translation service, and the photographed source remains the reference for item details.
