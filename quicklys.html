@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=motion-v8">
-  <script src="app.js?v=motion-v8" defer></script>
+  <link rel="stylesheet" href="styles.css?v=motion-v9">
+  <script src="app.js?v=motion-v9" defer></script>
 </head>
 <body class="quicklys-page">
   <a href="#main" class="skip-link">跳到主要内容 / Skip to content</a>
@@ -51,9 +51,9 @@
           </div>
           <a class="scroll-cue" href="#order" aria-label="继续浏览在线点餐与地图 / Explore ordering and directions"><span class="scroll-cue-symbol" aria-hidden="true">↓</span><span><strong lang="zh-Hans">继续探索</strong><small lang="en">Scroll to explore</small></span></a>
           <div class="quicklys-shortcuts" aria-label="菜单快捷入口 / Menu shortcuts">
-            <a href="#menu" data-select-category="milk"><strong lang="zh-Hans">奶茶</strong><small lang="en">Milk tea</small><span aria-hidden="true">↗</span></a>
-            <a href="#menu" data-select-category="slush"><strong lang="zh-Hans">冰沙</strong><small lang="en">Slushes</small><span aria-hidden="true">↗</span></a>
-            <a href="#menu" data-select-category="snacks"><strong lang="zh-Hans">小吃</strong><small lang="en">Snacks</small><span aria-hidden="true">↗</span></a>
+            <a data-card-reveal href="#menu" data-select-category="milk"><strong lang="zh-Hans">奶茶</strong><small lang="en">Milk tea</small><span aria-hidden="true">↗</span></a>
+            <a data-card-reveal href="#menu" data-select-category="slush"><strong lang="zh-Hans">冰沙</strong><small lang="en">Slushes</small><span aria-hidden="true">↗</span></a>
+            <a data-card-reveal href="#menu" data-select-category="snacks"><strong lang="zh-Hans">小吃</strong><small lang="en">Snacks</small><span aria-hidden="true">↗</span></a>
           </div>
           <div class="motion-controls" role="group" aria-label="网页动画控制 / Animation controls">
             <button type="button" class="motion-toggle" data-motion-toggle aria-pressed="false">
@@ -68,12 +68,12 @@
           <img src="https://cdn.restaurants-us.com/3616-albums-1.jpg" alt="15848 Halliburton Road storefront showing Quickly and Tai Ping Sa Choi Kee signs; actual location photo" loading="eager" decoding="async" width="1000" height="563">
           <div class="quicklys-photo-label"><span lang="zh-Hans">同一地址 · 不同菜单</span><small lang="en">Shared location · Separate menus</small></div>
         </div>
-        <div class="hero-floating-actions" aria-label="实用快捷入口 / Quick actions" data-reveal>
-          <a class="float-card float-card-order" href="https://www.fantuanorder.com/en-US/store/quickly/us-28952" target="_blank" rel="noopener noreferrer">
+        <div class="hero-floating-actions" aria-label="实用快捷入口 / Quick actions">
+          <a data-card-reveal class="float-card float-card-order" href="https://www.fantuanorder.com/en-US/store/quickly/us-28952" target="_blank" rel="noopener noreferrer">
             <span class="float-card-kicker">FANTUAN / 饭团</span><span class="float-card-title" lang="zh-Hans">在线点餐</span>
             <span class="float-card-detail" lang="en">Order online <span aria-hidden="true">↗</span></span>
           </a>
-          <div class="float-card float-card-maps">
+          <div data-card-reveal class="float-card float-card-maps">
             <span class="float-card-kicker">15848 HALLIBURTON RD</span>
             <span class="float-card-title" lang="zh-Hans">一键到店</span><span class="float-card-detail" lang="en">Get directions</span>
             <div class="float-card-map-actions">
@@ -81,7 +81,7 @@
               <a href="https://www.google.com/maps/dir/?api=1&amp;destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745" target="_blank" rel="noopener noreferrer" aria-label="谷歌地图导航 / Google Maps">Google <span aria-hidden="true">↗</span></a>
             </div>
           </div>
-          <a class="float-card float-card-other" href="index.html">
+          <a data-card-reveal class="float-card float-card-other" href="index.html">
             <span class="float-card-kicker" lang="zh-Hans">同一地址 · 独立菜单</span>
             <span class="float-card-title" lang="zh-Hans">太平沙财记</span>
             <span class="float-card-detail" lang="en">Tai Ping Sa Choi Kee · Kitchen <span aria-hidden="true">↗</span></span>
@@ -103,7 +103,7 @@
           <span class="service-side-note" lang="zh-Hans">15848 Halliburton Rd<br><small lang="en">Hacienda Heights, CA 91745</small></span>
         </div>
         <div class="service-grid">
-          <article class="service-card service-order" data-reveal>
+          <article data-card-reveal class="service-card service-order" data-reveal>
             <span class="service-number">01 / FANTUAN</span>
             <div class="service-card-body">
               <h3 lang="zh-Hans">饭团外卖</h3><p lang="en">Fantuan · Online Ordering</p>
@@ -112,7 +112,7 @@
             </div>
             <a class="service-card-link" href="https://www.fantuanorder.com/en-US/store/quickly/us-28952" target="_blank" rel="noopener noreferrer"><span lang="zh-Hans">立即点餐</span><small lang="en">Order on Fantuan</small><span aria-hidden="true">↗</span></a>
           </article>
-          <article class="service-card service-reviews" data-reveal>
+          <article data-card-reveal class="service-card service-reviews" data-reveal>
             <span class="service-number">02 / YELP</span>
             <div class="service-card-body">
               <h3 lang="zh-Hans">顾客评价</h3><p lang="en">Yelp · Reviews &amp; Photos</p>
@@ -120,7 +120,7 @@
             </div>
             <a class="service-card-link" href="https://www.yelp.com/search?find_desc=Quickly&amp;find_loc=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745" target="_blank" rel="noopener noreferrer"><span lang="zh-Hans">在 Yelp 搜索</span><small lang="en">Find on Yelp</small><span aria-hidden="true">↗</span></a>
           </article>
-          <article class="service-card service-map" data-reveal>
+          <article data-card-reveal class="service-card service-map" data-reveal>
             <span class="service-number">03 / DIRECTIONS</span>
             <div class="service-card-body">
               <h3 lang="zh-Hans">门店地址</h3><p lang="en">Visit us · Hacienda Heights</p>
@@ -169,7 +169,7 @@
           <span class="menu-disclaimer">价格以 Quickly’s 店内为准 / Prices transcribed from the photographed menu; verify before ordering</span>
         </div>
         <div class="menu-body-layout">
-          <aside class="menu-side-panel" aria-label="Quickly’s 菜单与联系方式 / Menu help">
+          <aside data-card-reveal class="menu-side-panel" aria-label="Quickly’s 菜单与联系方式 / Menu help">
             <div class="menu-side-top">
               <span class="menu-side-eyebrow" lang="en">QUICKLY’S · HACIENDA HEIGHTS</span>
               <h3 lang="zh-Hans">想喝什么？</h3>

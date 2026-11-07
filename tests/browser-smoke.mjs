@@ -123,6 +123,24 @@ async function visit(file, width, height, name, mobile) {
   assert.ok(animated.document<=animated.viewport+2, name + ': page must not horizontally overflow: '+JSON.stringify(animated));
   assert.equal(animated.toggle,'true');
 
+  // Make sure the card lower on the page has not animated prematurely.
+  const farSelector = file === 'index.html' ? '.signature-card:last-child' : '.menu-card:last-child';
+  const beforeCard = await page.evaluate(selector => {
+    const card = document.querySelector(selector);
+    if (!card) return {missing:true};
+    return {
+      top:card.getBoundingClientRect().top,viewport:innerHeight,
+      tagged:card.hasAttribute('data-card-reveal'),
+      appeared:card.classList.contains('card-in-view'),
+      animation:getComputedStyle(card).animationName
+    };
+  },farSelector);
+  assert.ok(!beforeCard.missing && beforeCard.tagged,name+': distant cards should be observed individually');
+  if(beforeCard.top > beforeCard.viewport+70) {
+    assert.equal(beforeCard.appeared,false,name+': offscreen cards must not animate on load '+JSON.stringify(beforeCard));
+    assert.equal(beforeCard.animation,'none',name+': offscreen cards must have no CSS animation '+JSON.stringify(beforeCard));
+  }
+
   // Capture after the introductory motion; otherwise a first-frame image
   // can look blank while the elements are still entering.
   await new Promise(resolve=>setTimeout(resolve,1500));
@@ -228,6 +246,28 @@ async function visit(file, width, height, name, mobile) {
     await page.click('[data-motion-replay]');
     assert.equal(await page.$eval('[data-motion-toggle]',e=>e.getAttribute('aria-pressed')),'true');
   }
+  // An individual card receives an entrance animation only upon scrolling
+  // into view. It is marked once, so later scrolling cannot replay it.
+  await page.evaluate(selector => {
+    const card=document.querySelector(selector);
+    card?.scrollIntoView({block:'center',behavior:'instant'});
+  },farSelector);
+  await page.waitForFunction(
+    selector => !!document.querySelector(selector)?.classList.contains('card-in-view'),
+    {timeout:8000},farSelector
+  );
+  const cardAfter = await page.$eval(farSelector,card=>({
+    inView:card.classList.contains('card-in-view'),
+    animation:getComputedStyle(card).animationName,
+    stagger:getComputedStyle(card).animationDelay
+  }));
+  assert.match(cardAfter.animation,/card-enter-on-view/,
+    name+': visible cards should use viewport-triggered entrance '+JSON.stringify(cardAfter));
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+  await page.evaluate(selector => document.querySelector(selector)?.scrollIntoView({block:'center',behavior:'instant'}),farSelector);
+  assert.equal(await page.$eval(farSelector,card=>card.classList.contains('card-in-view')),true,
+    name+': a card must remain marked after its first entrance');
+
   if (width === 1900) {
     // A second wide desktop width catches loops that were measured only once.
     await page.setViewport({width:2370,height,deviceScaleFactor:1.5,isMobile:false,hasTouch:false});

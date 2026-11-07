@@ -14,8 +14,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://cdn.restaurants-us.com" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=motion-v8">
-  <script src="app.js?v=motion-v8" defer></script>
+  <link rel="stylesheet" href="styles.css?v=motion-v9">
+  <script src="app.js?v=motion-v9" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">跳到主要内容 / Skip to content</a>
@@ -72,12 +72,12 @@
             <span class="hero-photo-caption" lang="zh-Hans">店内菜品实拍 <small lang="en">Restaurant gallery photo · Preview</small></span>
           </div>
         </div>
-        <div class="hero-floating-actions" aria-label="实用快捷入口 / Quick actions" data-reveal>
-          <a class="float-card float-card-order" href="https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559" target="_blank" rel="noopener noreferrer">
+        <div class="hero-floating-actions" aria-label="实用快捷入口 / Quick actions">
+          <a data-card-reveal class="float-card float-card-order" href="https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559" target="_blank" rel="noopener noreferrer">
             <span class="float-card-kicker">FANTUAN / 饭团</span><span class="float-card-title" lang="zh-Hans">在线点餐</span>
             <span class="float-card-detail" lang="en">Order online <span aria-hidden="true">↗</span></span>
           </a>
-          <div class="float-card float-card-maps">
+          <div data-card-reveal class="float-card float-card-maps">
             <span class="float-card-kicker">15848 HALLIBURTON RD</span>
             <span class="float-card-title" lang="zh-Hans">一键到店</span><span class="float-card-detail" lang="en">Get directions</span>
             <div class="float-card-map-actions">
@@ -85,7 +85,7 @@
               <a href="https://www.google.com/maps/dir/?api=1&amp;destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745" target="_blank" rel="noopener noreferrer" aria-label="谷歌地图导航 / Google Maps">Google <span aria-hidden="true">↗</span></a>
             </div>
           </div>
-          <a class="float-card float-card-other" href="quicklys.html">
+          <a data-card-reveal class="float-card float-card-other" href="quicklys.html">
             <span class="float-card-kicker" lang="zh-Hans">同一地址 · 独立菜单</span>
             <span class="float-card-title" lang="zh-Hans">快可立</span>
             <span class="float-card-detail" lang="en">Quickly’s · Separate menu <span aria-hidden="true">↗</span></span>
@@ -108,7 +108,7 @@
           <span class="service-side-note" lang="zh-Hans">15848 Halliburton Rd<br><small lang="en">Hacienda Heights, CA 91745</small></span>
         </div>
         <div class="service-grid">
-          <article class="service-card service-order" data-reveal>
+          <article data-card-reveal class="service-card service-order" data-reveal>
             <span class="service-number">01 / FANTUAN</span>
             <div class="service-card-body">
               <h3 lang="zh-Hans">饭团外卖</h3><p lang="en">Fantuan · Online Ordering</p>
@@ -117,7 +117,7 @@
             </div>
             <a class="service-card-link" href="https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559" target="_blank" rel="noopener noreferrer"><span lang="zh-Hans">立即点餐</span><small lang="en">Order on Fantuan</small><span aria-hidden="true">↗</span></a>
           </article>
-          <article class="service-card service-reviews" data-reveal>
+          <article data-card-reveal class="service-card service-reviews" data-reveal>
             <span class="service-number">02 / YELP</span>
             <div class="service-card-body">
               <h3 lang="zh-Hans">顾客评价</h3><p lang="en">Yelp · Reviews &amp; Photos</p>
@@ -125,7 +125,7 @@
             </div>
             <a class="service-card-link" href="https://www.yelp.com/biz/tai-ping-sa-choi-kee-hacienda-heights" target="_blank" rel="noopener noreferrer"><span lang="zh-Hans">查看 Yelp</span><small lang="en">View Yelp reviews</small><span aria-hidden="true">↗</span></a>
           </article>
-          <article class="service-card service-map" data-reveal>
+          <article data-card-reveal class="service-card service-map" data-reveal>
             <span class="service-number">03 / DIRECTIONS</span>
             <div class="service-card-body">
               <h3 lang="zh-Hans">门店地址</h3><p lang="en">Visit us · Hacienda Heights</p>
@@ -152,7 +152,7 @@
           <p class="kitchen-intro"><strong lang="zh-Hans">从镬气十足的干炒牛河，到鲜香入味的各式煲仔菜。</strong><br><span lang="en">Featured on the restaurant’s in-store food board. English names are translations for this preview.</span></p>
         </div>
         <div class="signature-grid" aria-label="Featured dishes photographed on the restaurant's food board">
-          <article data-reveal class="signature-card signature-card-primary" data-tone="noodles">
+          <article data-card-reveal class="signature-card signature-card-primary" data-tone="noodles">
             <div class="signature-card-top"><span>01</span><span lang="zh-Hans">粉面<small lang="en">NOODLES</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">干炒牛河</h3>
@@ -160,7 +160,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="special">
+          <article data-card-reveal class="signature-card" data-tone="special">
             <div class="signature-card-top"><span>02</span><span lang="zh-Hans">招牌<small lang="en">HOUSE FAVORITE</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">港式生炒骨</h3>
@@ -168,7 +168,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="seafood">
+          <article data-card-reveal class="signature-card" data-tone="seafood">
             <div class="signature-card-top"><span>03</span><span lang="zh-Hans">海鲜<small lang="en">SEAFOOD</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">海鲜两面黄</h3>
@@ -176,7 +176,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="seafood">
+          <article data-card-reveal class="signature-card" data-tone="seafood">
             <div class="signature-card-top"><span>04</span><span lang="zh-Hans">海鲜<small lang="en">SEAFOOD</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">椒盐鲜鱿</h3>
@@ -184,7 +184,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="special">
+          <article data-card-reveal class="signature-card" data-tone="special">
             <div class="signature-card-top"><span>05</span><span lang="zh-Hans">鸡肉<small lang="en">CHICKEN</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">清平白切鸡（半只）</h3>
@@ -192,7 +192,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="claypot">
+          <article data-card-reveal class="signature-card" data-tone="claypot">
             <div class="signature-card-top"><span>06</span><span lang="zh-Hans">煲仔<small lang="en">CLAY POT</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">鱼香茄子煲</h3>
@@ -200,7 +200,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="special">
+          <article data-card-reveal class="signature-card" data-tone="special">
             <div class="signature-card-top"><span>07</span><span lang="zh-Hans">煎蛋<small lang="en">EGGS</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">蚵仔煎蛋</h3>
@@ -208,7 +208,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="noodles">
+          <article data-card-reveal class="signature-card" data-tone="noodles">
             <div class="signature-card-top"><span>08</span><span lang="zh-Hans">粉面<small lang="en">NOODLES</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">牛杂捞面</h3>
@@ -216,7 +216,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="rice">
+          <article data-card-reveal class="signature-card" data-tone="rice">
             <div class="signature-card-top"><span>09</span><span lang="zh-Hans">炒饭<small lang="en">RICE</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">XO海鲜炒饭</h3>
@@ -224,7 +224,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="seafood">
+          <article data-card-reveal class="signature-card" data-tone="seafood">
             <div class="signature-card-top"><span>10</span><span lang="zh-Hans">海鲜<small lang="en">SEAFOOD</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">椒盐大虾</h3>
@@ -232,7 +232,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="rice">
+          <article data-card-reveal class="signature-card" data-tone="rice">
             <div class="signature-card-top"><span>11</span><span lang="zh-Hans">米饭<small lang="en">RICE</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">招牌牛腩饭</h3>
@@ -240,7 +240,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="special">
+          <article data-card-reveal class="signature-card" data-tone="special">
             <div class="signature-card-top"><span>12</span><span lang="zh-Hans">招牌<small lang="en">HOUSE FAVORITE</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">姜葱油泡猪肝</h3>
@@ -248,7 +248,7 @@
             </div>
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
-          <article data-reveal class="signature-card" data-tone="claypot">
+          <article data-card-reveal class="signature-card" data-tone="claypot">
             <div class="signature-card-top"><span>13</span><span lang="zh-Hans">煲仔<small lang="en">CLAY POT</small></span></div>
             <div class="signature-card-content">
               <h3 lang="zh-Hans">海鲜豆腐煲</h3>
@@ -275,11 +275,11 @@
           <p class="favorites-intro"><span lang="zh-Hans">真实门店外观与店内一角，帮助你轻松找到我们。</span><br><span lang="en">Photos associated with the Hacienda Heights restaurant. Image permissions pending.</span></p>
         </div>
         <div class="feature-grid" tabindex="0" aria-label="门店实景照片 / Restaurant gallery">
-          <article data-reveal class="feature-card feature-store">
+          <article data-card-reveal class="feature-card feature-store">
             <div class="feature-image-wrap"><a class="gallery-trigger" href="https://cdn.restaurants-us.com/3616-albums-1.jpg" target="_blank" rel="noopener noreferrer" data-gallery-index="1" data-gallery-title="门店外观" data-gallery-en="Our storefront" aria-label="放大门店外观照片 / View storefront photo"><img src="https://cdn.restaurants-us.com/3616-albums-1.jpg" alt="太平沙财记与 Quickly 在 Hacienda Heights 的门店外观，蓝色店面及中英文招牌。 Real shared storefront with both signs visible." loading="lazy" decoding="async" width="1000" height="563"><span class="gallery-zoom" aria-hidden="true">↗</span></a></div>
             <div class="feature-info"><div><span class="feature-number">01 / 门店外观 · EXTERIOR</span><h3 lang="zh-Hans">认准这块招牌。<small lang="en">Our storefront on Halliburton Road.</small></h3></div><a href="#visit" class="round-arrow" aria-label="查看门店地址 / Find the location">↗</a></div>
           </article>
-          <article data-reveal class="feature-card feature-inside">
+          <article data-card-reveal class="feature-card feature-inside">
             <div class="feature-image-wrap"><a class="gallery-trigger" href="https://s3-media0.fl.yelpcdn.com/bphoto/ZBEJxeL9uK-M6cb3rGqtVw/o.jpg" target="_blank" rel="noopener noreferrer" data-gallery-index="2" data-gallery-title="店内环境" data-gallery-en="Inside the restaurant" aria-label="放大店内环境照片 / View interior photo"><img src="https://s3-media0.fl.yelpcdn.com/bphoto/ZBEJxeL9uK-M6cb3rGqtVw/o.jpg" alt="太平沙财记店内环境，柜台、桌椅及中式装饰。 Restaurant interior photograph from the Hacienda Heights listing." loading="lazy" decoding="async" width="1024" height="1024"><span class="gallery-zoom" aria-hidden="true">↗</span></a></div>
             <div class="feature-info"><div><span class="feature-number">02 / 店内环境 · INTERIOR</span><h3 lang="zh-Hans">坐下来，慢慢吃。<small lang="en">A look inside our restaurant.</small></h3></div><a href="#kitchen" class="round-arrow" aria-label="查看招牌菜 / See signature dishes">↗</a></div>
           </article>

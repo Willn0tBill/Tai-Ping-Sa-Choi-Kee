@@ -239,3 +239,14 @@ The `initTickerLoop()` routine now measures the actual ticker and original seque
 - The existing motion toggle, replay button, hover-to-pause, and reduced-motion preference still apply.
 - Real Chrome tests check coverage and group seams at five animation phases, at phone/tablet/desktop/1900px wide layouts, and after resizing a wide window to 2370px.
 - No other menu, contact, photo, or branding content changed.
+
+## Cards reveal only when visible (v9)
+
+The appearance animation of every individual **Fantuan/maps/cross-business floating card, ordering/Yelp/directions service card, signature dish card, and real-photography gallery card** is now triggered by the card entering the visitor's viewport. Quickly’s category shortcut cards, desktop sidebar and dynamically created menu-item cards use the same mechanism.
+
+- No card entrance begins simply because the page loaded or the menu was populated; the `IntersectionObserver` marks each card `card-in-view` when it becomes visible. Nearby cards are staggered gently rather than animating simultaneously.
+- The entrance plays **once per card**, not each time the visitor scrolls it in and out. Existing perpetual card-floating loops are removed to avoid offscreen animation work.
+- When Quickly’s menu category/search changes, removed cards are unobserved and new cards are observed, so long menus don't animate out of view or retain stale references.
+- The existing **Motion off / Replay** controls still work. Replay resets the card observer so that cards animate again only when visible; reduced-motion users never have content hidden.
+- If IntersectionObserver is unsupported or JavaScript is off, all cards remain fully readable without waiting for an animation.
+- Real-Chrome browser smoke tests verify that a distant card starts static, animates on entering the viewport, and retains its one-time state.

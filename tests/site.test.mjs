@@ -105,7 +105,8 @@ function setup() {
 test('menu search filters English and Chinese items and resets correctly', () => {
   const {nodes,filters} = setup();
   assert.equal(nodes['menu-grid'].children.length,14);
-  assert.equal(nodes['menu-grid'].children[0].classList.contains('menu-card-enter'),true);
+  assert.equal(nodes['menu-grid'].children[0].getAttribute('data-card-reveal'),'');
+  assert.equal(nodes['menu-grid'].children[0].classList.contains('menu-card-enter'),false);
   filters[6].dispatch('click');
   assert.equal(nodes['menu-grid'].children.length,9);
   assert.equal(filters[6].getAttribute('aria-pressed'),'true');
@@ -374,8 +375,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v8"/);
-    assert.match(page,/src="app\.js\?v=motion-v8" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v9"/);
+    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -574,8 +575,8 @@ test('floating hero cards use verified actions and keep business identities sepa
     assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
     assert.match(hero,/在线点餐/);
     assert.match(hero,/同一地址 · 独立菜单/);
-    assert.match(doc,/href="styles\.css\?v=motion-v8"/);
-    assert.match(doc,/src="app\.js\?v=motion-v8" defer/);
+    assert.match(doc,/href="styles\.css\?v=motion-v9"/);
+    assert.match(doc,/src="app\.js\?v=motion-v9" defer/);
   }
   const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
   const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
@@ -591,7 +592,8 @@ test('floating hero cards use verified actions and keep business identities sepa
   assert.match(css,/\.hero-copy \.hero-description\{order:7\}/);
   assert.match(css,/\.quicklys-intro \.quicklys-description\{order:8\}/);
   assert.match(css,/@keyframes float-card-drift/);
-  assert.match(css,/\.motion-on \.float-card-order\{animation:float-card-drift/);
+  assert.doesNotMatch(css,/\.motion-on \.float-card-order\{animation:float-card-drift/);
+  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view/);
   assert.match(css,/\.motion-on \.float-card\{animation:none\}/);
   assert.match(css,/html:not\(\.motion-on\) \.float-card\{animation:none!important/);
   assert.ok(!/(?:fake|rating|review-count|discount-percent)/.test(tai),'no fake reviews or discounts on floating cards');
@@ -612,8 +614,8 @@ test('desktop and tablet editorial compositions use full-width action row withou
   assert.match(v7,/\.feature-image-wrap\{height:385px\}/);
   assert.match(v7,/\.quicklys-page \.menu-results \.menu-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   for(const page of [html,quicklyHtml]){
-    assert.match(page,/href="styles\.css\?v=motion-v8"/);
-    assert.match(page,/src="app\.js\?v=motion-v8" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v9"/);
+    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
     assert.equal((page.match(/class="float-card float-card-/g)||[]).length,3);
   }
   assert.match(v7,/@media\(prefers-reduced-motion:reduce\)/);
@@ -628,8 +630,8 @@ test('ticker groups are identical and dynamically expanded for a seamless wrap',
     assert.equal(copies.length,2,'marquee requires exactly two equal groups');
     assert.equal(copies[0],copies[1],'the sequence must be identical at the looping seam');
     assert.ok(copies[0].includes('<b>✳</b>'),'repeats should keep the separator');
-    assert.match(page,/href="styles\.css\?v=motion-v8"/);
-    assert.match(page,/src="app\.js\?v=motion-v8" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v9"/);
+    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
   }
   assert.match(js,/function initTickerLoop\(\)/);
   assert.match(js,/baseMarkup\.repeat\(repeats\)/);
@@ -639,4 +641,77 @@ test('ticker groups are identical and dynamically expanded for a seamless wrap',
   assert.match(js,/document\.fonts\?\.ready\?\.then/);
   assert.match(css,/\.motion-on \.ticker-track\{\s*animation-name:ticker-travel;\s*animation-duration:var\(--ticker-duration,23s\)/);
   assert.match(css,/@keyframes ticker-travel\{\s*from\{transform:translate3d\(0,0,0\)\}\s*to\{transform:translate3d\(-50%,0,0\)\}/);
+});
+
+
+test('every static card is watched separately for its first viewport entry',()=>{
+  const cards=(doc)=>({
+    floating:(doc.match(/data-card-reveal class="float-card/g)||[]).length,
+    services:(doc.match(/data-card-reveal class="service-card/g)||[]).length,
+    dishes:(doc.match(/data-card-reveal class="signature-card/g)||[]).length,
+    photos:(doc.match(/data-card-reveal class="feature-card/g)||[]).length
+  });
+  assert.deepEqual(cards(html),{floating:3,services:3,dishes:13,photos:2});
+  assert.deepEqual(cards(quicklyHtml),{floating:3,services:3,dishes:0,photos:0});
+  assert.equal((quicklyHtml.match(/data-card-reveal href="#menu" data-select-category/g)||[]).length,3);
+  assert.match(quicklyHtml,/data-card-reveal class="menu-side-panel"/);
+  for(const page of [html,quicklyHtml]){
+    assert.doesNotMatch(page,/class="hero-floating-actions"[^>]+data-reveal/);
+    assert.match(page,/href="styles\.css\?v=motion-v9"/);
+    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
+  }
+  assert.match(css,/@keyframes card-enter-on-view/);
+  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view/);
+  assert.match(css,/animation-delay:var\(--card-stagger,0ms\)/);
+  assert.doesNotMatch(css,/\.motion-on \.float-card-order\{animation:float-card-drift/);
+  assert.match(js,/observer\.unobserve\(card\)/);
+  assert.match(js,/forgetOldCards\(menuGrid\)/);
+  assert.match(js,/observeNewCards\(menuGrid\)/);
+  assert.match(js,/function initCardReveals\(\)/);
+  assert.match(js,/rearmCardReveals\(\)/);
+});
+
+test('card observer does not animate until intersection and re-arms on Replay',()=>{
+  const root=new FakeElement('html');
+  const first=new FakeElement('article');
+  const second=new FakeElement('article');
+  first.setAttribute('data-card-reveal','');
+  second.setAttribute('data-card-reveal','');
+  const toggle=new FakeElement('button');
+  const replay=new FakeElement('button');
+  const zh=new FakeElement('span');
+  const en=new FakeElement('span');
+  toggle.querySelector=sel=>sel==='.motion-status-zh'?zh:sel==='.motion-status-en'?en:null;
+  const nodes=[first,second];
+  const doc={
+    documentElement:root,
+    querySelector:sel=>sel==='[data-motion-toggle]'?toggle:sel==='[data-motion-replay]'?replay:null,
+    querySelectorAll:sel=>sel==='[data-card-reveal]'?nodes:[],
+    getElementById:()=>null,
+    addEventListener(){}
+  };
+  let callback, watched=[];
+  class Observer {
+    constructor(cb){callback=cb;}
+    observe(card){watched.push(card);}
+    unobserve(card){watched=watched.filter(el=>el!==card);}
+  }
+  const win={innerWidth:390,addEventListener(){},matchMedia:()=>({matches:false})};
+  vm.runInNewContext(js,{document:doc,window:win,IntersectionObserver:Observer,WeakSet,Date,console});
+  assert.equal(root.classList.contains('card-reveal-ready'),true);
+  assert.equal(watched.length,2);
+  assert.equal(first.classList.contains('card-in-view'),false);
+  callback([{target:first,isIntersecting:false}]);
+  assert.equal(first.classList.contains('card-in-view'),false,'non-intersection cannot fire');
+  callback([{target:first,isIntersecting:true}]);
+  assert.equal(first.classList.contains('card-in-view'),true);
+  assert.equal(second.classList.contains('card-in-view'),false);
+  assert.equal(watched.length,1,'completed card unobserved');
+  replay.dispatch('click');
+  assert.equal(first.classList.contains('card-in-view'),false,'replay resets viewed cards');
+  assert.equal(watched.length,2,'replay watches both again');
+  callback([{target:second,isIntersecting:true}]);
+  assert.equal(second.classList.contains('card-in-view'),true);
+  toggle.dispatch('click');
+  assert.equal(root.classList.contains('motion-off'),true);
 });

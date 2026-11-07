@@ -768,6 +768,10 @@ const navToggle = document.querySelector('.menu-toggle');
 const year = document.getElementById('copyright-year');
 
 let activeCategory = 'milk';
+// Registered after the page is ready; menu filtering can replace cards later.
+let observeNewCards = () => {};
+let forgetOldCards = () => {};
+let rearmCardReveals = () => {};
 
 function makeTextElement(tag, className, text, lang) {
   const element = document.createElement(tag);
@@ -790,10 +794,8 @@ function renderMenu() {
   for (const [index, item] of matches.entries()) {
     const card = document.createElement('article');
     card.className = 'menu-card';
-    if (index < 10) {
-      card.classList.add('menu-card-enter');
-      card.style.setProperty('--card-delay', String(index * 24) + 'ms');
-    }
+    card.setAttribute('data-card-reveal', '');
+    card.style.setProperty('--card-stagger', String((index % 3) * 65) + 'ms');
     card.style.setProperty('--accent', item.color);
     const category = makeTextElement('div', 'menu-card-top', item.categoryZh, 'zh-Hans');
     category.appendChild(makeTextElement('small', 'menu-category-en', item.tag, 'en'));
@@ -809,7 +811,9 @@ function renderMenu() {
     card.appendChild(foot);
     fragment.appendChild(card);
   }
+  forgetOldCards(menuGrid);
   menuGrid.replaceChildren(fragment);
+  observeNewCards(menuGrid);
   menuCount.textContent = '共 ' + matches.length + ' 项 · ' + matches.length + ' menu item' + (matches.length === 1 ? '' : 's');
   menuEmpty.hidden = matches.length !== 0;
 }
@@ -925,6 +929,61 @@ function initScrollReveals() {
   document.documentElement.classList.add('has-motion');
 }
 
+/* One-time on-screen card arrivals.
+   Card entrance is triggered only when the individual card intersects the
+   viewport. Dynamic Quickly's menu results are registered after each render.
+   Nothing is hidden without IntersectionObserver, and reduced-motion visitors
+   see the full cards immediately. */
+function initCardReveals() {
+  const root = document.documentElement;
+  if (!root || typeof IntersectionObserver !== 'function') return;
+
+  const observed = new WeakSet();
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      const card = entry.target;
+      if (!root.classList.contains('motion-on')) continue;
+      card.classList.add('card-in-view');
+      observer.unobserve(card);
+      observed.delete(card);
+    }
+  }, {threshold: 0.07, rootMargin: '0px 0px -12px 0px'});
+
+  observeNewCards = (scope = document) => {
+    const cards = Array.from(scope.querySelectorAll('[data-card-reveal]'));
+    for (const [index, card] of cards.entries()) {
+      if (observed.has(card) || card.classList.contains('card-in-view')) continue;
+      if (!card.style.getPropertyValue?.('--card-stagger')) {
+        card.style.setProperty('--card-stagger', String((index % 3) * 65) + 'ms');
+      }
+      observer.observe(card);
+      observed.add(card);
+    }
+  };
+
+  forgetOldCards = (scope) => {
+    for (const card of scope.querySelectorAll('[data-card-reveal]')) {
+      observer.unobserve(card);
+      observed.delete(card);
+    }
+  };
+
+  rearmCardReveals = () => {
+    // Replay only cards that come back into view; offscreen cards do not
+    // animate in the background and are not considered "seen" prematurely.
+    for (const card of document.querySelectorAll('[data-card-reveal]')) {
+      observer.unobserve(card);
+      observed.delete(card);
+      card.classList.remove('card-in-view');
+    }
+    observeNewCards();
+  };
+
+  root.classList.add('card-reveal-ready');
+  observeNewCards();
+}
+
 /* Motion controls: OS Reduce Motion is respected by default, but a visitor
    can explicitly opt in and replay the animations. Nothing is hidden
    while animations are off or if scripting is unavailable. */
@@ -964,12 +1023,14 @@ function initMotionControls() {
   toggle.addEventListener('click', () => {
     enabled = !enabled;
     sync(true);
+    if (enabled) rearmCardReveals();
   });
 
   replay.addEventListener('click', () => {
     if (!enabled) {
       enabled = true;
       sync(true);
+      rearmCardReveals();
       return;
     }
     /* Removing then re-adding the class restarts CSS animations on demand.
@@ -977,6 +1038,7 @@ function initMotionControls() {
     root.classList.remove('motion-on');
     void root.offsetWidth;
     root.classList.add('motion-on');
+    rearmCardReveals();
   });
 
   sync();
@@ -1151,6 +1213,7 @@ function initTickerLoop() {
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
 initMotionControls();
+initCardReveals();
 initTickerLoop();
 initScrollReveals();
 initSectionRail();
