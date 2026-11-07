@@ -191,3 +191,40 @@ h1,h2,h3{font-family:var(--font)}
 @media(max-width:800px){.header-inner{height:75px}.header-cta{margin-left:auto}.menu-toggle{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;background:var(--paper);border:1px solid #e7e3d8;width:44px;height:44px;border-radius:12px;flex-shrink:0}.menu-toggle span{display:block;height:2px;width:19px;background:var(--pine);border-radius:3px;transition:transform .2s,opacity .2s}.menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(7px) rotate(45deg)}.menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}.menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}.nav{display:none;position:absolute;top:75px;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);box-shadow:0 20px 30px #102d231a;padding:20px 26px;flex-direction:column;align-items:stretch;gap:0}.nav.is-open{display:flex}.nav a{padding:15px 4px;border-bottom:1px solid #ece4d9;font-size:15px}.nav a span{display:inline}.hero-grid{grid-template-columns:1fr;gap:10px;padding-block:65px 60px}.hero-copy{text-align:center}.eyebrow{justify-content:center}.hero h1{font-size:clamp(61px,11vw,95px)}.hero-description{margin-inline:auto}.hero-actions{justify-content:center}.hero-footnote{justify-content:center;margin-top:35px}.hero-visual{height:500px;min-height:0;width:min(100%,570px);margin:10px auto 0}.hero-photo-frame{width:73%;height:91%}.hero-floating-note{left:0}.hero-round-label{right:2%}.menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-pad{padding-block:80px}.visit-layout{grid-template-columns:1fr;gap:5px}.visit-art{height:290px;overflow:hidden}.visit-disc.disc-one{width:300px;height:300px;top:5px;right:12%}.visit-disc.disc-two{width:140px;height:140px;left:25%}.visit-stamp{width:240px;height:240px;top:23px;right:17%}.visit-stamp strong{font-size:145px}.visit-stamp span{font-size:9px}.visit-art-label{bottom:24px;left:8%}.feature-image-wrap{height:270px}.feature-info{padding:25px;min-height:170px}.feature-info h3{font-size:25px}}
 @media(max-width:560px){.container{width:min(100% - 36px,1240px)}.header-inner{gap:11px}.brand-mark{width:39px;height:39px;border-radius:13px;font-size:28px}.brand-text strong{font-size:22px}.brand-text small{font-size:7px;letter-spacing:1.7px}.header-cta{display:none}.hero-grid{padding-block:40px 44px}.eyebrow{font-size:10px;letter-spacing:1px;gap:6px;margin-bottom:24px}.hero h1{font-size:clamp(53px,13vw,73px);letter-spacing:-4.3px}.hero-chinese{font-size:17px;margin-top:26px}.hero-description{font-size:14px;line-height:1.85}.hero-actions{gap:16px}.button{padding:15px 17px}.button small{display:none}.hero-footnote{font-size:11px}.hero-visual{height:345px;width:100%}.hero-photo-frame{border-width:8px;width:77%;height:91%}.hero-round-label{width:85px;height:85px;border-width:4px;font-size:11px;top:5%;right:-1%}.hero-round-label b{font-size:17px}.hero-floating-note{padding:10px 13px;gap:7px;bottom:1%;left:-1%}.hero-floating-note strong{font-size:11px}.hero-floating-note small{font-size:9px}.note-spark{font-size:17px}.ticker-track{min-height:49px}.ticker-track span{font-size:9px;letter-spacing:1px}.ticker-track b{margin-inline:8px}.section-pad{padding-block:66px}.section-heading{align-items:start;gap:15px;margin-bottom:30px;flex-direction:column}.section-heading h2{font-size:clamp(44px,11vw,57px);letter-spacing:-3.5px}.section-aside{display:none}.section-subtitle{font-size:13px}.menu-filters{gap:5px}.filter{padding:10px;font-size:11px;border-radius:9px}.filter span{font-size:10px;margin-left:3px}.menu-toolbar{gap:14px;padding-block:15px}.search-box{padding:13px}.menu-status{flex-direction:column;gap:5px}.menu-disclaimer{text-align:left;line-height:1.6}.menu-grid{grid-template-columns:1fr;gap:11px}.menu-card{min-height:125px;padding:18px}.menu-card-top{margin-bottom:14px}.menu-card h3{font-size:20px}.menu-card-bottom{padding-top:15px}.menu-callout{padding:19px;align-items:flex-start;flex-direction:column}.menu-callout p{font-size:11px}.menu-callout strong{font-size:14px}.favorites-intro{font-size:13px}.feature-grid{grid-template-columns:1fr;gap:18px}.feature-image-wrap{height:290px}.feature-info{min-height:150px}.visit-copy h2{font-size:clamp(42px,10vw,62px);letter-spacing:-2.8px}.visit-description{font-size:13px}.visit-zh{font-size:16px}.visit-buttons{align-items:stretch;flex-direction:column}.visit-buttons .button{justify-content:space-between}.visit-art{height:245px}.visit-disc.disc-one{width:245px;height:245px;right:6%}.visit-stamp{width:190px;height:190px;right:12%;top:22px}.visit-stamp strong{font-size:115px}.visit-stamp span{font-size:7px;letter-spacing:1.6px}.visit-disc.disc-two{left:8%}.visit-art-label{left:0;bottom:18px;font-size:9px}.footer-inner{flex-direction:column;gap:26px;padding-bottom:36px}.footer-actions{flex-wrap:wrap;gap:22px;padding:0}.footer-bottom{align-items:start;flex-direction:column;gap:4px;font-size:10px}.footer-brand{font-size:48px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* Tai Ping Sa Choi Kee brand refinements */
+.brand-mark{font-family:'Noto Sans SC',sans-serif;font-size:29px;transform:rotate(-5deg);padding-bottom:0}
+.brand-text strong{font-size:18px;letter-spacing:-.75px;white-space:nowrap}
+.brand-text small{font-size:9px;letter-spacing:.4px}
+.nav{gap:22px}
+.hero h1.hero-restaurant-title{font-size:clamp(56px,6.5vw,86px);letter-spacing:-5.1px}
+.hero-restaurant-title .highlight-word{white-space:nowrap}
+.kitchen-section{background:#fff8ee}
+.kitchen-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.kitchen-tile{background:#fff;border:1px solid #ebe4d7;border-radius:20px;min-height:190px;padding:28px 22px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .25s,box-shadow .25s}
+.kitchen-tile:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(22,54,43,.08)}
+.kitchen-tile:nth-child(2){background:#e7f0dd}
+.kitchen-tile:nth-child(3){background:#fbe5cf}
+.kitchen-tile:nth-child(4){background:#f3e8ec}
+.kitchen-index{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#648074}
+.kitchen-tile h3{font-size:clamp(22px,2.25vw,31px);letter-spacing:-1.2px;line-height:1.2;margin:20px 0 6px}
+.kitchen-tile p{font-family:'Noto Sans SC',sans-serif;color:#526f61;margin:0;font-size:13px}
+.kitchen-note{display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:1px solid #e8ddca;margin-top:28px;padding-top:20px;color:#687a70;font-size:12px;line-height:1.6}
+.kitchen-note a{color:var(--pine);font-weight:800;white-space:nowrap;border-bottom:1px solid}
+.visit-stamp strong[lang]{font-family:'Noto Sans SC',sans-serif;font-size:170px;letter-spacing:0;padding:0 0 25px}
+.footer-brand{font-size:clamp(29px,3.3vw,42px);letter-spacing:-1.9px}
+@media(max-width:1100px){
+.brand-text strong{font-size:16px}.brand-text small{font-size:8px}.header-inner{gap:16px}.nav{gap:14px}.header-cta{padding:13px 15px}
+.kitchen-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:800px){.hero h1.hero-restaurant-title{font-size:clamp(56px,10vw,79px)}.kitchen-tile{min-height:150px}}
+@media(max-width:560px){
+.brand-text strong{font-size:14px;letter-spacing:-.6px}.brand-text small{font-size:7px;letter-spacing:0}.brand-mark{font-size:25px}
+.hero h1.hero-restaurant-title{font-size:clamp(43px,10.3vw,62px);letter-spacing:-3.2px}
+.kitchen-grid{grid-template-columns:1fr 1fr;gap:9px}
+.kitchen-tile{padding:17px 13px;min-height:135px;border-radius:14px}
+.kitchen-tile h3{font-size:19px;letter-spacing:-.6px}.kitchen-tile p{font-size:11px}
+.kitchen-note{align-items:flex-start;flex-direction:column}
+.visit-stamp strong[lang]{font-size:115px}.footer-brand{font-size:30px;letter-spacing:-1.25px}
+}
