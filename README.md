@@ -197,3 +197,9 @@ This pass adds interactions that remain useful after the first-load animation fi
 - **Browser verification:** the GitHub Actions verification workflow now runs real Chrome (via puppeteer-core without a bundled browser download) for both sites at 390px mobile and 1500px desktop widths. It checks layout overflow, nav interaction, animation computed styles, the native photo dialog, Quickly’s menu filter, and reduced-motion behavior. Screenshots are uploaded as a CI artifact for visual review.
 
 The two businesses keep independent menu ownership, contacts, Fantuan links and branding. The website remains an owner-unapproved concept, with original photo license confirmation still required before official commercial use.
+
+## First-screen mobile layout (v5)
+
+A Chrome screenshot review found that the mobile hero previously showed too much introduction before any real food or storefront photography. At widths up to 740px, both pages now place the **Chinese-first business name and real photo before the long introduction**, and push the secondary motion controls below the useful actions. Desktop retains its spacious two-column hero. The user can still reach Fantuan from the persistent mobile ordering button.
+
+The browser test now asserts that the relevant real photo begins within the first mobile viewport, in addition to checking horizontal overflow, navigation, animations, menu filtering, image galleries, and reduced-motion opt-in. The source content, restaurant photography, and the separate businesses' links remain unchanged.

@@ -374,8 +374,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v4"/);
-    assert.match(page,/src="app\.js\?v=motion-v4" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v5"/);
+    assert.match(page,/src="app\.js\?v=motion-v5" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -539,4 +539,22 @@ test('menu interactions provide smooth selection on mobile only when motion enab
   filters[6].dispatch('click');
   assert.equal(nodes['menu-grid'].children.length,9);
   assert.equal(filters[6].getAttribute('aria-pressed'),'true');
+});
+
+
+test('phone-first hero exposes real image before long introductions and secondary controls', () => {
+  for (const doc of [html, quicklyHtml]) {
+    const title = doc.indexOf('id="hero-heading"')>=0
+      ? doc.indexOf('id="hero-heading"') : doc.indexOf('id="quicklys-heading"');
+    assert.ok(title > 0);
+    assert.ok(doc.indexOf('class="motion-controls"') > title,'motion controls should not lead the brand');
+  }
+  assert.match(css,/\.hero-copy,\.quicklys-intro\{display:contents\}/);
+  assert.match(css,/\.hero-visual\{\s*order:5;/);
+  assert.match(css,/\.quicklys-store-photo\{\s*order:6;/);
+  assert.match(css,/\.hero-copy \.hero-description\{order:6/);
+  assert.match(css,/\.quicklys-intro \.quicklys-description\{order:7/);
+  assert.match(css,/\.motion-controls \.motion-toggle,\.motion-controls \.motion-replay/);
+  assert.ok(!html.includes('images.unsplash.com'));
+  assert.ok(!quicklyHtml.includes('images.unsplash.com'));
 });

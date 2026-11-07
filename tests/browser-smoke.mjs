@@ -75,6 +75,13 @@ async function visit(file, width, height, name, mobile) {
   await page.screenshot({path:path.join(output,name+'.png'),fullPage:false});
 
   if (mobile) {
+    const photo = await page.evaluate(() => {
+      const target = document.querySelector('.hero-visual,.quicklys-store-photo');
+      const box = target.getBoundingClientRect();
+      return {top:box.top,screen:window.innerHeight};
+    });
+    assert.ok(photo.top > 110 && photo.top < photo.screen*0.76,
+      name+': the real food/storefront photo should start in the first mobile screen '+JSON.stringify(photo));
     const state = await page.evaluate(() => ({
       hamburger:getComputedStyle(document.querySelector('.menu-toggle')).display,
       desktopCTA:getComputedStyle(document.querySelector('.header-cta')).display,

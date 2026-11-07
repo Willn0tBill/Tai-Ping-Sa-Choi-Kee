@@ -858,3 +858,55 @@ html.motion-off *,html.motion-off *::before,html.motion-off *::after{
 @media(prefers-reduced-motion:reduce){
  html:not(.motion-on) .gallery-zoom,html:not(.motion-on) .section-rail,html:not(.motion-on) .rail-label{transition:none}
 }
+
+
+/* Phone-first hero composition: identity, real photo, then details and actions.
+   Motion controls are secondary; the first screen shows the actual restaurant. */
+.motion-controls{gap:7px;margin:16px 0 0;opacity:.91}
+.motion-controls .motion-toggle,.motion-controls .motion-replay{
+  min-height:36px;padding:6px 10px;border-radius:7px
+}
+.motion-controls .motion-status-zh{font-size:11px}
+.motion-controls .motion-status-en,.motion-controls .motion-replay small{font-size:9px}
+.motion-controls .motion-replay{font-size:11px}
+.motion-controls .motion-replay>span:first-child{font-size:17px}
+@media(max-width:740px){
+ .hero-grid,.quicklys-hero-layout{
+  display:flex;flex-direction:column;align-items:stretch;gap:0
+ }
+ .hero-copy,.quicklys-intro{display:contents}
+ .hero-copy .eyebrow,.quicklys-intro .section-kicker{order:1;margin:0 0 12px}
+ .hero-copy h1,.quicklys-intro h1{order:2;margin:0 0 4px}
+ .hero-copy .hero-chinese,.quicklys-intro .quicklys-english-title{order:3;margin:0 0 5px}
+ .hero-copy .hero-name-en,.quicklys-intro .quicklys-tagline{order:4;margin:0}
+ .quicklys-intro .quicklys-subtag{order:5;margin:4px 0 0}
+ .hero-visual{
+   order:5;max-width:none;width:100%;min-height:0;
+   height:315px;margin:19px 0 23px
+ }
+ .hero-photo-frame{width:98%;height:97%}
+ .quicklys-store-photo{
+   order:6;max-width:none;width:100%;
+   aspect-ratio:16/10;margin:18px 0 24px;border-radius:12px
+ }
+ .hero-copy .hero-description{order:6;margin:0 0 5px}
+ .hero-copy .hero-description-en{order:7;margin:0}
+ .hero-copy .hero-actions{order:8;margin-top:20px}
+ .hero-copy .hero-footnote{order:9;margin-top:18px}
+ .hero-copy .motion-controls{order:10;margin-top:18px}
+ .hero-copy .scroll-cue{order:11}
+ .quicklys-intro .quicklys-description{order:7;margin:0 0 5px}
+ .quicklys-intro .quicklys-description-en{order:8;margin:0}
+ .quicklys-intro .hero-actions{order:9;margin-top:21px}
+ .quicklys-intro .quicklys-shortcuts{order:10;margin-top:18px}
+ .quicklys-intro .motion-controls{order:11;margin-top:17px}
+ .quicklys-intro .scroll-cue{order:12}
+}
+@media(max-width:560px){
+ .hero-visual{height:290px;margin:17px 0 22px}
+ .quicklys-store-photo{aspect-ratio:16/10;margin:17px 0 22px}
+ .hero-copy .hero-chinese{font-size:18px}
+ .hero-copy .hero-name-en{font-size:9px}
+ .hero-copy .hero-description,.quicklys-intro .quicklys-description{font-size:14px;line-height:1.8}
+ .hero-copy .hero-description-en,.quicklys-intro .quicklys-description-en{font-size:12px;line-height:1.65}
+}
