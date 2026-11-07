@@ -335,8 +335,8 @@ test('both businesses have the correct and distinct Fantuan online ordering link
   assert.ok(!quicklyHtml.includes(tai), 'Quickly’s site must not accidentally order from Tai Ping Fantuan');
   assert.match(html, /饭团在线点餐/);
   assert.match(quicklyHtml, /饭团在线点餐/);
-  assert.match(html, /class="service-order"/);
-  assert.match(quicklyHtml, /class="service-order"/);
+  assert.match(html, /class="service-card service-order"/);
+  assert.match(quicklyHtml, /class="service-card service-order"/);
   assert.match(html, /class="service-card-link" href="https:\/\/www\.fantuanorder\.com\/en-US\/store\/tai-ping-sa-choi-kee\/us-1364034559" target="_blank" rel="noopener noreferrer"/);
   assert.match(quicklyHtml, /class="service-card-link" href="https:\/\/www\.fantuanorder\.com\/en-US\/store\/quickly\/us-28952" target="_blank" rel="noopener noreferrer"/);
 });
