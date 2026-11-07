@@ -908,6 +908,37 @@ function initScrollReveals() {
   document.documentElement.classList.add('has-motion');
 }
 
+/* Scroll progress works without an animation library and only updates one CSS
+   variable. Passive scroll listeners avoid blocking touch input on phones. */
+function initScrollProgress() {
+  const progress = document.querySelector('.scroll-progress');
+  if (!progress || !document.documentElement) return;
+  const root = document.documentElement;
+  let scheduled = false;
+  function update() {
+    scheduled = false;
+    const contentHeight = Math.max(root.scrollHeight || 0, document.body?.scrollHeight || 0);
+    const viewportHeight = window.innerHeight || root.clientHeight || 0;
+    const scrollable = Math.max(0, contentHeight - viewportHeight);
+    const position = Math.max(0, Number(window.scrollY) || Number(root.scrollTop) || 0);
+    const fraction = scrollable ? Math.min(1, position / scrollable) : 0;
+    root.style.setProperty('--page-progress', String(fraction));
+  }
+  function schedule() {
+    if (scheduled) return;
+    scheduled = true;
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(update);
+    } else {
+      update();
+    }
+  }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  schedule();
+}
+
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
 initScrollReveals();
+initScrollProgress();

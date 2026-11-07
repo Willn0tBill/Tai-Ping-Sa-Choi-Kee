@@ -154,3 +154,18 @@ Address on both: **15848 Halliburton Rd, Hacienda Heights, CA 91745**.
 - Both ordering links are to third-party Fantuan product pages. Availability, fees, prices, pickup/delivery options and service hours depend on Fantuan and customer location. Neither page claims to process payments itself.
 - Apple and Google map links use the address and open their respective apps where supported; they do not embed location tracking or require access to the visitor's GPS.
 - External links use `target="_blank" rel="noopener noreferrer"`. Both pages remain `noindex,nofollow` concept websites pending owner approval.
+
+
+## Visible animation pass
+
+The original motion was too subtle because entrance effects were limited to an observer-triggered 20px reveal. The following are intentionally noticeable **without being distracting**:
+
+- Independently animated **Chinese-first hero text** with short staggered entrances on both business pages, plus a photograph reveal (fade, vertical movement and small scale/blur transition).
+- The existing dark restaurant ticker now **scrolls continuously** and pauses when hovered. It duplicates its existing text instead of introducing fake promotions.
+- Section and cards animate in-view with a more legible 32px rise. Importantly, the new CSS **never hides content while waiting for JavaScript or IntersectionObserver**.
+- The bilingual **继续探索 / Scroll to explore** link guides visitors to ordering and directions; its down arrow has modest motion.
+- A thin scroll-progress indicator follows reading progress using a passive scroll listener and `requestAnimationFrame` where supported.
+- Navigation underline, card accents and call-to-action arrows gain purposeful hover / focus / active transitions.
+- Motion can be turned off via the visitor's OS `prefers-reduced-motion` setting, and the entire site remains useful with JavaScript disabled. No generated logos, AI food photography or additional image dependencies were introduced.
+
+Animation behavior is checked with 19 automated tests. Real-phone visual QA remains a separate review step.

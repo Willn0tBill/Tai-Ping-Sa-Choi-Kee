@@ -367,3 +367,56 @@ test('both pages have Yelp, complete address, Apple Maps and Google Maps links',
   assert.match(css, /\.service-map-links a\{/);
   assert.match(css, /@media\(max-width:740px\)\{[\s\S]*?\.service-grid\{grid-template-columns:1fr/);
 });
+
+test('visible motion system includes immediately noticeable hero animation and ticker', () => {
+  for(const page of [html,quicklyHtml]){
+    assert.match(page,/class="scroll-progress" aria-hidden="true"/);
+    assert.match(page,/class="scroll-cue" href="#order"/);
+    assert.match(page,/继续探索/);
+  }
+  const motion=css.split('Visible motion system v2')[1];
+  assert.ok(motion,'new animation system exists');
+  for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','scroll-cue-float']){
+    assert.ok(motion.includes('@keyframes '+name),name+' should be an actual animation');
+  }
+  assert.match(motion,/\.hero-copy>\*,\.quicklys-intro>\*\{/);
+  assert.match(motion,/\.hero-visual,\.quicklys-store-photo\{animation:hero-photo-rise/);
+  assert.match(motion,/\.ticker-track span\{animation:ticker-travel/);
+  assert.match(motion,/\.ticker:hover \.ticker-track span/);
+  assert.match(motion,/html\.has-motion \[data-reveal\]\{\s*opacity:1;transform:none/);
+  assert.match(motion,/html\.has-motion \[data-reveal\]\.is-visible/);
+  assert.match(motion,/prefers-reduced-motion:no-preference/);
+  assert.match(motion,/prefers-reduced-motion:reduce/);
+  assert.match(motion,/animation:none!important/);
+  assert.ok(!motion.includes('background-image:url('),'no AI assets or animated image downloads');
+});
+
+test('reading progress updates with passive scroll listeners and respects short pages', () => {
+  const root=new FakeElement('html'),bar=new FakeElement('div');
+  const props={};
+  root.scrollHeight=1300;root.clientHeight=300;
+  root.style={setProperty:(k,v)=>{props[k]=v;}};
+  const callbacks={};
+  const body={scrollHeight:1300};
+  const document={
+    documentElement:root,body,
+    getElementById:()=>null,
+    querySelector:(selector)=>selector==='.scroll-progress'?bar:null,
+    querySelectorAll:()=>[],
+    addEventListener(){}
+  };
+  const window={
+    innerWidth:390,innerHeight:300,scrollY:250,
+    matchMedia:()=>({matches:true}),
+    addEventListener:(type,fn,opts)=>{callbacks[type]={fn,opts};}
+  };
+  vm.runInNewContext(js,{document,window,Date,console});
+  assert.equal(props['--page-progress'],'0.25');
+  assert.equal(callbacks.scroll.opts.passive,true);
+  window.scrollY=1000;callbacks.scroll.fn();
+  assert.equal(props['--page-progress'],'1');
+  window.scrollY=1400;callbacks.scroll.fn();
+  assert.equal(props['--page-progress'],'1','progress should clamp to 100%');
+  root.scrollHeight=300;body.scrollHeight=300;window.scrollY=0;callbacks.resize.fn();
+  assert.equal(props['--page-progress'],'0','short pages are safe');
+});
