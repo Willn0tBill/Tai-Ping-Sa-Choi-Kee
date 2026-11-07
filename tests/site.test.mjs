@@ -24,8 +24,8 @@ test('static page has useful structure, labels and verified contact links', () =
   assert.match(html, /lang="zh-Hans"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /Website concept preview/);
-  assert.match(html, /in-store menu photograph/);
-  assert.match(html, /Please confirm with the shop/);
+  assert.match(html, /Quickly prices from photographed menu/);
+  assert.match(html, /subject to confirmation/);
   assert.ok(!html.includes('application/ld+json'), 'unapproved demo must not imply verified official schema');
   for (const tag of html.match(/<img\b[^>]*>/g) ?? []) {
     assert.match(tag, /alt="[^"]+"/);
