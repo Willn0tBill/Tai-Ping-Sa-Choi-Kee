@@ -791,20 +791,22 @@ function renderMenu() {
     const card = document.createElement('article');
     card.className = 'menu-card';
     card.style.setProperty('--accent', item.color);
-    card.appendChild(makeTextElement('div', 'menu-card-top', item.tag));
-    card.appendChild(makeTextElement('h3', '', item.name));
-    card.appendChild(makeTextElement('p', 'menu-zh', item.zh, 'zh-Hans'));
+    const category = makeTextElement('div', 'menu-card-top', item.categoryZh, 'zh-Hans');
+    category.appendChild(makeTextElement('small', 'menu-category-en', item.tag, 'en'));
+    card.appendChild(category);
+    card.appendChild(makeTextElement('h3', 'menu-item-zh', item.zh, 'zh-Hans'));
+    card.appendChild(makeTextElement('p', 'menu-en', item.name, 'en'));
     const priceLabel = Number.isFinite(item.price)
       ? '$' + item.price.toFixed(2)
       : (Number.isFinite(item.priceM) && Number.isFinite(item.priceL)
         ? 'M $' + item.priceM.toFixed(2) + ' · L $' + item.priceL.toFixed(2)
-        : 'Ask in store / 请询价');
+        : '请询价 / Ask in store');
     const foot = makeTextElement('div', 'menu-card-bottom menu-price', priceLabel);
     card.appendChild(foot);
     fragment.appendChild(card);
   }
   menuGrid.replaceChildren(fragment);
-  menuCount.textContent = matches.length + ' menu item' + (matches.length === 1 ? '' : 's') + ' / 菜单项目';
+  menuCount.textContent = '共 ' + matches.length + ' 项 · ' + matches.length + ' menu item' + (matches.length === 1 ? '' : 's');
   menuEmpty.hidden = matches.length !== 0;
 }
 
@@ -846,7 +848,7 @@ function closeMobileNav() {
   if (!nav || !navToggle) return;
   nav.classList.remove('is-open');
   navToggle.setAttribute('aria-expanded', 'false');
-  navToggle.setAttribute('aria-label', 'Open navigation');
+  navToggle.setAttribute('aria-label', '展开导航 / Open navigation');
 }
 
 if (nav && navToggle) {
@@ -854,7 +856,7 @@ if (nav && navToggle) {
     const willOpen = navToggle.getAttribute('aria-expanded') !== 'true';
     nav.classList.toggle('is-open', willOpen);
     navToggle.setAttribute('aria-expanded', String(willOpen));
-    navToggle.setAttribute('aria-label', willOpen ? 'Close navigation' : 'Open navigation');
+    navToggle.setAttribute('aria-label', willOpen ? '收起导航 / Close navigation' : '展开导航 / Open navigation');
   });
   nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMobileNav));
   document.addEventListener('keydown', (event) => {
