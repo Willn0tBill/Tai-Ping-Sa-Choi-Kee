@@ -374,8 +374,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v5"/);
-    assert.match(page,/src="app\.js\?v=motion-v5" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v6"/);
+    assert.match(page,/src="app\.js\?v=motion-v6" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
