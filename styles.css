@@ -123,7 +123,7 @@ h1,h2,h3{font-family:var(--font)}
 .menu-card-top{color:#8a938b;font-size:10px;letter-spacing:1.5px;font-weight:800;text-transform:uppercase;margin-bottom:12px}
 .menu-card h3{font-family:var(--font);font-size:21px;font-weight:800;letter-spacing:-.8px;margin:0 0 4px;padding-right:8px}
 .menu-card .menu-zh{font-family:var(--font);color:#667d72;font-size:14px;font-weight:600;margin:0}
-.menu-card-bottom{margin-top:auto;padding-top:15px;color:#a0a99d;font-size:10px}
+.menu-card-bottom{margin-top:auto;padding-top:15px;color:#a0a99d;font-size:10px}.menu-price{font-size:14px;color:#244e3e;font-weight:800;letter-spacing:.1px;font-variant-numeric:tabular-nums}
 .menu-card-bottom span{float:right;letter-spacing:1.2px}
 .menu-empty{text-align:center;padding:65px 20px;background:#f8f7f2;border-radius:18px;margin-top:12px}
 .menu-empty strong{font-size:23px}
