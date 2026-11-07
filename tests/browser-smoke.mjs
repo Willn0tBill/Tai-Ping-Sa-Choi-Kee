@@ -135,9 +135,24 @@ try {
   await reduced.waitForFunction(()=>document.documentElement.classList.contains('motion-ready'));
   assert.equal(await reduced.evaluate(()=>document.documentElement.classList.contains('motion-off')),true,
     'Reduce Motion starts with animations paused');
+  // The replay button is below the hero on mobile. Scroll to a stable,
+  // unobstructed hit target before a real pointer click (smooth scrolling and
+  // the fixed bottom action bar can otherwise intercept browser automation).
+  await reduced.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.querySelector('[data-motion-replay]').scrollIntoView({behavior:'instant',block:'center'});
+  });
+  await reduced.waitForFunction(() => {
+    const target = document.querySelector('[data-motion-replay]').getBoundingClientRect();
+    return target.top >= 0 && target.bottom < innerHeight-74;
+  });
   await reduced.click('[data-motion-replay]');
-  assert.equal(await reduced.evaluate(()=>document.documentElement.classList.contains('motion-on')),true,
-    'Explicit user opt-in can start animation');
+  const motionState = await reduced.evaluate(()=>({
+    on:document.documentElement.classList.contains('motion-on'),
+    label:document.querySelector('[data-motion-toggle]')?.getAttribute('aria-pressed')
+  }));
+  assert.equal(motionState.on,true,
+    'Explicit user opt-in can start animation: '+JSON.stringify(motionState));
   await reduced.close();
   console.log('PASS reduced-motion browser behavior');
 } finally {
