@@ -151,3 +151,17 @@ test('photographed Quickly menu has seven categories, prices, and no separate re
   assert.equal(entries.find(e => e.name === 'Crystal Boba').price, 1);
   assert.equal(js.includes('const priceLabel'), true);
 });
+
+test('actual restaurant food board has bilingual featured dishes without invented prices', () => {
+  const kitchen = html.split('<section class="kitchen-section')[1]?.split('<section class="menu-section')[0];
+  assert.ok(kitchen, 'missing kitchen feature section');
+  assert.equal((kitchen.match(/class="signature-card(?: signature-card-primary)?"/g) || []).length, 13);
+  for (const dish of ['干炒牛河', '港式生炒骨', '海鲜两面黄', '椒盐鲜鱿', '清平白切鸡', '鱼香茄子煲', '蚵仔煎蛋', '牛杂捞面', 'XO海鲜炒饭', '椒盐大虾', '招牌牛腩饭', '姜葱油泡猪肝', '海鲜豆腐煲']) {
+    assert.ok(kitchen.includes(dish), 'missing actual posted dish: ' + dish);
+  }
+  assert.match(kitchen, /owner confirmation/);
+  assert.match(kitchen, /English names are translations/);
+  assert.ok(!/\$\d/.test(kitchen), 'no unverified food prices');
+  assert.match(css, /\.signature-grid/);
+  assert.match(css, /@media\(max-width:740px\)/);
+});
