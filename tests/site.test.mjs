@@ -96,14 +96,16 @@ function setup() {
     createDocumentFragment:()=>Object.assign(new FakeElement(),{fragment:true}),
     addEventListener:(type,fn)=>{(docEvents[type]??=[]).push(fn);}
   };
-  const window={innerWidth:390,addEventListener(){}};
+  const windowEvents={};
+  const window={innerWidth:390,addEventListener:(type,fn)=>{(windowEvents[type]??=[]).push(fn);}};
   vm.runInNewContext(js,{document,window,Date,console});
-  return {nodes,toggle,filters,feature,docEvents};
+  return {nodes,toggle,filters,feature,docEvents,window,windowEvents};
 }
 
 test('menu search filters English and Chinese items and resets correctly', () => {
   const {nodes,filters} = setup();
   assert.equal(nodes['menu-grid'].children.length,14);
+  assert.equal(nodes['menu-grid'].children[0].classList.contains('menu-card-enter'),true);
   filters[6].dispatch('click');
   assert.equal(nodes['menu-grid'].children.length,9);
   assert.equal(filters[6].getAttribute('aria-pressed'),'true');
@@ -267,4 +269,59 @@ test('Quickly’s starts with Chinese brand name, not English-first typography',
   assert.match(quicklyHtml, /<p class="quicklys-description-en" lang="en">/);
   assert.match(css, /\.quicklys-intro h1\{font:/);
   assert.match(css, /\.quicklys-english-title\{font:/);
+});
+
+test('mobile-first navigation and shortcuts work with independent brands', () => {
+  for(const doc of [html,quicklyHtml]) assert.match(doc,/class="mobile-action-bar"/);
+  assert.match(html,/class="mobile-action-primary" href="#kitchen"/);
+  assert.match(quicklyHtml,/class="mobile-action-primary" href="#menu"/);
+  assert.match(html,/mobile-action-bar"[\s\S]*?tel:\+16269376555/);
+  assert.match(quicklyHtml,/mobile-action-bar"[\s\S]*?tel:\+16269376552/);
+  assert.match(quicklyHtml,/class="quicklys-shortcuts"/);
+  assert.equal((quicklyHtml.match(/data-select-category="(?:milk|slush|snacks)"/g)||[]).length,3);
+  assert.match(quicklyHtml,/class="menu-body-layout"/);
+  assert.match(quicklyHtml,/class="menu-side-panel"/);
+  assert.match(css,/scroll-snap-type:x proximity/);
+  assert.match(css,/safe-area-inset-bottom/);
+  assert.match(css,/@media\(max-width:900px\)\{[\s\S]*?\.menu-side-panel\{display:none\}/);
+  assert.ok(!html.includes('class="menu-side-panel"'));
+  const {toggle,window,windowEvents}=setup();
+  toggle.dispatch('click');
+  assert.equal(toggle.getAttribute('aria-expanded'),'true');
+  window.innerWidth=950;windowEvents.resize[0]();
+  assert.equal(toggle.getAttribute('aria-expanded'),'true');
+  window.innerWidth=1101;windowEvents.resize[0]();
+  assert.equal(toggle.getAttribute('aria-expanded'),'false');
+});
+test('reveals show content only in capable motion-enabled browsers', () => {
+  assert.match(css,/html\.has-motion \[data-reveal\]/);
+  assert.match(css,/html\.has-motion \[data-reveal\]\.is-visible/);
+  assert.match(css,/prefers-reduced-motion:no-preference/);
+  assert.match(css,/prefers-reduced-motion:reduce/);
+  assert.match(js,/typeof IntersectionObserver !== 'function'/);
+  const root=new FakeElement('html'),targets=[new FakeElement('section'),new FakeElement('article')];
+  const fakeDocument={
+    documentElement:root,getElementById:()=>null,querySelector:()=>null,
+    querySelectorAll:selector=>selector==='[data-reveal]'?targets:[],
+    addEventListener(){}
+  };
+  let observer;
+  class FakeObserver {
+    constructor(callback){this.callback=callback;this.observed=[];this.unobserved=[];observer=this;}
+    observe(node){this.observed.push(node);}
+    unobserve(node){this.unobserved.push(node);}
+  }
+  const fakeWindow={innerWidth:375,matchMedia:()=>({matches:false}),addEventListener(){}};
+  vm.runInNewContext(js,{document:fakeDocument,window:fakeWindow,IntersectionObserver:FakeObserver,Date,console});
+  assert.equal(root.classList.contains('has-motion'),true);
+  assert.equal(observer.observed.length,2);
+  observer.callback([{isIntersecting:true,target:targets[0]}]);
+  assert.equal(targets[0].classList.contains('is-visible'),true);
+  assert.equal(observer.unobserved.length,1);
+  const reduced=new FakeElement('html');
+  vm.runInNewContext(js,{document:{...fakeDocument,documentElement:reduced},window:{...fakeWindow,matchMedia:()=>({matches:true})},IntersectionObserver:FakeObserver,Date,console});
+  assert.equal(reduced.classList.contains('has-motion'),false);
+  const legacy=new FakeElement('html');
+  vm.runInNewContext(js,{document:{...fakeDocument,documentElement:legacy},window:fakeWindow,Date,console});
+  assert.equal(legacy.classList.contains('has-motion'),false);
 });

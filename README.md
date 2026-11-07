@@ -121,3 +121,17 @@ The owner has not supplied a standalone official logo file. Although their photo
 ## Design consolidation — Chinese-led and responsive
 
 The former 46 KB stylesheet contained contradictory selectors added across many revisions. It has been replaced with a single responsive stylesheet using a calm, modern Cantonese-inspired palette, consistent spacing, restrained photographic treatments and a clear typographic hierarchy. Both pages present Chinese as the primary language and English directly underneath. The Quickly’s page now opens with `快可立` and the English business name `Quickly’s` beneath it; the brand is represented by text only, not a fabricated logo. At viewport widths below 1100px, navigation collapses into an accessible menu. Below 740px, the oversized desktop telephone button disappears and the telephone link remains available inside the expanded menu. Shared phone numbers and menus remain distinct by business. The site is still a concept awaiting approval.
+
+## November 2026 mobile-first and motion pass
+
+The two businesses continue to have separate pages, menus, and telephone numbers. The latest pass improves the experience for **phone-first customers** while maintaining the Chinese-primary, English-secondary presentation:
+
+- Fixed, bilingual **mobile quick-action bar** for jumping to the correct menu or calling the correct business. Safe-area spacing prevents the bar from covering the footer or iPhone home indicator.
+- Quickly’s menu categories become horizontally swipeable on smaller screens; search remains accessible and the 77 photographed entries and prices are unchanged.
+- Three **real menu-category shortcuts** (milk tea, slush, snacks) in the Quickly’s hero. They interact with the existing menu filtering rather than creating dummy buttons.
+- On desktop, an intentional **menu help sidebar** uses otherwise empty space for category guidance and the Quickly’s phone number. It disappears below 900px to prioritize menu content on tablets and phones.
+- Scroll-reveal motion for page sections, lightweight menu-card entrances, a responsive menu transition, and restrained hover/tap feedback. Animations are progressive enhancements: if JavaScript, IntersectionObserver, or motion preference support is unavailable, content remains visible. Respect \`prefers-reduced-motion\` without relying on the animation to convey information.
+- Corrected the mobile navigation resize threshold to **1100px**, matching the actual CSS breakpoint. Earlier code closed the menu at 800px, leaving a broken interval for tablets.
+- Kept actual restaurant photos and Chinese/English text; no invented logos, AI food replacements, fabricated ratings, fake testimonials, or prices were added.
+
+The code is tested with Node's simulated DOM and GitHub Actions. A final real-device visual review, especially Safari on iPhone and Chrome on Android, remains necessary before treating it as production-ready.

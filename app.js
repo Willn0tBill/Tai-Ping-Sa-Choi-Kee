@@ -787,9 +787,13 @@ function renderMenu() {
   });
 
   const fragment = document.createDocumentFragment();
-  for (const item of matches) {
+  for (const [index, item] of matches.entries()) {
     const card = document.createElement('article');
     card.className = 'menu-card';
+    if (index < 10) {
+      card.classList.add('menu-card-enter');
+      card.style.setProperty('--card-delay', String(index * 24) + 'ms');
+    }
     card.style.setProperty('--accent', item.color);
     const category = makeTextElement('div', 'menu-card-top', item.categoryZh, 'zh-Hans');
     category.appendChild(makeTextElement('small', 'menu-category-en', item.tag, 'en'));
@@ -869,9 +873,41 @@ if (nav && navToggle) {
     if (!nav.contains(event.target) && !navToggle.contains(event.target)) closeMobileNav();
   });
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 800) closeMobileNav();
+    if (window.innerWidth > 1100) closeMobileNav();
   });
+}
+
+/* Mobile action links close the open menu before navigating. */
+for (const link of document.querySelectorAll('.mobile-action-bar a')) {
+  link.addEventListener('click', closeMobileNav);
+}
+
+/* Progressive enhancement: unsupported browsers and reduced-motion visitors
+   see all content immediately; only capable browsers opt in to reveals. */
+function initScrollReveals() {
+  if (typeof IntersectionObserver !== 'function' ||
+      typeof window.matchMedia !== 'function' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      !document.documentElement) return;
+
+  const targets = Array.from(document.querySelectorAll('[data-reveal]'));
+  if (targets.length === 0) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }
+  }, {threshold: 0.08, rootMargin: '0px 0px -22px 0px'});
+
+  targets.forEach((element, index) => {
+    element.style.setProperty('--reveal-delay', String((index % 4) * 45) + 'ms');
+    observer.observe(element);
+  });
+  document.documentElement.classList.add('has-motion');
 }
 
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
+initScrollReveals();

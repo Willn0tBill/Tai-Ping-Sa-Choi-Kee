@@ -36,7 +36,7 @@
   <main id="main">
     <section class="quicklys-hero section-shell" aria-labelledby="quicklys-heading">
       <div class="container quicklys-hero-layout">
-        <div class="quicklys-intro">
+        <div class="quicklys-intro" data-reveal>
           <p class="section-kicker"><span class="spark" aria-hidden="true">✳</span><span lang="zh-Hans">快可立 · 哈岗</span><span lang="en">/ A SEPARATE MENU</span></p>
           <h1 id="quicklys-heading" lang="zh-Hans">快可立</h1><p class="quicklys-english-title" lang="en">Quickly’s</p>
           <p class="quicklys-tagline" lang="zh-Hans">一杯好茶，一份好心情。</p>
@@ -47,8 +47,13 @@
             <a class="button button-dark" href="#menu"><span class="button-bilingual"><strong lang="zh-Hans">浏览菜单</strong><small lang="en">Explore the menu</small></span><span aria-hidden="true">↗</span></a>
             <a class="text-link bilingual-link" href="index.html"><strong lang="zh-Hans">返回太平沙财记</strong><small lang="en">Chinese kitchen</small><span aria-hidden="true">↗</span></a>
           </div>
+          <div class="quicklys-shortcuts" aria-label="菜单快捷入口 / Menu shortcuts">
+            <a href="#menu" data-select-category="milk"><strong lang="zh-Hans">奶茶</strong><small lang="en">Milk tea</small><span aria-hidden="true">↗</span></a>
+            <a href="#menu" data-select-category="slush"><strong lang="zh-Hans">冰沙</strong><small lang="en">Slushes</small><span aria-hidden="true">↗</span></a>
+            <a href="#menu" data-select-category="snacks"><strong lang="zh-Hans">小吃</strong><small lang="en">Snacks</small><span aria-hidden="true">↗</span></a>
+          </div>
         </div>
-        <div class="quicklys-store-photo">
+        <div class="quicklys-store-photo" data-reveal>
           <img src="https://cdn.restaurants-us.com/3616-albums-1.jpg" alt="15848 Halliburton Road storefront showing Quickly and Tai Ping Sa Choi Kee signs; actual location photo" loading="eager" decoding="async" width="1000" height="563">
           <div class="quicklys-photo-label"><span lang="zh-Hans">同一地址 · 不同菜单</span><small lang="en">Shared location · Separate menus</small></div>
         </div>
@@ -56,7 +61,7 @@
     </section>
     <section class="menu-section section-pad" id="menu" aria-labelledby="menu-heading">
       <div class="container">
-        <div class="section-heading menu-section-heading">
+        <div data-reveal class="section-heading menu-section-heading">
           <div>
             <p class="section-kicker"><span class="spark" aria-hidden="true">✳</span> <span lang="zh-Hans">快可立菜单</span> <span lang="en">/ QUICKLY’S MENU</span></p>
             <h2 id="menu-heading" lang="zh-Hans">喜欢的味道，<em>这里都有。</em></h2>
@@ -86,12 +91,28 @@
           <span id="menu-count">奶茶 / Milk tea</span>
           <span class="menu-disclaimer">价格以 Quickly’s 店内为准 / Prices transcribed from the photographed menu; verify before ordering</span>
         </div>
-        <div class="menu-grid" id="menu-grid">
+        <div class="menu-body-layout">
+          <aside class="menu-side-panel" aria-label="Quickly’s 菜单与联系方式 / Menu help">
+            <div class="menu-side-top">
+              <span class="menu-side-eyebrow" lang="en">QUICKLY’S · HACIENDA HEIGHTS</span>
+              <h3 lang="zh-Hans">想喝什么？</h3>
+              <p lang="en">Choose a category or search the menu in Chinese or English.</p>
+            </div>
+            <div class="menu-side-bottom">
+              <span lang="zh-Hans">菜单与价格请来电确认</span>
+              <small lang="en">Confirm today’s offerings</small>
+              <a href="tel:+16269376552"><strong lang="zh-Hans">电话咨询</strong><small lang="en">(626) 937-6552</small><span aria-hidden="true">↗</span></a>
+            </div>
+          </aside>
+          <div class="menu-results">
+            <div class="menu-grid" id="menu-grid">
           <noscript><p>请致电 Quickly’s (626) 937-6552 确认菜单。 / Call for menu availability; JavaScript enables menu search.</p></noscript>
         </div>
         <div class="menu-empty" id="menu-empty" hidden>
           <strong lang="zh-Hans">没有找到相关商品</strong><p lang="en">No matches — try another name or category.</p>
           <button type="button" id="clear-search">清除筛选 <small lang="en">/ Clear filters</small></button>
+        </div>
+          </div>
         </div>
         <div class="menu-callout">
           <div><span class="callout-asterisk" aria-hidden="true">✳</span><p><strong lang="zh-Hans">Quickly’s 最新菜单及价格请致电确认。</strong><br><span lang="en">Call Quickly’s for current availability, prices and ordering.</span></p></div>
@@ -100,7 +121,7 @@
       </div>
     </section>
     <section class="quicklys-visit section-pad" id="visit" aria-labelledby="quicklys-visit-heading">
-      <div class="container quicklys-visit-layout">
+      <div class="container quicklys-visit-layout" data-reveal>
         <div>
           <p class="section-kicker"><span class="spark" aria-hidden="true">✳</span> <span lang="zh-Hans">欢迎光临</span><span lang="en">/ FIND QUICKLY’S</span></p>
           <h2 id="quicklys-visit-heading" lang="zh-Hans">就在哈岗，<em>等你来。</em></h2>
@@ -127,5 +148,9 @@
     </div>
     <div class="container footer-bottom"><span>© <span id="copyright-year">2026</span> Quickly’s · Website concept preview</span><span>尚未经店主确认。 / Concept only; not an official business website.</span></div>
   </footer>
+  <nav class="mobile-action-bar" aria-label="手机快捷操作 / Mobile quick actions">
+    <a class="mobile-action-primary" href="#menu"><span lang="zh-Hans">浏览菜单</span><small lang="en">Quickly’s menu</small></a>
+    <a href="tel:+16269376552"><span lang="zh-Hans">致电快可立</span><small lang="en">Call · (626) 937-6552</small></a>
+  </nav>
 </body>
 </html>
