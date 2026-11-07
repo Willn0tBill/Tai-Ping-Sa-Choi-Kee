@@ -293,10 +293,8 @@ test('mobile-first navigation and shortcuts work with independent brands', () =>
   window.innerWidth=1101;windowEvents.resize[0]();
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
 });
-test('reveals show content only in capable motion-enabled browsers', () => {
-  assert.match(css,/html\.has-motion \[data-reveal\]/);
-  assert.match(css,/html\.has-motion \[data-reveal\]\.is-visible/);
-  assert.match(css,/prefers-reduced-motion:no-preference/);
+test('scroll-reveal observer works independently of motion preference without hiding content', () => {
+  assert.match(css,/\.motion-on\.has-motion \[data-reveal\]\.is-visible/);
   assert.match(css,/prefers-reduced-motion:reduce/);
   assert.match(js,/typeof IntersectionObserver !== 'function'/);
   const root=new FakeElement('html'),targets=[new FakeElement('section'),new FakeElement('article')];
@@ -320,10 +318,11 @@ test('reveals show content only in capable motion-enabled browsers', () => {
   assert.equal(observer.unobserved.length,1);
   const reduced=new FakeElement('html');
   vm.runInNewContext(js,{document:{...fakeDocument,documentElement:reduced},window:{...fakeWindow,matchMedia:()=>({matches:true})},IntersectionObserver:FakeObserver,Date,console});
-  assert.equal(reduced.classList.contains('has-motion'),false);
+  assert.equal(reduced.classList.contains('has-motion'),true, 'visibility markers are safe even with reduced motion');
+  assert.equal(reduced.classList.contains('motion-on'),false);
   const legacy=new FakeElement('html');
   vm.runInNewContext(js,{document:{...fakeDocument,documentElement:legacy},window:fakeWindow,Date,console});
-  assert.equal(legacy.classList.contains('has-motion'),false);
+  assert.equal(legacy.classList.contains('has-motion'),false,'unsupported browsers show static content');
 });
 
 test('both businesses have the correct and distinct Fantuan online ordering links', () => {
@@ -368,55 +367,72 @@ test('both pages have Yelp, complete address, Apple Maps and Google Maps links',
   assert.match(css, /@media\(max-width:740px\)\{[\s\S]*?\.service-grid\{grid-template-columns:1fr/);
 });
 
-test('visible motion system includes immediately noticeable hero animation and ticker', () => {
-  for(const page of [html,quicklyHtml]){
-    assert.match(page,/class="scroll-progress" aria-hidden="true"/);
+test('motion is explicit, replayable and visibly distinct from a scroll-progress line', () => {
+  for (const page of [html,quicklyHtml]) {
+    assert.ok(!page.includes('class="scroll-progress"'), 'the distracting yellow top bar was removed');
+    assert.match(page,/data-motion-toggle aria-pressed="false"/);
+    assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
-    assert.match(page,/继续探索/);
+    assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
+    assert.match(page,/href="styles\.css\?v=motion-v3"/);
+    assert.match(page,/src="app\.js\?v=motion-v3" defer/);
   }
-  const motion=css.split('Visible motion system v2')[1];
-  assert.ok(motion,'new animation system exists');
-  for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','scroll-cue-float']){
-    assert.ok(motion.includes('@keyframes '+name),name+' should be an actual animation');
+  for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
+    assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
   }
-  assert.match(motion,/\.hero-copy>\*,\.quicklys-intro>\*\{/);
-  assert.match(motion,/\.hero-visual,\.quicklys-store-photo\{animation:hero-photo-rise/);
-  assert.match(motion,/\.ticker-track span\{animation:ticker-travel/);
-  assert.match(motion,/\.ticker:hover \.ticker-track span/);
-  assert.match(motion,/html\.has-motion \[data-reveal\]\{\s*opacity:1;transform:none/);
-  assert.match(motion,/html\.has-motion \[data-reveal\]\.is-visible/);
-  assert.match(motion,/prefers-reduced-motion:no-preference/);
-  assert.match(motion,/prefers-reduced-motion:reduce/);
-  assert.match(motion,/animation:none!important/);
-  assert.ok(!motion.includes('background-image:url('),'no AI assets or animated image downloads');
+  assert.match(css,/\.motion-on \.ticker-track\{animation:ticker-travel/);
+  assert.match(css,/\.motion-on \.hero-copy>\*/);
+  assert.match(css,/\.motion-on \.quicklys-intro>\*/);
+  assert.match(css,/\.motion-on \.hero-visual,\.motion-on \.quicklys-store-photo\{/);
+  assert.match(css,/\.motion-on\.has-motion \[data-reveal\]\.is-visible/);
+  assert.match(css,/html\.motion-off \*,html\.motion-off \*::before/);
+  assert.match(css,/html:not\(\.motion-on\) \*/);
+  assert.ok(!css.includes('.scroll-progress'),'no hidden progress-bar leftovers in CSS');
+  assert.ok(!js.includes('initScrollProgress'),'no progress logic');
+  assert.match(js,/initMotionControls\(\)/);
+  assert.match(js,/restaurantMotionPreference/);
 });
 
-test('reading progress updates with passive scroll listeners and respects short pages', () => {
-  const root=new FakeElement('html'),bar=new FakeElement('div');
-  const props={};
-  root.scrollHeight=1300;root.clientHeight=300;
-  root.style={setProperty:(k,v)=>{props[k]=v;}};
-  const callbacks={};
-  const body={scrollHeight:1300};
-  const document={
-    documentElement:root,body,
-    getElementById:()=>null,
-    querySelector:(selector)=>selector==='.scroll-progress'?bar:null,
-    querySelectorAll:()=>[],
-    addEventListener(){}
-  };
-  const window={
-    innerWidth:390,innerHeight:300,scrollY:250,
-    matchMedia:()=>({matches:true}),
-    addEventListener:(type,fn,opts)=>{callbacks[type]={fn,opts};}
-  };
-  vm.runInNewContext(js,{document,window,Date,console});
-  assert.equal(props['--page-progress'],'0.25');
-  assert.equal(callbacks.scroll.opts.passive,true);
-  window.scrollY=1000;callbacks.scroll.fn();
-  assert.equal(props['--page-progress'],'1');
-  window.scrollY=1400;callbacks.scroll.fn();
-  assert.equal(props['--page-progress'],'1','progress should clamp to 100%');
-  root.scrollHeight=300;body.scrollHeight=300;window.scrollY=0;callbacks.resize.fn();
-  assert.equal(props['--page-progress'],'0','short pages are safe');
+test('motion control honors reduced-motion defaults and explicit replay/opt-in', () => {
+  function boot(reduced,initialPreference=null) {
+    const root=new FakeElement('html'),toggle=new FakeElement('button'),
+          replay=new FakeElement('button'),zh=new FakeElement('span'),en=new FakeElement('small');
+    const persisted={value:initialPreference};
+    toggle.querySelector=s=>s==='.motion-status-zh'?zh:s==='.motion-status-en'?en:null;
+    const document={
+      documentElement:root,getElementById:()=>null,
+      querySelector:s=>s==='[data-motion-toggle]'?toggle:s==='[data-motion-replay]'?replay:null,
+      querySelectorAll:()=>[],addEventListener(){}
+    };
+    const window={
+      innerWidth:390,addEventListener(){},
+      matchMedia:()=>({matches:reduced}),
+      localStorage:{
+        getItem:()=>persisted.value,
+        setItem:(_key,value)=>{persisted.value=value;}
+      }
+    };
+    vm.runInNewContext(js,{document,window,Date,console});
+    return {root,toggle,replay,zh,en,persisted};
+  }
+  const reduced=boot(true);
+  assert.equal(reduced.root.classList.contains('motion-off'),true,'default pause honors OS reduce motion');
+  assert.equal(reduced.toggle.getAttribute('aria-pressed'),'false');
+  assert.equal(reduced.zh.textContent,'动效暂停');
+  reduced.replay.dispatch('click');
+  assert.equal(reduced.root.classList.contains('motion-on'),true,'replay enables motion by explicit choice');
+  assert.equal(reduced.toggle.getAttribute('aria-pressed'),'true');
+  assert.equal(reduced.persisted.value,'on');
+  assert.equal(reduced.en.textContent,'Motion on');
+  reduced.replay.dispatch('click');
+  assert.equal(reduced.root.classList.contains('motion-on'),true,'replay restarts without disabling motion');
+  reduced.toggle.dispatch('click');
+  assert.equal(reduced.root.classList.contains('motion-off'),true);
+  assert.equal(reduced.persisted.value,'off');
+  const normal=boot(false);
+  assert.equal(normal.root.classList.contains('motion-on'),true,'normal browsers play by default');
+  const savedOn=boot(true,'on');
+  assert.equal(savedOn.root.classList.contains('motion-on'),true,'explicit choice overrides OS default');
+  const savedOff=boot(false,'off');
+  assert.equal(savedOff.root.classList.contains('motion-off'),true,'explicit user pause persists');
 });

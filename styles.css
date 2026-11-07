@@ -386,10 +386,7 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
  .quicklys-photo-label{bottom:10px;left:10px;right:10px;padding:8px 10px}
  .quicklys-visit-actions{flex-direction:column}
 }
-@media(prefers-reduced-motion:reduce){
- html{scroll-behavior:auto}
- *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-}
+
 
 
 /* Mobile-first navigation, functional desktop sidebar and restrained motion.
@@ -443,15 +440,7 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
 .nav.is-open{animation:nav-arrive .22s cubic-bezier(.2,.7,.3,1) both}
 @keyframes nav-arrive{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
 /* No JS / no IntersectionObserver = all content stays visible. */
-@media(prefers-reduced-motion:no-preference){
-  html.has-motion [data-reveal]{
-    opacity:0;transform:translate3d(0,20px,0);
-    transition:opacity .68s cubic-bezier(.2,.7,.2,1),transform .68s cubic-bezier(.2,.7,.2,1);
-    transition-delay:var(--reveal-delay,0ms)
-  }
-  html.has-motion [data-reveal].is-visible{opacity:1;transform:none}
-  .menu-card-enter{animation:menu-card-arrive .32s cubic-bezier(.2,.75,.3,1) both;animation-delay:var(--card-delay,0ms)}
-}
+
 @keyframes menu-card-arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:1100px){
  .menu-side-panel{top:95px}
@@ -506,11 +495,7 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
  .button:hover,.signature-card:hover,.feature-card:hover,.menu-card:hover,.quicklys-shortcuts a:hover{transform:none}
  .quicklys-store-photo:hover img,.hero-photo-frame:hover .hero-photo,.feature-card:hover img{transform:none}
 }
-@media(prefers-reduced-motion:reduce){
- html.has-motion [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
- .nav.is-open,.menu-card-enter{animation:none!important}
- .mobile-action-bar a,.quicklys-shortcuts a{transition:none}
-}
+
 
 
 /* Customer conversion hub — links to the correct business, not another menu. */
@@ -581,21 +566,13 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
  .service-map-links a span[lang="zh-Hans"]{font-size:11px}
  .service-map-links a small{font-size:9px}
 }
-@media(prefers-reduced-motion:reduce){
- .service-card,.service-card-link,.service-map-links a{transition:none!important}
- .service-card:hover{transform:none}
-}
+
 
 
 /* Visible motion system v2 — independent hero entrances, scroll reveals,
    continuous (pausable) ticker, progress indicator, and useful micro-interactions.
    Everything remains legible with JavaScript disabled or reduced motion enabled. */
-.scroll-progress{
- position:fixed;z-index:110;top:0;left:0;width:100%;height:3px;
- background:linear-gradient(90deg,#bb7753 0%,#e3b07b 55%,#c17b51 100%);
- transform:scaleX(var(--page-progress,0));transform-origin:left center;
- transition:transform .14s linear;pointer-events:none
-}
+
 .scroll-cue{
  display:inline-flex;align-items:center;gap:11px;margin-top:27px;
  padding:7px 0;color:var(--green);border-bottom:1px solid #c1d0c4;
@@ -631,34 +608,10 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
 .filter.is-active{transform:translateY(-2px);box-shadow:0 6px 16px rgba(20,53,41,.16)}
 .filter:active{transform:scale(.97)}
 /* A moving ticker makes motion visible even when the visitor hasn't scrolled. */
-.ticker-track{width:max-content;min-width:100%;justify-content:flex-start}
-.ticker-track span{display:inline-block;white-space:nowrap}
+.ticker-track{width:max-content;min-width:0;justify-content:flex-start;gap:0}
+.ticker-track .ticker-copy{display:inline-block;white-space:nowrap;flex:none;padding-right:0}
 /* Avoid hidden content while waiting for IntersectionObserver; reveal runs once in view. */
-@media(prefers-reduced-motion:no-preference){
- html.has-motion [data-reveal]{
-  opacity:1;transform:none;transition:none;transition-delay:0s
- }
- html.has-motion [data-reveal].is-visible:not(.hero-copy):not(.hero-visual):not(.quicklys-intro):not(.quicklys-store-photo){
-  animation:section-rise .74s cubic-bezier(.19,.8,.23,1) both;
-  animation-delay:var(--reveal-delay,0ms)
- }
- /* Sequential, unmistakable entrance on both pages, even before a scroll. */
- .hero-copy>*,.quicklys-intro>*{
-  animation:hero-text-rise .74s cubic-bezier(.19,.8,.22,1) both
- }
- .hero-copy>*:nth-child(1),.quicklys-intro>*:nth-child(1){animation-delay:.06s}
- .hero-copy>*:nth-child(2),.quicklys-intro>*:nth-child(2){animation-delay:.16s}
- .hero-copy>*:nth-child(3),.quicklys-intro>*:nth-child(3){animation-delay:.27s}
- .hero-copy>*:nth-child(4),.quicklys-intro>*:nth-child(4){animation-delay:.36s}
- .hero-copy>*:nth-child(5),.quicklys-intro>*:nth-child(5){animation-delay:.43s}
- .hero-copy>*:nth-child(6),.quicklys-intro>*:nth-child(6){animation-delay:.5s}
- .hero-copy>*:nth-child(n+7),.quicklys-intro>*:nth-child(n+7){animation-delay:.55s}
- .hero-visual,.quicklys-store-photo{animation:hero-photo-rise 1s .13s cubic-bezier(.19,.8,.22,1) both}
- .ticker-track span{animation:ticker-travel 34s linear infinite}
- .ticker:hover .ticker-track span,.ticker:focus-within .ticker-track span{animation-play-state:paused}
- .scroll-cue-symbol{animation:scroll-cue-float 2.1s ease-in-out infinite}
- .menu-card-enter{animation:menu-card-arrive .5s cubic-bezier(.19,.8,.22,1) both;animation-delay:var(--card-delay,0ms)}
-}
+
 @keyframes hero-text-rise{
  from{opacity:0;transform:translate3d(0,28px,0)}
  to{opacity:1;transform:translate3d(0,0,0)}
@@ -684,7 +637,6 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
 }
 @media(max-width:740px){
  .scroll-cue{display:none}
- .scroll-progress{height:2px}
  .hero-copy>*,.quicklys-intro>*{will-change:auto}
 }
 @media(hover:none){
@@ -692,12 +644,77 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
  .button:hover>span[aria-hidden],.service-card-link:hover>span[aria-hidden],
  .service-map-links a:hover>span[aria-hidden]{transform:none}
 }
+
+
+
+/* Verified-motion state. No motion controls or animations require a CSS framework.
+   Reduced-motion preference starts paused, but a deliberate user opt-in can
+   enable/replay the experience even on a reduced-motion device. */
+.motion-controls{display:none;align-items:stretch;gap:8px;flex-wrap:wrap;margin:5px 0 20px}
+html.motion-ready .motion-controls{display:flex}
+.motion-toggle,.motion-replay{
+  border:1px solid #d0dcd1;border-radius:9px;background:#fffdf8;
+  color:var(--green);cursor:pointer;min-height:44px;
+  display:flex;align-items:center;gap:7px;padding:9px 12px;
+  box-shadow:0 2px 10px rgba(28,63,45,.04);
+}
+.motion-toggle{display:grid;grid-template-columns:9px auto;gap:1px 9px;text-align:left}
+.motion-state-dot{grid-row:1/3;display:block;width:9px;height:9px;border-radius:50%;background:#aaaea5}
+.motion-on .motion-state-dot{background:#3d996a;box-shadow:0 0 0 3px rgba(60,151,104,.13)}
+.motion-controls .motion-status-zh{font:700 12px/1.25 var(--zh-font)}
+.motion-controls .motion-status-en{grid-column:2;font:500 10px/1.2 var(--font);color:#738678}
+.motion-replay{font:650 12px/1.3 var(--zh-font)}
+.motion-replay>span:first-child{font:600 20px/1 var(--font);margin-right:2px}
+.motion-replay small{font:500 10px var(--font);color:#839286}
+.motion-controls button:hover{border-color:#8eac98;background:#f3f9f2}
+.motion-controls button:active{transform:scale(.98)}
+html.motion-off{scroll-behavior:auto}
+html.motion-off *,html.motion-off *::before,html.motion-off *::after{
+  animation:none!important;transition-duration:.01ms!important
+}
+/* Clear motion is never dependent on a fleeting yellow progress indicator. */
+.ticker-track .ticker-copy{font-size:11px;line-height:1.4;letter-spacing:.085em}
+.ticker-track .ticker-copy b{font-size:13px;color:#e6be91}
+.motion-on .ticker-track{animation:ticker-travel 23s linear infinite}
+.motion-on .ticker:hover .ticker-track,.motion-on .ticker:focus-within .ticker-track{animation-play-state:paused}
+.quicklys-page .ticker{background:#274e40}
+.motion-on .hero-copy>*,
+.motion-on .quicklys-intro>*{
+  animation:hero-text-rise .86s cubic-bezier(.18,.78,.2,1) both
+}
+.motion-on .hero-copy>*:nth-child(1),.motion-on .quicklys-intro>*:nth-child(1){animation-delay:.08s}
+.motion-on .hero-copy>*:nth-child(2),.motion-on .quicklys-intro>*:nth-child(2){animation-delay:.17s}
+.motion-on .hero-copy>*:nth-child(3),.motion-on .quicklys-intro>*:nth-child(3){animation-delay:.27s}
+.motion-on .hero-copy>*:nth-child(4),.motion-on .quicklys-intro>*:nth-child(4){animation-delay:.37s}
+.motion-on .hero-copy>*:nth-child(5),.motion-on .quicklys-intro>*:nth-child(5){animation-delay:.45s}
+.motion-on .hero-copy>*:nth-child(6),.motion-on .quicklys-intro>*:nth-child(6){animation-delay:.53s}
+.motion-on .hero-copy>*:nth-child(n+7),.motion-on .quicklys-intro>*:nth-child(n+7){animation-delay:.6s}
+.motion-on .hero-visual,.motion-on .quicklys-store-photo{
+  animation:hero-photo-rise 1.2s .18s cubic-bezier(.16,.77,.2,1) both
+}
+.motion-on .hero-photo-frame{animation:photo-float 7s 1.4s ease-in-out infinite alternate}
+.motion-on .quicklys-store-photo img{animation:photo-pan 11s 1.4s ease-in-out infinite alternate}
+.motion-on .scroll-cue-symbol{animation:scroll-cue-float 2s ease-in-out infinite}
+.motion-on .menu-card-enter{animation:menu-card-arrive .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--card-delay,0ms)}
+/* Visible, one-time entrance for each on-screen section without hidden-by-default content. */
+.motion-on.has-motion [data-reveal].is-visible:not(.hero-copy):not(.hero-visual):not(.quicklys-intro):not(.quicklys-store-photo){
+  animation:section-rise .85s cubic-bezier(.17,.72,.22,1) both;
+  animation-delay:var(--reveal-delay,0ms)
+}
+.motion-on .service-card:hover,.motion-on .signature-card:hover{box-shadow:0 13px 32px rgba(24,60,38,.11)}
+@keyframes photo-float{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-9px,0)}}
+@keyframes photo-pan{from{transform:scale(1.005) translateX(0)}to{transform:scale(1.035) translateX(-1%)}}
+@media(max-width:740px){
+  .motion-controls{margin:1px 0 16px}
+  .motion-toggle,.motion-replay{min-height:44px}
+  .ticker-track .ticker-copy{font-size:10px}
+  .motion-on .ticker-track{animation-duration:19s}
+  /* avoid excess transform work on older phones */
+  .motion-on .hero-photo-frame{animation-duration:9s}
+}
 @media(prefers-reduced-motion:reduce){
- .scroll-progress{transition:none}
- .hero-copy>*,.quicklys-intro>*,.hero-visual,.quicklys-store-photo,
- html.has-motion [data-reveal].is-visible,.ticker-track span,
- .scroll-cue-symbol,.menu-card-enter{
-  animation:none!important;opacity:1!important;transform:none!important;filter:none!important
+ html:not(.motion-on){scroll-behavior:auto}
+ html:not(.motion-on) *,html:not(.motion-on) *::before,html:not(.motion-on) *::after{
+  animation:none!important;transition:none!important
  }
- .button-dark::before,.header-cta::before,.service-card-link::before{display:none}
 }

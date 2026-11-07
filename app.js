@@ -885,10 +885,7 @@ for (const link of document.querySelectorAll('.mobile-action-bar a')) {
 /* Progressive enhancement: unsupported browsers and reduced-motion visitors
    see all content immediately; only capable browsers opt in to reveals. */
 function initScrollReveals() {
-  if (typeof IntersectionObserver !== 'function' ||
-      typeof window.matchMedia !== 'function' ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      !document.documentElement) return;
+  if (typeof IntersectionObserver !== 'function' || !document.documentElement) return;
 
   const targets = Array.from(document.querySelectorAll('[data-reveal]'));
   if (targets.length === 0) return;
@@ -908,37 +905,64 @@ function initScrollReveals() {
   document.documentElement.classList.add('has-motion');
 }
 
-/* Scroll progress works without an animation library and only updates one CSS
-   variable. Passive scroll listeners avoid blocking touch input on phones. */
-function initScrollProgress() {
-  const progress = document.querySelector('.scroll-progress');
-  if (!progress || !document.documentElement) return;
+/* Motion controls: OS Reduce Motion is respected by default, but a visitor
+   can explicitly opt in and replay the animations. Nothing is hidden
+   while animations are off or if scripting is unavailable. */
+function initMotionControls() {
   const root = document.documentElement;
-  let scheduled = false;
-  function update() {
-    scheduled = false;
-    const contentHeight = Math.max(root.scrollHeight || 0, document.body?.scrollHeight || 0);
-    const viewportHeight = window.innerHeight || root.clientHeight || 0;
-    const scrollable = Math.max(0, contentHeight - viewportHeight);
-    const position = Math.max(0, Number(window.scrollY) || Number(root.scrollTop) || 0);
-    const fraction = scrollable ? Math.min(1, position / scrollable) : 0;
-    root.style.setProperty('--page-progress', String(fraction));
-  }
-  function schedule() {
-    if (scheduled) return;
-    scheduled = true;
-    if (typeof window.requestAnimationFrame === 'function') {
-      window.requestAnimationFrame(update);
-    } else {
-      update();
+  const toggle = document.querySelector('[data-motion-toggle]');
+  const replay = document.querySelector('[data-motion-replay]');
+  if (!root || !toggle || !replay) return;
+
+  let reduceMotion = false;
+  try {
+    reduceMotion = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  } catch (_) { /* no media queries: default to normal motion */ }
+  let preference = null;
+  try {
+    preference = window.localStorage?.getItem('restaurantMotionPreference') || null;
+  } catch (_) { /* privacy settings may disable local storage */ }
+  let enabled = preference === 'on' || (preference !== 'off' && !reduceMotion);
+
+  function sync(remember = false) {
+    root.classList.toggle('motion-on', enabled);
+    root.classList.toggle('motion-off', !enabled);
+    root.classList.add('motion-ready');
+    toggle.setAttribute('aria-pressed', String(enabled));
+    const zh = toggle.querySelector('.motion-status-zh');
+    const en = toggle.querySelector('.motion-status-en');
+    if (zh) zh.textContent = enabled ? '动效开启' : '动效暂停';
+    if (en) en.textContent = enabled ? 'Motion on' : 'Motion paused';
+    toggle.setAttribute('aria-label', enabled ? '关闭网页动画 / Turn animations off' : '开启动效 / Play animations');
+    if (remember) {
+      try {
+        window.localStorage?.setItem('restaurantMotionPreference', enabled ? 'on' : 'off');
+      } catch (_) { /* no persistence is fine */ }
     }
   }
-  window.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', schedule);
-  schedule();
+
+  toggle.addEventListener('click', () => {
+    enabled = !enabled;
+    sync(true);
+  });
+
+  replay.addEventListener('click', () => {
+    if (!enabled) {
+      enabled = true;
+      sync(true);
+      return;
+    }
+    /* Removing then re-adding the class restarts CSS animations on demand.
+       The layout read intentionally flushes style without an extra timer. */
+    root.classList.remove('motion-on');
+    void root.offsetWidth;
+    root.classList.add('motion-on');
+  });
+
+  sync();
 }
 
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
+initMotionControls();
 initScrollReveals();
-initScrollProgress();

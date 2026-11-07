@@ -164,8 +164,22 @@ The original motion was too subtle because entrance effects were limited to an o
 - The existing dark restaurant ticker now **scrolls continuously** and pauses when hovered. It duplicates its existing text instead of introducing fake promotions.
 - Section and cards animate in-view with a more legible 32px rise. Importantly, the new CSS **never hides content while waiting for JavaScript or IntersectionObserver**.
 - The bilingual **继续探索 / Scroll to explore** link guides visitors to ordering and directions; its down arrow has modest motion.
-- A thin scroll-progress indicator follows reading progress using a passive scroll listener and `requestAnimationFrame` where supported.
+- The previous thin yellow scroll-progress indicator was removed after feedback; it was mistaken for the entire animation experience.
 - Navigation underline, card accents and call-to-action arrows gain purposeful hover / focus / active transitions.
 - Motion can be turned off via the visitor's OS `prefers-reduced-motion` setting, and the entire site remains useful with JavaScript disabled. No generated logos, AI food photography or additional image dependencies were introduced.
 
 Animation behavior is checked with 19 automated tests. Real-phone visual QA remains a separate review step.
+
+## Motion accessibility and replay (verified-motion v3)
+
+The hero, photos, and bilingual restaurant ticker have noticeable staggered / gentle movements, and section reveals animate as people scroll. The website now includes **动效开启 / Motion on** or **动效暂停 / Motion paused** controls and a **重播 / Replay** control near the start of both pages. No decorative bar is used as a substitute for actual animation.
+
+- By default, `prefers-reduced-motion: reduce` starts the website paused; no animation or content is hidden. Users can **explicitly opt in** from the page control, including on reduced-motion devices.
+- If the visitor turns motion on or off, that choice is stored as `restaurantMotionPreference` where local storage is available. The toggle is clearly labeled and supports `aria-pressed`.
+- Replay restarts hero and visible section animations without forcing a page refresh.
+- Motion effects are gated by `.motion-on`, and CSS keeps all content legible when JavaScript is disabled.
+- A duplicated track makes the restaurant-name and Quickly’s category marquees loop seamlessly. Pause on hover.
+- `index.html` and `quicklys.html` use cache-busting query strings for `styles.css` and `app.js` so visitors see the latest behavior instead of older cached assets.
+- No additional fonts, paid animation library, synthetic food images or fake brand logos were introduced.
+
+An automated DOM test checks the default reduced-motion state, explicit opt-in, persisted override and replay. Real browser visual inspection remains necessary for final QA; the CI suite cannot prove exactly how the effect looks on a customer's device.
