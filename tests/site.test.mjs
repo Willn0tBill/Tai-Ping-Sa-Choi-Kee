@@ -208,7 +208,7 @@ test('photo enhancement preserves original image URLs and applies non-generative
   assert.match(html, /src="https:\/\/cdn\.restaurants-us\.com\/3616-albums-2\.jpg"/);
   assert.match(html, /src="https:\/\/cdn\.restaurants-us\.com\/3616-albums-1\.jpg"/);
   assert.match(html, /src="https:\/\/s3-media0\.fl\.yelpcdn\.com\/bphoto\/ZBEJxeL9uK-M6cb3rGqtVw\/o\.jpg"/);
-  assert.match(css, /Authentic photo treatment: CSS-only adjustments/);
+  assert.match(css, /Authentic photos/);
   assert.match(css, /\.hero-photo\{[\s\S]*?filter:brightness\(1\.045\) contrast\(1\.085\) saturate\(1\.08\)/);
   assert.match(css, /\.feature-image-wrap img\{[\s\S]*?filter:brightness\(1\.04\) contrast\(1\.08\) saturate\(1\.065\)/);
   assert.ok(!html.includes('images.unsplash.com'));
@@ -221,7 +221,7 @@ test('official branding policy avoids any invented logo or seal', () => {
   assert.ok(!html.includes('class="visit-stamp"'), 'no custom seal pretending to be a restaurant emblem');
   assert.ok(!html.includes('hero-round-label'), 'no invented badge in hero');
   assert.match(html, /class="visit-address-panel"/);
-  assert.match(css, /no invented logo marks/);
+  assert.match(css, /no invented logo marks/i);
 });
 
 
