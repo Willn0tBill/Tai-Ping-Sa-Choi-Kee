@@ -273,3 +273,29 @@ This pass addresses first-load animation flicker and layout jumps on **both** re
 - Both static source tests and real Chrome hard-reload checks run on each page at **390px phone and 1500px desktop**, inspecting the motion bootstrap, reserved controls, full-width ticker and continuity during resize. Screenshots are retained in GitHub Actions artifacts.
 
 The site's real photos, Chinese-first content, menu items, verified ordering links, and strict on-screen card animations remain unchanged.
+
+## Menu, customer experience and readiness upgrade (v12)
+
+Both concept pages now offer a more useful, polished experience without food photography the owner has not supplied.
+
+### Tai Ping Sa Choi Kee — kitchen
+- Search **all 13 dishes** from the photographed in-store food board in Chinese or English.
+- Filter by noodles, seafood, clay pots, rice or other featured dishes. The board still contains **no invented prices**.
+- Live bilingual result count, no-results explanation and reset control.
+- Bilingual FAQ links to the correct Fantuan page and clarifies that full menu prices, hours and availability require confirmation.
+
+### Quickly’s — menu
+- Preserve all **77** transcribed bilingual menu items and visible prices, subject to owner verification.
+- Add local Saved-items shortlist with accessible Save/Unsave buttons, saved filter and count.
+- The shortlist uses browser localStorage key 'quicklysMenuSavedV1' when permitted. It is not an order, account or third-party transmission; it works in-tab if storage is blocked.
+- Bilingual FAQ makes price uncertainty and separate menus clear.
+
+### Shared usability, design and safeguards
+- Consistent cards, typography, spacing, keyboard focus and responsive controls.
+- Native HTML FAQ panels that work without JavaScript.
+- Copy-address control with accessible success/fallback feedback.
+- Honest photo-unavailable messages when remote image hosts fail; no artificial photos, logos or owner story.
+- Strict-origin referrer policy, noindex/nofollow preview status, no unauthorized official-business schema.
+- Browser tests for categories, Chinese search, saved-item persistence, FAQ, clipboard feedback, image fallback, overflow and indexing safeguards.
+
+**This feature release is not an official public launch.** See LAUNCH_CHECKLIST.md for owner approval, rights, operating hours, pricing, Yelp link, official domain and SEO steps.

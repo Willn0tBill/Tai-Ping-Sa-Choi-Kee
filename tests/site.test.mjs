@@ -76,8 +76,8 @@ class FakeElement {
   focus() {this.focused=true;}
 }
 
-function setup() {
-  const ids=['menu-grid','menu-count','menu-empty','menu-search','clear-search','copyright-year','site-nav'];
+function setup(savedStorage = null) {
+  const ids=['menu-grid','menu-count','menu-empty','menu-search','clear-search','copyright-year','site-nav','menu-saved-filter','saved-count'];
   const nodes=Object.fromEntries(ids.map(id=>[id,new FakeElement()]));
   nodes['site-nav'].link=new FakeElement('a');
   const toggle=new FakeElement('button');
@@ -97,9 +97,14 @@ function setup() {
     addEventListener:(type,fn)=>{(docEvents[type]??=[]).push(fn);}
   };
   const windowEvents={};
-  const window={innerWidth:390,addEventListener:(type,fn)=>{(windowEvents[type]??=[]).push(fn);}};
+  const storage={value:savedStorage,
+    getItem:()=>storage.value,
+    setItem:(_key,value)=>{storage.value=value;}
+  };
+  const window={innerWidth:390,localStorage:storage,
+    addEventListener:(type,fn)=>{(windowEvents[type]??=[]).push(fn);}};
   vm.runInNewContext(js,{document,window,Date,console});
-  return {nodes,toggle,filters,feature,docEvents,window,windowEvents};
+  return {nodes,toggle,filters,feature,docEvents,window,windowEvents,storage};
 }
 
 test('menu search filters English and Chinese items and resets correctly', () => {
@@ -375,8 +380,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v11"/);
-    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v12"/);
+    assert.match(page,/src="app\.js\?v=motion-v12" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -575,8 +580,8 @@ test('floating hero cards use verified actions and keep business identities sepa
     assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
     assert.match(hero,/在线点餐/);
     assert.match(hero,/同一地址 · 独立菜单/);
-    assert.match(doc,/href="styles\.css\?v=motion-v11"/);
-    assert.match(doc,/src="app\.js\?v=motion-v11" defer/);
+    assert.match(doc,/href="styles\.css\?v=motion-v12"/);
+    assert.match(doc,/src="app\.js\?v=motion-v12" defer/);
   }
   const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
   const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
@@ -614,8 +619,8 @@ test('desktop and tablet editorial compositions use full-width action row withou
   assert.match(v7,/\.feature-image-wrap\{height:385px\}/);
   assert.match(v7,/\.quicklys-page \.menu-results \.menu-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   for(const page of [html,quicklyHtml]){
-    assert.match(page,/href="styles\.css\?v=motion-v11"/);
-    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v12"/);
+    assert.match(page,/src="app\.js\?v=motion-v12" defer/);
     assert.equal((page.match(/class="float-card float-card-/g)||[]).length,3);
   }
   assert.match(v7,/@media\(prefers-reduced-motion:reduce\)/);
@@ -630,8 +635,8 @@ test('ticker groups are identical and dynamically expanded for a seamless wrap',
     assert.equal(copies.length,2,'marquee requires exactly two equal groups');
     assert.equal(copies[0],copies[1],'the sequence must be identical at the looping seam');
     assert.ok(copies[0].includes('<b>✳</b>'),'repeats should keep the separator');
-    assert.match(page,/href="styles\.css\?v=motion-v11"/);
-    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v12"/);
+    assert.match(page,/src="app\.js\?v=motion-v12" defer/);
   }
   assert.match(js,/function initTickerLoop\(\)/);
   assert.match(js,/baseMarkup\.repeat\(repeats\)/);
@@ -657,8 +662,8 @@ test('every static card is watched separately for its first viewport entry',()=>
   assert.match(quicklyHtml,/data-card-reveal class="menu-side-panel"/);
   for(const page of [html,quicklyHtml]){
     assert.doesNotMatch(page,/class="hero-floating-actions"[^>]+data-reveal/);
-    assert.match(page,/href="styles\.css\?v=motion-v11"/);
-    assert.match(page,/src="app\.js\?v=motion-v11" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v12"/);
+    assert.match(page,/src="app\.js\?v=motion-v12" defer/);
   }
   assert.match(css,/@keyframes card-enter-on-view/);
   assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view:not\(\.card-reveal-complete\)/);
@@ -758,8 +763,8 @@ test('card animation CSS pauses offscreen and is permanently stopped after compl
 test('reload starts with correct motion state before stylesheet to avoid flash',()=>{
   for(const page of [html,quicklyHtml]){
     const boot=page.indexOf('Apply motion preference before CSS paints');
-    const sheet=page.indexOf('href="styles.css?v=motion-v11"');
-    const app=page.indexOf('src="app.js?v=motion-v11" defer');
+    const sheet=page.indexOf('href="styles.css?v=motion-v12"');
+    const app=page.indexOf('src="app.js?v=motion-v12" defer');
     assert.ok(boot>0 && boot<sheet && sheet<app, 'bootstrap must execute before CSS and deferred app');
     assert.match(page,/saved === 'on' \|\| \(saved !== 'off' && !reduced\) \? 'motion-on' : 'motion-off'/);
     assert.match(page,/getItem\('restaurantMotionPreference'\)/);
@@ -783,6 +788,82 @@ test('marquee sizes synchronously and preserves its animation phase after reflow
   assert.match(js,/sizeTicker\(\);\s*window\.addEventListener\('resize', schedule, \{passive: true\}\)/);
   assert.match(js,/document\.fonts\?\.ready\?\.then\) document\.fonts\.ready\.then\(schedule/);
   assert.match(css,/\.ticker:not\(\.ticker-ready\) \.ticker-track\{animation:none!important\}/);
-  assert.match(html,/href="styles\.css\?v=motion-v11"/);
-  assert.match(quicklyHtml,/href="styles\.css\?v=motion-v11"/);
+  assert.match(html,/href="styles\.css\?v=motion-v12"/);
+  assert.match(quicklyHtml,/href="styles\.css\?v=motion-v12"/);
+});
+
+
+test('kitchen category and bilingual text search are functional and price-free',()=>{
+  assert.equal((html.match(/data-kitchen-filter=/g)||[]).length,6);
+  for(const name of ['all','noodles','seafood','claypot','rice','special'])
+    assert.match(html,new RegExp('data-kitchen-filter="'+name+'"'));
+  assert.match(html,/id="kitchen-search"[^>]+aria-controls="signature-grid"/);
+  assert.match(html,/id="signature-grid"/);
+  assert.match(html,/id="kitchen-result-count" role="status" aria-live="polite"/);
+  assert.match(html,/id="kitchen-empty" hidden/);
+  assert.match(js,/function initKitchenMenu\(\)/);
+  assert.match(js,/card\.hidden = !match/);
+  assert.match(js,/query = search\.value\.trim\(\)\.toLocaleLowerCase\(\)/);
+  assert.equal((html.match(/class="signature-card(?: signature-card-primary)?"/g)||[]).length,13);
+  assert.match(css,/\.signature-grid \.signature-card\[hidden\]\{display:none!important\}/);
+});
+
+test('Quickly saved items are local, accessible, persistent and never treated as an order',()=>{
+  assert.match(quicklyHtml,/id="menu-saved-filter" aria-pressed="false" aria-controls="menu-grid"/);
+  assert.match(quicklyHtml,/id="saved-count">0/);
+  assert.match(quicklyHtml,/收藏只保存在此设备，不会自动下单/);
+  assert.match(js,/const SAVED_KEY = 'quicklysMenuSavedV1'/);
+  assert.match(js,/window\.localStorage\?\.setItem\(SAVED_KEY/);
+  assert.match(js,/saveButton\.setAttribute\('aria-pressed'/);
+  assert.match(js,/saveButton\.addEventListener\('click'/);
+  const {nodes,storage}=setup();
+  assert.equal(nodes['menu-grid'].children.length,14);
+  const firstCard=nodes['menu-grid'].children[0];
+  const favorite=firstCard.children[3].children[1];
+  assert.equal(favorite.getAttribute('aria-pressed'),'false');
+  favorite.dispatch('click');
+  assert.equal(favorite.getAttribute('aria-pressed'),'true');
+  assert.equal(nodes['saved-count'].textContent,'1');
+  assert.equal(JSON.parse(storage.value).length,1);
+  nodes['menu-saved-filter'].dispatch('click');
+  assert.equal(nodes['menu-saved-filter'].getAttribute('aria-pressed'),'true');
+  assert.equal(nodes['menu-grid'].children.length,1);
+  const stored=setup(storage.value);
+  assert.equal(stored.nodes['saved-count'].textContent,'1');
+  stored.nodes['menu-saved-filter'].dispatch('click');
+  assert.equal(stored.nodes['menu-grid'].children.length,1);
+  const saved=stored.nodes['menu-grid'].children[0].children[3].children[1];
+  saved.dispatch('click');
+  assert.equal(stored.nodes['menu-grid'].children.length,0);
+  assert.equal(stored.nodes['menu-empty'].hidden,false);
+  assert.equal(stored.nodes['saved-count'].textContent,'0');
+  assert.equal(stored.nodes['menu-saved-filter'].focused,true);
+  assert.equal(JSON.parse(stored.storage.value).length,0);
+  assert.match(css,/\.menu-save\.is-saved/);
+});
+
+test('each business has a factual, bilingual and keyboard-native visit FAQ',()=>{
+  for(const page of [html,quicklyHtml]){
+    assert.match(page,/id="essentials" aria-labelledby="essentials-heading"/);
+    assert.equal((page.match(/<details data-card-reveal class="faq-item">/g)||[]).length,3);
+    assert.equal((page.match(/<summary>/g)||[]).length,3);
+    assert.match(page,/href="#essentials">常见问题/);
+    assert.match(page,/data-copy-address/);
+    assert.match(page,/data-copy-status/);
+    assert.match(page,/name="robots" content="noindex,nofollow"/);
+    assert.match(page,/name="referrer" content="strict-origin-when-cross-origin"/);
+    assert.match(page,/href="styles\.css\?v=motion-v12"/);
+    assert.match(page,/src="app\.js\?v=motion-v12" defer/);
+  }
+  assert.match(html,/价格与营业时间已确认吗/);
+  assert.match(quicklyHtml,/收藏的菜单会自动下单吗/);
+  assert.match(quicklyHtml,/价格根据菜单照片整理/);
+  assert.match(html,/两家店的菜单相同吗/);
+  assert.match(js,/function initCopyAddress\(\)/);
+  assert.match(js,/navigator\.clipboard\.writeText\(address\)/);
+  assert.match(js,/function initPhotoFallbacks\(\)/);
+  assert.match(css,/\.photo-unavailable/);
+  assert.match(css,/\.essentials-layout/);
+  assert.ok(!html.includes('application/ld+json') && !quicklyHtml.includes('application/ld+json'),
+    'do not publish official business schema before owner approval');
 });

@@ -768,6 +768,30 @@ const navToggle = document.querySelector('.menu-toggle');
 const year = document.getElementById('copyright-year');
 
 let activeCategory = 'milk';
+let showSavedOnly = false;
+const savedToggle = document.getElementById('menu-saved-filter');
+const savedCount = document.getElementById('saved-count');
+const SAVED_KEY = 'quicklysMenuSavedV1';
+const validSavedIds = new Set(MENU_ITEMS.map(item => item.type + '|' + item.name));
+const savedItems = new Set();
+try {
+  const stored = JSON.parse(window.localStorage?.getItem(SAVED_KEY) || '[]');
+  if (Array.isArray(stored)) {
+    for (const id of stored) if (typeof id === 'string' && validSavedIds.has(id)) savedItems.add(id);
+  }
+} catch (_) { /* blocked storage must never break browsing */ }
+function itemKey(item) { return item.type + '|' + item.name; }
+function saveSelections() {
+  try { window.localStorage?.setItem(SAVED_KEY, JSON.stringify([...savedItems])); }
+  catch (_) { /* favorites still work in this tab */ }
+}
+function syncSavedStatus() {
+  if (savedCount) savedCount.textContent = String(savedItems.size);
+  if (savedToggle) {
+    savedToggle.setAttribute('aria-pressed', String(showSavedOnly));
+    savedToggle.classList.toggle('is-active', showSavedOnly);
+  }
+}
 // Registered after the page is ready; menu filtering can replace cards later.
 let observeNewCards = () => {};
 let forgetOldCards = () => {};
@@ -787,7 +811,8 @@ function renderMenu() {
   const matches = MENU_ITEMS.filter((item) => {
     const matchesCategory = activeCategory === 'all' || item.type === activeCategory;
     const haystack = [item.name, item.zh, item.type, item.tag, item.categoryZh].join(' ').toLocaleLowerCase();
-    return matchesCategory && (!query || haystack.includes(query));
+    return matchesCategory && (!showSavedOnly || savedItems.has(itemKey(item))) &&
+      (!query || haystack.includes(query));
   });
 
   const fragment = document.createDocumentFragment();
@@ -807,7 +832,34 @@ function renderMenu() {
       : (Number.isFinite(item.priceM) && Number.isFinite(item.priceL)
         ? 'M $' + item.priceM.toFixed(2) + ' · L $' + item.priceL.toFixed(2)
         : '请询价 / Ask in store');
-    const foot = makeTextElement('div', 'menu-card-bottom menu-price', priceLabel);
+    const foot = makeTextElement('div', 'menu-card-bottom menu-price', '');
+    foot.appendChild(makeTextElement('span', 'menu-price-value', priceLabel));
+    const saved = savedItems.has(itemKey(item));
+    const saveButton = makeTextElement('button', 'menu-save', saved ? '★ 已收藏 · Saved' : '☆ 收藏 · Save');
+    saveButton.type = 'button';
+    saveButton.setAttribute('aria-pressed', String(saved));
+    saveButton.setAttribute('aria-label',
+      (saved ? '取消收藏 ' : '收藏 ') + item.zh + ' / ' + (saved ? 'Unsave ' : 'Save ') + item.name);
+    if (saved) saveButton.classList.add('is-saved');
+    saveButton.addEventListener('click', () => {
+      const key = itemKey(item);
+      if (savedItems.has(key)) savedItems.delete(key);
+      else savedItems.add(key);
+      saveSelections();
+      syncSavedStatus();
+      if (showSavedOnly) {
+        renderMenu();
+        savedToggle?.focus();
+      } else {
+        const selected = savedItems.has(key);
+        saveButton.classList.toggle('is-saved', selected);
+        saveButton.setAttribute('aria-pressed', String(selected));
+        saveButton.setAttribute('aria-label',
+          (selected ? '取消收藏 ' : '收藏 ') + item.zh + ' / ' + (selected ? 'Unsave ' : 'Save ') + item.name);
+        saveButton.textContent = selected ? '★ 已收藏 · Saved' : '☆ 收藏 · Save';
+      }
+    });
+    foot.appendChild(saveButton);
     card.appendChild(foot);
     fragment.appendChild(card);
   }
@@ -816,6 +868,13 @@ function renderMenu() {
   observeNewCards(menuGrid);
   menuCount.textContent = '共 ' + matches.length + ' 项 · ' + matches.length + ' menu item' + (matches.length === 1 ? '' : 's');
   menuEmpty.hidden = matches.length !== 0;
+  syncSavedStatus();
+  const emptyTitle = menuEmpty.querySelector?.('strong');
+  const emptyEnglish = menuEmpty.querySelector?.('p');
+  if (emptyTitle) emptyTitle.textContent = showSavedOnly && !savedItems.size ? '尚未收藏菜品' : '没有找到相关商品';
+  if (emptyEnglish) emptyEnglish.textContent = showSavedOnly && !savedItems.size
+    ? 'No saved items yet. Select Save on a menu item.'
+    : 'No matches — try another name or category.';
 }
 
 function setCategory(category) {
@@ -852,6 +911,11 @@ function setCategory(category) {
 for (const button of filterButtons) {
   button.addEventListener('click', () => setCategory(button.dataset.filter));
 }
+if (savedToggle) savedToggle.addEventListener('click', () => {
+  showSavedOnly = !showSavedOnly;
+  renderMenu();
+  savedToggle.setAttribute('aria-pressed', String(showSavedOnly));
+});
 
 if (searchInput) searchInput.addEventListener('input', () => {
   if (searchInput.value.trim()) setCategory('all');
@@ -861,7 +925,9 @@ if (searchInput) searchInput.addEventListener('input', () => {
 const clearFilters = document.getElementById('clear-search');
 if (clearFilters) clearFilters.addEventListener('click', () => {
   searchInput.value = '';
+  showSavedOnly = false;
   setCategory('milk');
+  syncSavedStatus();
   searchInput.focus();
 });
 
@@ -1266,8 +1332,100 @@ function initTickerLoop() {
   }
 }
 
+
+/* Tai Ping's photographed feature board is intentionally price-free.
+   Simple client-side categories/search keep the authentic dish list useful. */
+function initKitchenMenu() {
+  const search = document.getElementById('kitchen-search');
+  const result = document.getElementById('kitchen-result-count');
+  const empty = document.getElementById('kitchen-empty');
+  const reset = document.getElementById('kitchen-clear');
+  const filters = Array.from(document.querySelectorAll('[data-kitchen-filter]'));
+  const cards = Array.from(document.querySelectorAll('.signature-grid .signature-card'));
+  if (!search || !result || !cards.length) return;
+  let category = 'all';
+
+  function update() {
+    const query = search.value.trim().toLocaleLowerCase();
+    let visible = 0;
+    for (const card of cards) {
+      const name = card.querySelector('h3')?.textContent || '';
+      const english = card.querySelector('p')?.textContent || '';
+      const text = (name + ' ' + english).toLocaleLowerCase();
+      const match = (category === 'all' || card.dataset.tone === category) &&
+        (!query || text.includes(query));
+      card.hidden = !match;
+      if (match) visible++;
+    }
+    result.textContent = '共 ' + visible + ' 道菜 · ' + visible + ' dish' + (visible === 1 ? '' : 'es');
+    if (empty) empty.hidden = visible !== 0;
+    for (const button of filters) {
+      const selected = button.dataset.kitchenFilter === category;
+      button.classList.toggle('is-active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    }
+  }
+
+  for (const button of filters) button.addEventListener('click', () => {
+    category = button.dataset.kitchenFilter;
+    update();
+  });
+  search.addEventListener('input', () => {
+    if (search.value.trim()) category = 'all';
+    update();
+  });
+  reset?.addEventListener('click', () => {
+    category = 'all';
+    search.value = '';
+    update();
+    search.focus();
+  });
+  update();
+}
+
+/* Addresses must remain copyable even when external Maps isn't available.
+   Clipboard permission denial shows a helpful message, not a broken button. */
+function initCopyAddress() {
+  const address = '15848 Halliburton Rd, Hacienda Heights, CA 91745';
+  for (const button of document.querySelectorAll('[data-copy-address]')) {
+    const status = button.parentElement?.querySelector('[data-copy-status]');
+    button.addEventListener('click', async () => {
+      try {
+        if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText)
+          throw new Error('clipboard unavailable');
+        await navigator.clipboard.writeText(address);
+        if (status) status.textContent = '已复制地址 · Address copied';
+      } catch (_) {
+        if (status) status.textContent = '请手动复制上方地址 · Select address above to copy';
+      }
+    });
+  }
+}
+
+/* External gallery images may fail or block hotlinking. An honest caption
+   replaces a broken image instead of substituting invented food photography. */
+function initPhotoFallbacks() {
+  const images = document.querySelectorAll('.hero-photo, .feature-image-wrap img, .quicklys-store-photo img');
+  for (const img of images) {
+    function unavailable() {
+      const container = img.closest?.('.gallery-trigger') || img.parentElement;
+      if (!container || container.classList.contains('photo-unavailable')) return;
+      container.classList.add('photo-unavailable');
+      const message = document.createElement('span');
+      message.className = 'photo-fallback';
+      message.textContent = '图片暂时无法显示 · Photo temporarily unavailable';
+      container.appendChild(message);
+    }
+    img.addEventListener('error', unavailable, {once:true});
+    if (img.complete && !img.naturalWidth) unavailable();
+  }
+}
+
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
+initKitchenMenu();
+initCopyAddress();
+initPhotoFallbacks();
 initMotionControls();
 initCardReveals();
 initTickerLoop();

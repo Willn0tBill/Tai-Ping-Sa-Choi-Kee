@@ -432,6 +432,92 @@ async function verifyReloadStability(file,width,height,name) {
   }
 }
 
+
+async function verifyUpgradedJourney(file,width,height,name) {
+  const page=await browser.newPage();
+  const errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.setViewport({width,height,deviceScaleFactor:1.25,isMobile:width<740,hasTouch:width<740});
+  await page.goto(base+'/'+file,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.evaluate(()=>{
+    document.documentElement.style.scrollBehavior='auto';
+    localStorage.removeItem('quicklysMenuSavedV1');
+  });
+  await page.reload({waitUntil:'domcontentloaded',timeout:30000});
+  await page.waitForFunction(()=>document.documentElement.classList.contains('motion-ready'));
+  if (file==='index.html') {
+    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),13,
+      name+': 13 real printed-board dishes should show initially');
+    await page.click('[data-kitchen-filter="seafood"]');
+    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),3,
+      name+': three seafood dishes in kitchen category');
+    await page.type('#kitchen-search','茄子');
+    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),1,
+      name+': Chinese search finds eggplant dish regardless of previously selected category');
+    await page.click('[data-kitchen-filter="rice"]');
+    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),0);
+    assert.equal(await page.$eval('#kitchen-empty',el=>el.hidden),false);
+    await page.click('#kitchen-clear');
+    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),13,
+      name+': reset returns all signature dishes');
+    await page.click('#essentials details summary');
+    assert.equal(await page.$eval('#essentials details',el=>el.open),true,
+      name+': the factual FAQ should work without custom JavaScript');
+
+    if(width>=1100){
+      await page.evaluate(()=>{
+        const img=document.querySelector('.hero-photo');
+        img?.dispatchEvent(new Event('error'));
+      });
+      assert.equal(await page.$eval('.hero-photo-frame .gallery-trigger',e=>e.classList.contains('photo-unavailable')),true,
+        name+': missing real photograph must show an honest fallback');
+    }
+  } else {
+    assert.equal(await page.$eval('.menu-card',cards=>cards.length),14,
+      name+': Quickly starts on its real milk-tea menu');
+    const priceBefore=await page.$eval('.menu-card .menu-price-value',el=>el.textContent.trim());
+    await page.click('.menu-card .menu-save');
+    assert.equal(await page.$eval('.menu-card .menu-save',el=>el.getAttribute('aria-pressed')),'true');
+    assert.equal(await page.$eval('#saved-count',el=>el.textContent.trim()),'1');
+    const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('quicklysMenuSavedV1')||'[]'));
+    assert.equal(stored.length,1,name+': the shortlist should persist locally');
+    await page.click('#menu-saved-filter');
+    assert.equal(await page.$eval('.menu-card',cards=>cards.length),1);
+    assert.equal(await page.$eval('.menu-card .menu-price-value',el=>el.textContent.trim()),priceBefore,
+      name+': saved items retain the photographed price');
+    await page.reload({waitUntil:'domcontentloaded',timeout:30000});
+    await page.waitForFunction(()=>document.documentElement.classList.contains('motion-ready'));
+    assert.equal(await page.$eval('#saved-count',el=>el.textContent.trim()),'1',
+      name+': saved items survive a full page reload');
+    await page.click('#menu-saved-filter');
+    assert.equal(await page.$eval('.menu-card',cards=>cards.length),1);
+    await page.click('.menu-card .menu-save');
+    assert.equal(await page.$eval('.menu-card',cards=>cards.length),0,
+      name+': removing saved item updates the list');
+    assert.equal(await page.$eval('#menu-empty',el=>el.hidden),false,
+      name+': empty saved list should have a clear message');
+    await page.click('#essentials details summary');
+    assert.equal(await page.$eval('#essentials details',el=>el.open),true);
+  }
+  const copyButton=await page.$('[data-copy-address]');
+  assert.ok(copyButton,name+': visitor needs a copy-address action');
+  await page.click('[data-copy-address]');
+  await page.waitForFunction(()=>!!document.querySelector('[data-copy-status]')?.textContent.trim(),{timeout:4000});
+  const signals=await page.evaluate(()=>({
+    overflow:document.documentElement.scrollWidth-innerWidth,
+    faq:document.querySelectorAll('#essentials details').length,
+    noindex:!!document.querySelector('meta[name="robots"][content="noindex,nofollow"]'),
+    address:document.querySelector('[data-copy-status]')?.textContent.trim()
+  }));
+  assert.ok(signals.overflow<=2,name+': upgraded layout should not overflow '+JSON.stringify(signals));
+  assert.equal(signals.faq,3);
+  assert.equal(signals.noindex,true,name+': owner-unapproved concept must remain noindex');
+  await page.screenshot({path:path.join(output,name+'-upgraded.png'),fullPage:false});
+  assert.deepEqual(errors,[],name+': the upgraded journey must not throw');
+  await page.close();
+  console.log('PASS '+name+' menu, saved-items, FAQ, copy-address, and preview safeguards');
+}
+
 try {
   await visit('index.html',390,844,'tai-phone',true);
   await visit('quicklys.html',390,844,'quickly-phone',true);
@@ -445,6 +531,10 @@ try {
   await verifyReloadStability('quicklys.html',390,844,'quickly-phone');
   await verifyReloadStability('index.html',1500,900,'tai-desktop');
   await verifyReloadStability('quicklys.html',1500,900,'quickly-desktop');
+  await verifyUpgradedJourney('index.html',390,844,'tai-phone');
+  await verifyUpgradedJourney('quicklys.html',390,844,'quickly-phone');
+  await verifyUpgradedJourney('index.html',1500,900,'tai-desktop');
+  await verifyUpgradedJourney('quicklys.html',1500,900,'quickly-desktop');
   const reduced = await browser.newPage();
   await reduced.setViewport({width:390,height:844,isMobile:true,hasTouch:true});
   await reduced.emulateMediaFeatures([{name:'prefers-reduced-motion',value:'reduce'}]);

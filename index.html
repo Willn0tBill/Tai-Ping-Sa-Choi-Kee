@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fff9f0">
   <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="太平沙财记 Tai Ping Sa Choi Kee — Cantonese and Chinese kitchen at 15848 Halliburton Rd, Hacienda Heights.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="太平沙财记 | Tai Ping Sa Choi Kee">
@@ -26,8 +27,8 @@
     );
   })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=motion-v11">
-  <script src="app.js?v=motion-v11" defer></script>
+  <link rel="stylesheet" href="styles.css?v=motion-v12">
+  <script src="app.js?v=motion-v12" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">跳到主要内容 / Skip to content</a>
@@ -163,7 +164,23 @@
           </div>
           <p class="kitchen-intro"><strong lang="zh-Hans">从镬气十足的干炒牛河，到鲜香入味的各式煲仔菜。</strong><br><span lang="en">Featured on the restaurant’s in-store food board. English names are translations for this preview.</span></p>
         </div>
-        <div class="signature-grid" aria-label="Featured dishes photographed on the restaurant's food board">
+        <div class="kitchen-tools" aria-label="中餐菜品浏览 / Browse dishes">
+          <div class="kitchen-filter-bar" role="group" aria-label="选择菜品分类 / Dish categories">
+            <button type="button" class="kitchen-filter is-active" data-kitchen-filter="all" aria-pressed="true"><span lang="zh-Hans">全部</span><small lang="en">All</small></button>
+            <button type="button" class="kitchen-filter" data-kitchen-filter="noodles" aria-pressed="false"><span lang="zh-Hans">粉面</span><small lang="en">Noodles</small></button>
+            <button type="button" class="kitchen-filter" data-kitchen-filter="seafood" aria-pressed="false"><span lang="zh-Hans">海鲜</span><small lang="en">Seafood</small></button>
+            <button type="button" class="kitchen-filter" data-kitchen-filter="claypot" aria-pressed="false"><span lang="zh-Hans">煲仔</span><small lang="en">Clay pots</small></button>
+            <button type="button" class="kitchen-filter" data-kitchen-filter="rice" aria-pressed="false"><span lang="zh-Hans">饭类</span><small lang="en">Rice</small></button>
+            <button type="button" class="kitchen-filter" data-kitchen-filter="special" aria-pressed="false"><span lang="zh-Hans">其他</span><small lang="en">Other dishes</small></button>
+          </div>
+          <label class="kitchen-search">
+            <span class="sr-only">搜索中英文菜名 / Search dishes in Chinese or English</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+            <input type="search" id="kitchen-search" placeholder="搜索菜名 / Search dishes" autocomplete="off" aria-controls="signature-grid">
+          </label>
+        </div>
+        <p class="kitchen-result-count" id="kitchen-result-count" role="status" aria-live="polite">共 13 道菜 · 13 dishes</p>
+        <div class="signature-grid" id="signature-grid" aria-label="Featured dishes from the restaurant food board">
           <article data-card-reveal class="signature-card signature-card-primary" data-tone="noodles">
             <div class="signature-card-top"><span>01</span><span lang="zh-Hans">粉面<small lang="en">NOODLES</small></span></div>
             <div class="signature-card-content">
@@ -269,6 +286,11 @@
             <span class="signature-card-mark" aria-hidden="true">✳</span>
           </article>
         </div>
+        <div class="kitchen-empty" id="kitchen-empty" hidden>
+          <strong lang="zh-Hans">暂时找不到这道菜</strong>
+          <p lang="en">No matching featured dish. Try a different category or name.</p>
+          <button type="button" id="kitchen-clear">重置搜索 <small lang="en">/ Reset search</small></button>
+        </div>
         <div class="kitchen-note">
           <span><span lang="zh-Hans">店内招牌推荐 · 菜品及价格请以店内确认为准。</span><small lang="en">Featured dishes · Confirm availability, prices and translations with the owner.</small></span>
           <a href="tel:+16269376555"><span lang="zh-Hans">咨询中餐</span><small lang="en">Call kitchen</small> (626) 937-6555 ↗</a>
@@ -304,6 +326,31 @@
       </div>
     </section>
 
+    <section class="essentials-section section-pad" id="essentials" aria-labelledby="essentials-heading">
+      <div class="container essentials-layout">
+        <div class="essentials-lead" data-reveal>
+          <p class="section-kicker"><span lang="zh-Hans">来之前，请先了解</span><span lang="en">/ GOOD TO KNOW</span></p>
+          <h2 id="essentials-heading" lang="zh-Hans">吃得尽兴，<br><em>安排得轻松。</em></h2>
+          <p lang="zh-Hans">先选好喜欢的菜，再确认最新信息。两家店共用一个地址，但各自拥有独立菜单和电话。</p>
+          <p lang="en">Explore the featured dishes and check current details before your visit. The kitchen and Quickly’s share an address but have separate menus and phone numbers.</p>
+          <a class="essentials-call" href="tel:+16269376555"><span lang="zh-Hans">致电中餐咨询</span><small lang="en">Call the kitchen · (626) 937-6555</small><span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="essentials-faq" aria-label="常见问题 / Frequently asked questions">
+          <details data-card-reveal class="faq-item">
+            <summary><span><strong lang="zh-Hans">两家店的菜单相同吗？</strong><small lang="en">Do both businesses use the same menu?</small></span><span class="faq-plus" aria-hidden="true">+</span></summary>
+            <div class="faq-answer"><p lang="zh-Hans">不相同。太平沙财记提供中餐；快可立的奶茶、冰沙及小吃有自己的独立菜单。</p><p lang="en">No. Tai Ping Sa Choi Kee has a Chinese kitchen menu. Quickly’s drinks and snacks appear on a separate menu.</p><a href="quicklys.html">查看快可立菜单 / Browse Quickly’s menu ↗</a></div>
+          </details>
+          <details data-card-reveal class="faq-item">
+            <summary><span><strong lang="zh-Hans">如何查看在线点餐？</strong><small lang="en">Where can I see online ordering?</small></span><span class="faq-plus" aria-hidden="true">+</span></summary>
+            <div class="faq-answer"><p lang="zh-Hans">可以通过饭团查看太平沙财记目前提供的点餐选项；实际供应情况以第三方平台为准。</p><p lang="en">Use the kitchen’s Fantuan page to check available ordering options. Availability is determined by the ordering service.</p><a href="https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559" target="_blank" rel="noopener noreferrer">打开饭团 / Open Fantuan ↗</a></div>
+          </details>
+          <details data-card-reveal class="faq-item">
+            <summary><span><strong lang="zh-Hans">价格与营业时间已确认吗？</strong><small lang="en">Are menu prices and hours confirmed?</small></span><span class="faq-plus" aria-hidden="true">+</span></summary>
+            <div class="faq-answer"><p lang="zh-Hans">目前展示的是店内招牌菜参考，尚未确认完整价格与最新营业时间。请致电店家确认。</p><p lang="en">The featured-dish list is a reference, not a confirmed full menu. Call for current prices, hours and availability.</p><a href="tel:+16269376555">致电 (626) 937-6555 / Call kitchen ↗</a></div>
+          </details>
+        </div>
+      </div>
+    </section>
     <section class="visit-section section-pad" id="visit" aria-labelledby="visit-heading">
       <div class="container visit-layout">
         <div class="visit-copy" data-reveal>
@@ -312,6 +359,10 @@
           <p class="visit-zh" lang="en">Find us in Hacienda Heights.</p>
           <p class="visit-description" lang="zh-Hans">太平沙财记与 Quickly 位于哈岗 Halliburton Road 同一地址，但菜单和联系电话不同。营业时间请分别向各店确认。</p><p class="visit-description-en" lang="en">Tai Ping Sa Choi Kee and Quickly share this address but have separate menus and phone numbers. Confirm hours with each business.</p>
           <div class="visit-address"><span class="address-mark" aria-hidden="true">↗</span><div><span>门店地址 / LOCATION</span><address>15848 Halliburton Rd<br>Hacienda Heights, CA 91745</address></div></div>
+          <div class="address-copy-row">
+            <button type="button" class="copy-address" data-copy-address><span aria-hidden="true">⧉</span><span lang="zh-Hans">复制地址</span><small lang="en">Copy address</small></button>
+            <span class="copy-address-status" role="status" aria-live="polite" data-copy-status></span>
+          </div>
           <div class="visit-buttons">
             <a class="button button-lime" href="https://www.google.com/maps/dir/?api=1&amp;destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745" target="_blank" rel="noopener noreferrer"><span class="button-bilingual"><strong lang="zh-Hans">谷歌地图</strong><small lang="en">Google Maps directions</small></span><span aria-hidden="true">↗</span></a>
             <a class="button button-light-outline" href="https://maps.apple.com/?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&amp;dirflg=d" target="_blank" rel="noopener noreferrer"><span class="button-bilingual"><strong lang="zh-Hans">苹果地图</strong><small lang="en">Apple Maps directions</small></span><span aria-hidden="true">↗</span></a>
@@ -351,7 +402,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div><a class="footer-brand" href="#top" lang="zh-Hans">太平沙财记</a><p><span lang="en">TAI PING SA CHOI KEE</span><br><span lang="zh-Hans">粤式中餐 · 哈岗</span><br><small lang="en"><a href="quicklys.html">Quickly’s menu ↗</a> is a separate page at the same location.</small></p></div>
-      <div class="footer-actions"><a href="#kitchen">中餐 <small lang="en">Kitchen</small></a><a href="quicklys.html">快可立 <small lang="en">Quickly’s menu</small></a><a href="#order">点餐 <small lang="en">Order online</small></a><a href="#visit">地址 <small lang="en">Visit</small></a><a href="tel:+16269376555">电话 <small lang="en">Call</small></a></div>
+      <div class="footer-actions"><a href="#kitchen">中餐 <small lang="en">Kitchen</small></a><a href="quicklys.html">快可立 <small lang="en">Quickly’s menu</small></a><a href="#order">点餐 <small lang="en">Order online</small></a><a href="#essentials">常见问题 <small lang="en">FAQ</small></a><a href="#visit">地址 <small lang="en">Visit</small></a><a href="tel:+16269376555">电话 <small lang="en">Call</small></a></div>
     </div>
     <div class="container footer-bottom"><span>© <span id="copyright-year">2026</span> 太平沙财记 / Tai Ping Sa Choi Kee · Website concept preview</span><span>网站设计预览，尚未经店主确认。真实门店照片来源于第三方页面，商用授权待确认。 / Unapproved concept. Photo permissions pending.</span></div>
   </footer>

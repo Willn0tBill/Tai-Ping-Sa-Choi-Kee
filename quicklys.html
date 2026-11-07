@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fff9f0">
   <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Quickly’s in Hacienda Heights — independent drinks and snacks menu featuring milk tea, fruit tea, smoothies, slushes, toppings and fried snacks. 15848 Halliburton Rd.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="快可立 | Quickly’s — Hacienda Heights">
@@ -25,8 +26,8 @@
     );
   })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=motion-v11">
-  <script src="app.js?v=motion-v11" defer></script>
+  <link rel="stylesheet" href="styles.css?v=motion-v12">
+  <script src="app.js?v=motion-v12" defer></script>
 </head>
 <body class="quicklys-page">
   <a href="#main" class="skip-link">跳到主要内容 / Skip to content</a>
@@ -175,11 +176,16 @@
             <span class="sr-only">搜索中英文菜单名称 / Search bilingual menu</span>
             <input id="menu-search" type="search" placeholder="搜索菜品 / Search items" autocomplete="off" aria-controls="menu-grid">
           </label>
+          <button type="button" class="saved-filter" id="menu-saved-filter" aria-pressed="false" aria-controls="menu-grid">
+            <span aria-hidden="true" class="saved-filter-star">☆</span>
+            <span><strong lang="zh-Hans">我的收藏</strong><small lang="en">Saved items · <span id="saved-count">0</span></small></span>
+          </button>
         </div>
         <div class="menu-status" role="status" aria-live="polite">
           <span id="menu-count">奶茶 / Milk tea</span>
           <span class="menu-disclaimer">价格以 Quickly’s 店内为准 / Prices transcribed from the photographed menu; verify before ordering</span>
         </div>
+        <p class="saved-explainer"><span lang="zh-Hans">收藏只保存在此设备，不会自动下单。</span><small lang="en">Saved items stay on this device. To order, use Fantuan.</small></p>
         <div class="menu-body-layout">
           <aside data-card-reveal class="menu-side-panel" aria-label="Quickly’s 菜单与联系方式 / Menu help">
             <div class="menu-side-top">
@@ -209,6 +215,31 @@
         </div>
       </div>
     </section>
+    <section class="essentials-section section-pad" id="essentials" aria-labelledby="essentials-heading">
+      <div class="container essentials-layout">
+        <div class="essentials-lead" data-reveal>
+          <p class="section-kicker"><span lang="zh-Hans">点单前的小提醒</span><span lang="en">/ GOOD TO KNOW</span></p>
+          <h2 id="essentials-heading" lang="zh-Hans">选好想喝的，<br><em>再确认一下。</em></h2>
+          <p lang="zh-Hans">查找奶茶、小吃和喜欢的口味。还可以在这个设备上收藏菜单项目，方便下次查看。</p>
+          <p lang="en">Browse drinks and snacks, save items on this device for later, and confirm current availability with Quickly’s.</p>
+          <a class="essentials-call" href="tel:+16269376552"><span lang="zh-Hans">致电快可立咨询</span><small lang="en">Call Quickly’s · (626) 937-6552</small><span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="essentials-faq" aria-label="常见问题 / Frequently asked questions">
+          <details data-card-reveal class="faq-item">
+            <summary><span><strong lang="zh-Hans">收藏的菜单会自动下单吗？</strong><small lang="en">Does saving an item place an order?</small></span><span class="faq-plus" aria-hidden="true">+</span></summary>
+            <div class="faq-answer"><p lang="zh-Hans">不会。收藏只储存在你的设备上，方便浏览；如需点餐，请前往饭团平台查看可用选项。</p><p lang="en">No. Saved items stay in your browser for reference only. Order separately through Fantuan if available.</p><a href="https://www.fantuanorder.com/en-US/store/quickly/us-28952" target="_blank" rel="noopener noreferrer">前往饭团 / Open Fantuan ↗</a></div>
+          </details>
+          <details data-card-reveal class="faq-item">
+            <summary><span><strong lang="zh-Hans">为什么价格可能不同？</strong><small lang="en">Why might prices vary?</small></span><span class="faq-plus" aria-hidden="true">+</span></summary>
+            <div class="faq-answer"><p lang="zh-Hans">价格根据菜单照片整理，拍摄时间及最新价格尚未确认；购买前请联系快可立。</p><p lang="en">Prices were transcribed from menu photographs and have not been reconfirmed. Call Quickly’s for current prices and availability.</p><a href="tel:+16269376552">致电 (626) 937-6552 / Call Quickly’s ↗</a></div>
+          </details>
+          <details data-card-reveal class="faq-item">
+            <summary><span><strong lang="zh-Hans">中餐也在这份菜单里吗？</strong><small lang="en">Does this menu include Chinese kitchen dishes?</small></span><span class="faq-plus" aria-hidden="true">+</span></summary>
+            <div class="faq-answer"><p lang="zh-Hans">没有。太平沙财记和快可立虽然共用地址，但菜单和联系电话不同。</p><p lang="en">No. Tai Ping Sa Choi Kee has a separate Chinese kitchen menu and phone number at the same address.</p><a href="index.html">浏览中餐 / Visit the kitchen page ↗</a></div>
+          </details>
+        </div>
+      </div>
+    </section>
     <section class="quicklys-visit section-pad" id="visit" aria-labelledby="quicklys-visit-heading">
       <div class="container quicklys-visit-layout" data-reveal>
         <div>
@@ -217,6 +248,10 @@
           <p lang="en" class="section-subtitle-en">15848 Halliburton Rd, Hacienda Heights, CA 91745</p>
           <p lang="zh-Hans" class="quicklys-location-note">Quickly’s 与太平沙财记共用地址，但电话及菜单独立。</p>
         </div>
+          <div class="address-copy-row">
+            <button type="button" class="copy-address" data-copy-address><span aria-hidden="true">⧉</span><span lang="zh-Hans">复制地址</span><small lang="en">Copy address</small></button>
+            <span class="copy-address-status" role="status" aria-live="polite" data-copy-status></span>
+          </div>
         <div class="quicklys-visit-actions">
           <a class="button button-dark" href="https://www.google.com/maps/dir/?api=1&amp;destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745" target="_blank" rel="noopener noreferrer"><span class="button-bilingual"><strong lang="zh-Hans">谷歌地图</strong><small lang="en">Google Maps directions</small></span><span aria-hidden="true">↗</span></a>
           <a class="button button-outline" href="https://maps.apple.com/?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&amp;dirflg=d" target="_blank" rel="noopener noreferrer"><span class="button-bilingual"><strong lang="zh-Hans">苹果地图</strong><small lang="en">Apple Maps directions</small></span><span aria-hidden="true">↗</span></a>
@@ -239,7 +274,7 @@
         <a href="index.html">太平沙财记 <small lang="en">Chinese kitchen</small></a>
         <a href="#menu">快可立 <small lang="en">Quickly’s menu</small></a>
         <a href="#order">点餐 <small lang="en">Order online</small></a>
-        <a href="#visit">地址 <small lang="en">Visit</small></a>
+        <a href="#essentials">常见问题 <small lang="en">FAQ</small></a><a href="#visit">地址 <small lang="en">Visit</small></a>
         <a href="tel:+16269376552">电话 <small lang="en">Call</small></a>
       </div>
     </div>
