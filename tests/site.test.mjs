@@ -262,6 +262,7 @@ test('Quickly’s starts with Chinese brand name, not English-first typography',
   assert.match(quicklyHtml, /<span class="brand-text"><strong lang="zh-Hans">快可立<\/strong><small lang="en">Quickly’s/);
   assert.match(quicklyHtml, /<h1 id="quicklys-heading" lang="zh-Hans">快可立<\/h1>/);
   assert.match(quicklyHtml, /class="quicklys-english-title" lang="en">Quickly’s<\/p>/);
+  assert.match(quicklyHtml, /class="footer-brand" href="quicklys\.html" lang="zh-Hans">快可立<\/a>/);
   assert.match(quicklyHtml, /<p class="quicklys-description" lang="zh-Hans">/);
   assert.match(quicklyHtml, /<p class="quicklys-description-en" lang="en">/);
   assert.match(css, /\.quicklys-intro h1\{font:/);
