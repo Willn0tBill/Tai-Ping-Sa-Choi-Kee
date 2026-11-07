@@ -12,7 +12,7 @@ An editorial, mobile-first, bilingual restaurant website **concept** for Tai Pin
 - Separate searchable bilingual Quickly drinks-and-snacks menu from in-store photographs, with visible prices and category filters.
 - Semantic HTML, keyboard-accessible navigation, focus indicators, skip link, and reduced-motion support.
 - Real address, click-to-call link, Google Maps directions, descriptive meta tags, and accessible image text.
-- Illustrative photos from Unsplash. The images are **not** photographs of this shop.
+- Actual restaurant-associated storefront, eggplant clay pot, and interior photographs found in public restaurant listings. Their commercial reuse rights have **not yet been established**, and they must be replaced with owner-approved media or licensed properly before launch.
 
 ## Local preview
 
@@ -40,7 +40,7 @@ Specific review notes:
 - The printed Barley Milk Tea price appears overridden by handwritten **$5.28 M / $5.78 L**; Coconut Milk Tea reads **$4.38 M / $4.88 L**. Confirm both.
 - The handwritten snack combination prices appear to be **$11.29 small** and **$26.29 large**, and the selection rules need confirmation.
 - The menu states an additional **$0.49 card-transaction charge** and that spice cannot be served on the side. Confirm current policy and any applicable legal/price-display requirements before putting those notices on the public site.
-- Two additional photos display a different menu branded **Tai Pin Sa Choi Kee / 太平沙财记** at the same address and phone number. Those dishes have **not** been merged into Quickly's menu; ask the owner whether they should have their own section or site.
+- The photographed restaurant menu is branded **Tai Ping Sa Choi Kee / 太平沙财记**, which is now the website’s primary identity. Its signature dishes are separate from the Quickly drinks and snacks section.
 - The old June 2022 MenuSifu PDF is no longer the data source. Its outdated prices and the former sea-salt foam section were removed.
 
 ## Owner approval checklist
@@ -48,7 +48,7 @@ Specific review notes:
 - [ ] Obtain permission to represent the business and confirm branding rights.
 - [ ] Confirm exact store name, address, phone, hours/holiday hours, and preferred ordering URL.
 - [ ] Have owner review all 77 transcribed bilingual entries and prices against the latest in-store menu, and clarify the ambiguous milk tea line and combination rules.
-- [ ] Replace illustrative Unsplash images with real, approved product and storefront photography.
+- [ ] Obtain explicit permission or valid licenses for all real restaurant photos on the preview; ideally replace third-party hotlinks with approved, locally hosted originals from the owner.
 - [ ] Confirm promotions, contact links, accessibility, and legal copy.
 - [ ] Remove `noindex` metadata and the concept-preview disclaimer **only after** owner approval.
 - [ ] Configure custom domain, HTTPS, and preferred deployment platform.
@@ -58,13 +58,17 @@ Specific review notes:
 
 This is a static site. It can be deployed to GitHub Pages, Cloudflare Pages, Netlify, or another static host. For GitHub Pages, configure **Settings → Pages → Deploy from a branch** (main / root). Don't enable public indexing or advertise the site as official until the owner signs off.
 
-## Image licenses & credits
+## Actual restaurant photos — sources and permission
 
-Photos are illustrative and freely usable under the [Unsplash License](https://unsplash.com/license), not supplied by Quickly:
+The former generic Unsplash images were removed. These are **photos of the actual Hacienda Heights location**, linked from public restaurant galleries **for concept review only**:
 
-- Hero photo: [Nathenia Landers](https://unsplash.com/photos/four-colorful-boba-teas-with-straws-y8rjmtsq0lE)
-- Milk tea photo: [Najib Chari](https://unsplash.com/photos/a-creamy-beverage-with-caramel-swirls-and-tapioca-pearls-AL3uWJvhfWE)
-- Snacks photo: [Lee Milo](https://unsplash.com/photos/basket-of-fried-chicken-tenders-fries-and-popcorn-chicken-bG8sQGD8Bi8)
+- Hero (eggplant clay pot): [restaurant gallery image](https://cdn.restaurants-us.com/3616-albums-2.jpg) via [Tai Ping Sa Choi Kee listing](https://taipingsachoikee.restaurants-us.com/).
+- Exterior storefront and both business signs: [restaurant gallery image](https://cdn.restaurants-us.com/3616-albums-1.jpg) via the same [listing](https://taipingsachoikee.restaurants-us.com/).
+- Interior: [public Yelp-hosted photo](https://s3-media0.fl.yelpcdn.com/bphoto/ZBEJxeL9uK-M6cb3rGqtVw/o.jpg) via the [Hacienda Heights restaurant listing](https://www.yelp.com/biz/tai-ping-sa-choi-kee-hacienda-heights).
+
+**No reuse license has been verified.** Public visibility is not commercial permission. Do not treat the source credits as a license, or the externally hosted image URLs as a reliable production asset pipeline. Obtain owner and/or photographer authorization before the official public launch. The site retains `noindex,nofollow` and prominently notes it is an unapproved concept. Once permitted, acquire high-resolution approved copies, optimize to AVIF/WebP, and serve them from the site’s own host for speed and reliability. This is especially important for a paying client.
+
+The menu photos supplied by the user remain source material for transcription. The featured food poster supplied by the user is also a reference for accurate dishes and brand identity.
 
 ## Verification
 
