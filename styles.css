@@ -613,11 +613,11 @@ h1,h2,h3{font-family:var(--zh-font);font-weight:750}
 /* Avoid hidden content while waiting for IntersectionObserver; reveal runs once in view. */
 
 @keyframes hero-text-rise{
- from{opacity:0;transform:translate3d(0,28px,0)}
+ from{opacity:.66;transform:translate3d(0,22px,0)}
  to{opacity:1;transform:translate3d(0,0,0)}
 }
 @keyframes hero-photo-rise{
- from{opacity:0;transform:translate3d(0,36px,0) scale(.94);filter:blur(4px)}
+ from{opacity:.68;transform:translate3d(0,24px,0) scale(.975);filter:blur(2px)}
  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
 }
 @keyframes section-rise{
@@ -680,17 +680,17 @@ html.motion-off *,html.motion-off *::before,html.motion-off *::after{
 .quicklys-page .ticker{background:#274e40}
 .motion-on .hero-copy>*,
 .motion-on .quicklys-intro>*{
-  animation:hero-text-rise .86s cubic-bezier(.18,.78,.2,1) both
+  animation:hero-text-rise .72s cubic-bezier(.18,.78,.2,1) both
 }
-.motion-on .hero-copy>*:nth-child(1),.motion-on .quicklys-intro>*:nth-child(1){animation-delay:.08s}
-.motion-on .hero-copy>*:nth-child(2),.motion-on .quicklys-intro>*:nth-child(2){animation-delay:.17s}
-.motion-on .hero-copy>*:nth-child(3),.motion-on .quicklys-intro>*:nth-child(3){animation-delay:.27s}
-.motion-on .hero-copy>*:nth-child(4),.motion-on .quicklys-intro>*:nth-child(4){animation-delay:.37s}
-.motion-on .hero-copy>*:nth-child(5),.motion-on .quicklys-intro>*:nth-child(5){animation-delay:.45s}
-.motion-on .hero-copy>*:nth-child(6),.motion-on .quicklys-intro>*:nth-child(6){animation-delay:.53s}
-.motion-on .hero-copy>*:nth-child(n+7),.motion-on .quicklys-intro>*:nth-child(n+7){animation-delay:.6s}
+.motion-on .hero-copy>*:nth-child(1),.motion-on .quicklys-intro>*:nth-child(1){animation-delay:.03s}
+.motion-on .hero-copy>*:nth-child(2),.motion-on .quicklys-intro>*:nth-child(2){animation-delay:.09s}
+.motion-on .hero-copy>*:nth-child(3),.motion-on .quicklys-intro>*:nth-child(3){animation-delay:.15s}
+.motion-on .hero-copy>*:nth-child(4),.motion-on .quicklys-intro>*:nth-child(4){animation-delay:.21s}
+.motion-on .hero-copy>*:nth-child(5),.motion-on .quicklys-intro>*:nth-child(5){animation-delay:.26s}
+.motion-on .hero-copy>*:nth-child(6),.motion-on .quicklys-intro>*:nth-child(6){animation-delay:.31s}
+.motion-on .hero-copy>*:nth-child(n+7),.motion-on .quicklys-intro>*:nth-child(n+7){animation-delay:.37s}
 .motion-on .hero-visual,.motion-on .quicklys-store-photo{
-  animation:hero-photo-rise 1.2s .18s cubic-bezier(.16,.77,.2,1) both
+  animation:hero-photo-rise .95s .06s cubic-bezier(.16,.77,.2,1) both
 }
 .motion-on .hero-photo-frame{animation:photo-float 7s 1.4s ease-in-out infinite alternate}
 .motion-on .quicklys-store-photo img{animation:photo-pan 11s 1.4s ease-in-out infinite alternate}

@@ -69,6 +69,11 @@ async function visit(file, width, height, name, mobile) {
   assert.ok(animated.document<=animated.viewport+2, name + ': page must not horizontally overflow: '+JSON.stringify(animated));
   assert.equal(animated.toggle,'true');
 
+  // Capture after the introductory motion; otherwise a first-frame image
+  // can look blank while the elements are still entering.
+  await new Promise(resolve=>setTimeout(resolve,1500));
+  await page.screenshot({path:path.join(output,name+'.png'),fullPage:false});
+
   if (mobile) {
     const state = await page.evaluate(() => ({
       hamburger:getComputedStyle(document.querySelector('.menu-toggle')).display,
@@ -89,7 +94,6 @@ async function visit(file, width, height, name, mobile) {
     assert.notEqual(await page.$eval('.section-rail',el=>getComputedStyle(el).display),'none',name+': desktop rail should appear');
   }
 
-  await page.screenshot({path:path.join(output,name+'.png'),fullPage:false});
   if(file==='index.html') {
     await page.click('[data-gallery-index="0"]');
     assert.equal(await page.$eval('.photo-dialog',d=>d.open),true,'gallery must open');
