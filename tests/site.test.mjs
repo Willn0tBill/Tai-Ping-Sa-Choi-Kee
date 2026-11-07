@@ -558,3 +558,41 @@ test('phone-first hero exposes real image before long introductions and secondar
   assert.ok(!html.includes('images.unsplash.com'));
   assert.ok(!quicklyHtml.includes('images.unsplash.com'));
 });
+
+test('floating hero cards use verified actions and keep business identities separate', () => {
+  const taiFantuan='https://www.fantuanorder.com/en-US/store/tai-ping-sa-choi-kee/us-1364034559';
+  const quicklyFantuan='https://www.fantuanorder.com/en-US/store/quickly/us-28952';
+  for (const doc of [html,quicklyHtml]) {
+    const hero=doc.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
+    assert.ok(hero,'missing hero floating actions');
+    assert.equal((hero.match(/class="float-card float-card-/g)||[]).length,3);
+    assert.match(hero,/class="float-card float-card-maps"/);
+    assert.match(hero,/class="float-card float-card-other"/);
+    assert.match(hero,/15848 HALLIBURTON RD/);
+    assert.match(hero,/maps\.apple\.com/);
+    assert.match(hero,/google\.com\/maps\/dir/);
+    assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
+    assert.match(hero,/在线点餐/);
+    assert.match(hero,/同一地址 · 独立菜单/);
+    assert.match(doc,/href="styles\.css\?v=motion-v6"/);
+    assert.match(doc,/src="app\.js\?v=motion-v6" defer/);
+  }
+  const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
+  const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
+  assert.ok(tai.includes(taiFantuan));
+  assert.ok(!tai.includes(quicklyFantuan));
+  assert.ok(quick.includes(quicklyFantuan));
+  assert.ok(!quick.includes(taiFantuan));
+  assert.match(tai,/href="quicklys\.html"/);
+  assert.match(quick,/href="index\.html"/);
+  assert.match(css,/\.hero-floating-actions\{\s*position:absolute/);
+  assert.match(css,/@media\(max-width:740px\)\{[\s\S]*?\.hero-floating-actions\{\s*position:relative/);
+  assert.match(css,/\.quicklys-hero-layout \.hero-floating-actions\{order:7\}/);
+  assert.match(css,/\.hero-copy \.hero-description\{order:7\}/);
+  assert.match(css,/\.quicklys-intro \.quicklys-description\{order:8\}/);
+  assert.match(css,/@keyframes float-card-drift/);
+  assert.match(css,/\.motion-on \.float-card-order\{animation:float-card-drift/);
+  assert.match(css,/\.motion-on \.float-card\{animation:none\}/);
+  assert.match(css,/html:not\(\.motion-on\) \.float-card\{animation:none!important/);
+  assert.ok(!/(?:fake|rating|review-count|discount-percent)/.test(tai),'no fake reviews or discounts on floating cards');
+});

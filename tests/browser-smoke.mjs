@@ -74,6 +74,39 @@ async function visit(file, width, height, name, mobile) {
   await new Promise(resolve=>setTimeout(resolve,1500));
   await page.screenshot({path:path.join(output,name+'.png'),fullPage:false});
 
+  const floating = await page.evaluate(() => {
+    const group = document.querySelector('.hero-floating-actions');
+    const photo = document.querySelector('.hero-visual,.quicklys-store-photo');
+    const bounds = group.getBoundingClientRect(), image = photo.getBoundingClientRect();
+    return {
+      cards:group.querySelectorAll('.float-card').length,
+      layout:getComputedStyle(group).position,
+      width:bounds.width,
+      top:bounds.top,
+      bottom:bounds.bottom,
+      imageTop:image.top,imageBottom:image.bottom,
+      viewport:innerWidth
+    };
+  });
+  assert.equal(floating.cards,3,name+': exactly three useful floating cards');
+  assert.ok(floating.width>=150,name+': cards should be readable '+JSON.stringify(floating));
+  if (mobile) {
+    assert.equal(floating.layout,'relative',name+': mobile cards must sit in layout, not cover photos');
+    assert.ok(floating.top>=floating.imageBottom-3,
+      name+': floating cards should follow the real photo on phones '+JSON.stringify(floating));
+  } else if (width > 900) {
+    assert.equal(floating.layout,'absolute',name+': floating cards should appear near the photograph on desktop');
+  } else {
+    assert.equal(floating.layout,'relative',name+': tablet cards should occupy their own row');
+  }
+  for (const href of [
+    'https://maps.apple.com/?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&dirflg=d',
+    'https://www.google.com/maps/dir/?api=1&destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745'
+  ]) {
+    const found=await page.$eval('.float-card-map-actions a',(anchors,url)=>anchors.some(a=>a.href===url),href);
+    assert.equal(found,true,name+': accurate directions link '+href);
+  }
+
   if (mobile) {
     const photo = await page.evaluate(() => {
       const target = document.querySelector('.hero-visual,.quicklys-store-photo');
@@ -124,6 +157,8 @@ async function visit(file, width, height, name, mobile) {
 try {
   await visit('index.html',390,844,'tai-phone',true);
   await visit('quicklys.html',390,844,'quickly-phone',true);
+  await visit('index.html',820,1100,'tai-tablet',false);
+  await visit('quicklys.html',820,1100,'quickly-tablet',false);
   await visit('index.html',1500,900,'tai-desktop',false);
   await visit('quicklys.html',1500,900,'quickly-desktop',false);
   const reduced = await browser.newPage();

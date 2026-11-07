@@ -203,3 +203,15 @@ The two businesses keep independent menu ownership, contacts, Fantuan links and 
 A Chrome screenshot review found that the mobile hero previously showed too much introduction before any real food or storefront photography. At widths up to 740px, both pages now place the **Chinese-first business name and real photo before the long introduction**, and push the secondary motion controls below the useful actions. Desktop retains its spacious two-column hero. The user can still reach Fantuan from the persistent mobile ordering button.
 
 The browser test now asserts that the relevant real photo begins within the first mobile viewport, in addition to checking horizontal overflow, navigation, animations, menu filtering, image galleries, and reduced-motion opt-in. The source content, restaurant photography, and the separate businesses' links remain unchanged.
+
+## Floating action cards — mobile-first v6
+
+Each business homepage now has three restrained, **clickable floating cards** alongside its real hero photograph on wide screens. They are grounded in actual data, not imaginary ratings, coupon codes or accolades:
+
+- **饭团在线点餐 / Fantuan:** external link to the correct business's confirmed Fantuan listing.
+- **一键到店 / Get directions:** direct Apple Maps and Google Maps directions to **15848 Halliburton Rd, Hacienda Heights, CA 91745**, with independent 44px+ tap targets on phones.
+- **同一地址 · 独立菜单 / Separate business:** navigates to the other tenant's own website page, explicitly acknowledging that menus and phone numbers are distinct.
+
+The cards float by 7px only on motion-enabled desktop browsers; they pause on hover and do not animate on phones/tablets or when motion is off. At widths 741–900px they occupy their own row; at 740px and below they sit immediately **after** the actual food/storefront photo, as two balanced cards and one full-width cross-business card, without blocking the photo or ordering links. Their size, color contrast, and hover/focus treatments use the site's restrained design system. No fake brand logo or synthetic photography is introduced.
+
+Chrome smoke tests now cover **390px phone, 820px tablet, and 1500px desktop** layouts on both pages, and verify the floating cards, independent order links, map URLs, photo visibility, and lack of horizontal overflow. The current site is still a concept pending owner approval.
