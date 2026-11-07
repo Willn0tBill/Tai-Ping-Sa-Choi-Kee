@@ -446,19 +446,19 @@ async function verifyUpgradedJourney(file,width,height,name) {
   await page.reload({waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>document.documentElement.classList.contains('motion-ready'));
   if (file==='index.html') {
-    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),13,
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.signature-card:not([hidden])').length),13,
       name+': 13 real printed-board dishes should show initially');
     await page.click('[data-kitchen-filter="seafood"]');
-    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),3,
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.signature-card:not([hidden])').length),3,
       name+': three seafood dishes in kitchen category');
     await page.type('#kitchen-search','茄子');
-    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),1,
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.signature-card:not([hidden])').length),1,
       name+': Chinese search finds eggplant dish regardless of previously selected category');
     await page.click('[data-kitchen-filter="rice"]');
-    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),0);
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.signature-card:not([hidden])').length),0);
     assert.equal(await page.$eval('#kitchen-empty',el=>el.hidden),false);
     await page.click('#kitchen-clear');
-    assert.equal(await page.$eval('.signature-card:not([hidden])',cards=>cards.length),13,
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.signature-card:not([hidden])').length),13,
       name+': reset returns all signature dishes');
     await page.click('#essentials details summary');
     assert.equal(await page.$eval('#essentials details',el=>el.open),true,
@@ -473,7 +473,7 @@ async function verifyUpgradedJourney(file,width,height,name) {
         name+': missing real photograph must show an honest fallback');
     }
   } else {
-    assert.equal(await page.$eval('.menu-card',cards=>cards.length),14,
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.menu-card').length),14,
       name+': Quickly starts on its real milk-tea menu');
     const priceBefore=await page.$eval('.menu-card .menu-price-value',el=>el.textContent.trim());
     await page.click('.menu-card .menu-save');
@@ -482,7 +482,7 @@ async function verifyUpgradedJourney(file,width,height,name) {
     const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('quicklysMenuSavedV1')||'[]'));
     assert.equal(stored.length,1,name+': the shortlist should persist locally');
     await page.click('#menu-saved-filter');
-    assert.equal(await page.$eval('.menu-card',cards=>cards.length),1);
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.menu-card').length),1);
     assert.equal(await page.$eval('.menu-card .menu-price-value',el=>el.textContent.trim()),priceBefore,
       name+': saved items retain the photographed price');
     await page.reload({waitUntil:'domcontentloaded',timeout:30000});
@@ -490,9 +490,9 @@ async function verifyUpgradedJourney(file,width,height,name) {
     assert.equal(await page.$eval('#saved-count',el=>el.textContent.trim()),'1',
       name+': saved items survive a full page reload');
     await page.click('#menu-saved-filter');
-    assert.equal(await page.$eval('.menu-card',cards=>cards.length),1);
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.menu-card').length),1);
     await page.click('.menu-card .menu-save');
-    assert.equal(await page.$eval('.menu-card',cards=>cards.length),0,
+    assert.equal(await page.evaluate(() => document.querySelectorAll('.menu-card').length),0,
       name+': removing saved item updates the list');
     assert.equal(await page.$eval('#menu-empty',el=>el.hidden),false,
       name+': empty saved list should have a clear message');
