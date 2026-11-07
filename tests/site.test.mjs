@@ -214,3 +214,17 @@ test('official branding policy avoids any invented logo or seal', () => {
   assert.match(html, /class="visit-address-panel"/);
   assert.match(css, /Official-logo-only policy/);
 });
+
+test('Quickly owns drinks and snacks; restaurant kitchen is separate', () => {
+  const main = html.split('<section class="kitchen-section')[1]?.split('<section class="menu-section')[0];
+  const quickly = html.split('<section class="menu-section')[1]?.split('<section class="favorites-section')[0];
+  assert.ok(main && quickly, 'both independent sections should exist');
+  assert.match(main, /太平沙财记/);
+  assert.match(quickly, /Quickly 奶茶与小吃/);
+  assert.match(quickly, /Quickly’s own drinks-and-snacks menu/);
+  assert.match(quickly, /并非太平沙财记的中餐菜品/);
+  assert.match(quickly, /tel:\+16269376552/);
+  assert.match(main, /tel:\+16269376555/);
+  assert.ok(!html.includes('家常中餐 · 奶茶饮品 · 哈岗'), 'footer must not claim Quickly drinks as Tai Ping products');
+  assert.match(html, /separate menus and phone numbers/);
+});
