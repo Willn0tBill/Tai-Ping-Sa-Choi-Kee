@@ -100,13 +100,16 @@ async function visit(file, width, height, name, mobile) {
       return {
         columns:getComputedStyle(document.querySelector('.hero-floating-actions')).gridTemplateColumns.split(' ').length,
         tops:rects.map(x=>x.top),
+        layoutRow:cards.map(x=>x.offsetTop),
         widths:rects.map(x=>x.width),
         photoBottom:document.querySelector('.hero-visual,.quicklys-store-photo').getBoundingClientRect().bottom
       };
     });
     assert.equal(cardRow.columns,3,name+': desktop/tablet cards should form three balanced columns '+JSON.stringify(cardRow));
-    assert.ok(Math.max(...cardRow.tops)-Math.min(...cardRow.tops)<3,
-      name+': all cards should share one row '+JSON.stringify(cardRow));
+    // The cards gently float by up to 7px, so getBoundingClientRect().top
+    // differs while they animate. offsetTop checks the actual CSS grid row.
+    assert.ok(Math.max(...cardRow.layoutRow)-Math.min(...cardRow.layoutRow)<3,
+      name+': all cards should share one layout row '+JSON.stringify(cardRow));
     assert.ok(cardRow.widths.every(w=>w>160),
       name+': desktop/tablet cards should have usable width '+JSON.stringify(cardRow));
     if (file==='quicklys.html') {
