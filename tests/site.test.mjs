@@ -60,7 +60,7 @@ class FakeElement {
     const members=new Set();
     this.classList={
       add:(v)=>members.add(v),
-      remove:(v)=>members.delete(v),
+      remove:(...values)=>values.forEach(v=>members.delete(v)),
       contains:(v)=>members.has(v),
       toggle:(v,force)=>{if(force===undefined) force=!members.has(v); if(force) members.add(v); else members.delete(v); return force;}
     };
@@ -375,8 +375,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v9"/);
-    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v10"/);
+    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -575,8 +575,8 @@ test('floating hero cards use verified actions and keep business identities sepa
     assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
     assert.match(hero,/在线点餐/);
     assert.match(hero,/同一地址 · 独立菜单/);
-    assert.match(doc,/href="styles\.css\?v=motion-v9"/);
-    assert.match(doc,/src="app\.js\?v=motion-v9" defer/);
+    assert.match(doc,/href="styles\.css\?v=motion-v10"/);
+    assert.match(doc,/src="app\.js\?v=motion-v10" defer/);
   }
   const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
   const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
@@ -593,7 +593,7 @@ test('floating hero cards use verified actions and keep business identities sepa
   assert.match(css,/\.quicklys-intro \.quicklys-description\{order:8\}/);
   assert.match(css,/@keyframes float-card-drift/);
   assert.doesNotMatch(css,/\.motion-on \.float-card-order\{animation:float-card-drift/);
-  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view/);
+  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view:not\(\.card-reveal-complete\)/);
   assert.match(css,/\.motion-on \.float-card\{animation:none\}/);
   assert.match(css,/html:not\(\.motion-on\) \.float-card\{animation:none!important/);
   assert.ok(!/(?:fake|rating|review-count|discount-percent)/.test(tai),'no fake reviews or discounts on floating cards');
@@ -614,8 +614,8 @@ test('desktop and tablet editorial compositions use full-width action row withou
   assert.match(v7,/\.feature-image-wrap\{height:385px\}/);
   assert.match(v7,/\.quicklys-page \.menu-results \.menu-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   for(const page of [html,quicklyHtml]){
-    assert.match(page,/href="styles\.css\?v=motion-v9"/);
-    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v10"/);
+    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
     assert.equal((page.match(/class="float-card float-card-/g)||[]).length,3);
   }
   assert.match(v7,/@media\(prefers-reduced-motion:reduce\)/);
@@ -630,8 +630,8 @@ test('ticker groups are identical and dynamically expanded for a seamless wrap',
     assert.equal(copies.length,2,'marquee requires exactly two equal groups');
     assert.equal(copies[0],copies[1],'the sequence must be identical at the looping seam');
     assert.ok(copies[0].includes('<b>✳</b>'),'repeats should keep the separator');
-    assert.match(page,/href="styles\.css\?v=motion-v9"/);
-    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v10"/);
+    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
   }
   assert.match(js,/function initTickerLoop\(\)/);
   assert.match(js,/baseMarkup\.repeat\(repeats\)/);
@@ -657,11 +657,11 @@ test('every static card is watched separately for its first viewport entry',()=>
   assert.match(quicklyHtml,/data-card-reveal class="menu-side-panel"/);
   for(const page of [html,quicklyHtml]){
     assert.doesNotMatch(page,/class="hero-floating-actions"[^>]+data-reveal/);
-    assert.match(page,/href="styles\.css\?v=motion-v9"/);
-    assert.match(page,/src="app\.js\?v=motion-v9" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v10"/);
+    assert.match(page,/src="app\.js\?v=motion-v10" defer/);
   }
   assert.match(css,/@keyframes card-enter-on-view/);
-  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view/);
+  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view:not\(\.card-reveal-complete\)/);
   assert.match(css,/animation-delay:var\(--card-stagger,0ms\)/);
   assert.doesNotMatch(css,/\.motion-on \.float-card-order\{animation:float-card-drift/);
   assert.match(js,/observer\.unobserve\(card\)/);
@@ -671,16 +671,13 @@ test('every static card is watched separately for its first viewport entry',()=>
   assert.match(js,/rearmCardReveals\(\)/);
 });
 
-test('card observer does not animate until intersection and re-arms on Replay',()=>{
+test('card animation runs only while visible, pauses on exit, resumes and finishes once',()=>{
   const root=new FakeElement('html');
-  const first=new FakeElement('article');
-  const second=new FakeElement('article');
+  const first=new FakeElement('article'),second=new FakeElement('article');
   first.setAttribute('data-card-reveal','');
   second.setAttribute('data-card-reveal','');
-  const toggle=new FakeElement('button');
-  const replay=new FakeElement('button');
-  const zh=new FakeElement('span');
-  const en=new FakeElement('span');
+  const toggle=new FakeElement('button'),replay=new FakeElement('button');
+  const zh=new FakeElement('span'),en=new FakeElement('span');
   toggle.querySelector=sel=>sel==='.motion-status-zh'?zh:sel==='.motion-status-en'?en:null;
   const nodes=[first,second];
   const doc={
@@ -690,28 +687,69 @@ test('card observer does not animate until intersection and re-arms on Replay',(
     getElementById:()=>null,
     addEventListener(){}
   };
-  let callback, watched=[];
+  let callback,watched=[],options;
   class Observer {
-    constructor(cb){callback=cb;}
-    observe(card){watched.push(card);}
+    constructor(cb,settings){callback=cb;options=settings;}
+    observe(card){if(!watched.includes(card))watched.push(card);}
     unobserve(card){watched=watched.filter(el=>el!==card);}
   }
   const win={innerWidth:390,addEventListener(){},matchMedia:()=>({matches:false})};
   vm.runInNewContext(js,{document:doc,window:win,IntersectionObserver:Observer,WeakSet,Date,console});
   assert.equal(root.classList.contains('card-reveal-ready'),true);
   assert.equal(watched.length,2);
-  assert.equal(first.classList.contains('card-in-view'),false);
-  callback([{target:first,isIntersecting:false}]);
-  assert.equal(first.classList.contains('card-in-view'),false,'non-intersection cannot fire');
-  callback([{target:first,isIntersecting:true}]);
-  assert.equal(first.classList.contains('card-in-view'),true);
+  assert.equal(options.rootMargin,'0px 0px -8% 0px');
+  assert.equal(options.threshold.includes(.15),true);
+  assert.equal(first.classList.contains('card-in-view'),false,'nothing starts when offscreen');
+
+  callback([{target:first,isIntersecting:true,intersectionRatio:.06}]);
+  assert.equal(first.classList.contains('card-in-view'),false,'small intersection should not start an entrance');
+  callback([{target:first,isIntersecting:true,intersectionRatio:.6}]);
+  assert.equal(first.classList.contains('card-in-view'),true,'entering the viewport starts entrance');
+  assert.equal(first.classList.contains('card-on-screen'),true);
   assert.equal(second.classList.contains('card-in-view'),false);
-  assert.equal(watched.length,1,'completed card unobserved');
+  assert.equal(watched.length,2,'running cards must stay observed to detect exit');
+
+  callback([{target:first,isIntersecting:false,intersectionRatio:0}]);
+  assert.equal(first.classList.contains('card-in-view'),true,'progress is preserved');
+  assert.equal(first.classList.contains('card-on-screen'),false,'offscreen animation is paused');
+  assert.equal(watched.length,2);
+  // A card cannot be marked complete while its animation is paused.
+  first.dispatch('animationend',{target:first,animationName:'card-enter-on-view'});
+  assert.equal(first.classList.contains('card-reveal-complete'),false);
+  callback([{target:first,isIntersecting:true,intersectionRatio:.8}]);
+  assert.equal(first.classList.contains('card-on-screen'),true,'animation resumes on re-entry');
+  first.dispatch('animationend',{target:first,animationName:'card-enter-on-view'});
+  assert.equal(first.classList.contains('card-reveal-complete'),true,'completion is permanent until replay');
+  assert.equal(first.classList.contains('card-in-view'),false);
+  assert.equal(first.classList.contains('card-on-screen'),false);
+  assert.equal(watched.length,1,'finished cards are unobserved');
+
+  callback([{target:first,isIntersecting:true,intersectionRatio:1}]);
+  assert.equal(first.classList.contains('card-on-screen'),false,'completed card never restarts');
   replay.dispatch('click');
-  assert.equal(first.classList.contains('card-in-view'),false,'replay resets viewed cards');
-  assert.equal(watched.length,2,'replay watches both again');
-  callback([{target:second,isIntersecting:true}]);
-  assert.equal(second.classList.contains('card-in-view'),true);
+  assert.equal(first.classList.contains('card-reveal-complete'),false,'replay re-arms complete cards');
+  assert.equal(watched.length,2);
+  assert.equal(first.classList.contains('card-on-screen'),false,'replay alone does not start any card');
+  callback([{target:second,isIntersecting:true,intersectionRatio:.7}]);
+  assert.equal(second.classList.contains('card-on-screen'),true);
   toggle.dispatch('click');
   assert.equal(root.classList.contains('motion-off'),true);
+  callback([{target:second,isIntersecting:true,intersectionRatio:.7}]);
+  assert.equal(second.classList.contains('card-on-screen'),false,'turning off motion stops on-screen animation');
+  toggle.dispatch('click');
+  assert.equal(root.classList.contains('motion-on'),true);
+  assert.equal(second.classList.contains('card-on-screen'),false,'reenabling only re-arms until next observer entry');
+});
+
+test('card animation CSS pauses offscreen and is permanently stopped after completion',()=>{
+  assert.match(css,/\.motion-on\.card-reveal-ready \[data-card-reveal\]\.card-in-view:not\(\.card-reveal-complete\)/);
+  assert.match(css,/animation-play-state:paused/);
+  assert.match(css,/\.card-in-view\.card-on-screen:not\(\.card-reveal-complete\)/);
+  assert.match(css,/animation-play-state:running/);
+  assert.match(css,/\.card-reveal-complete \{\s*animation:none!important/);
+  assert.match(js,/intersectionRatio >= 0\.15/);
+  assert.match(js,/observer\.unobserve\(card\)/);
+  assert.match(js,/card\.removeEventListener\?\.\('animationend', completed\)/);
+  assert.ok(!css.includes('.motion-on .float-card-order{animation:float-card-drift'),
+    'do not revive continuous floating card animation');
 });

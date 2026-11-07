@@ -250,3 +250,13 @@ The appearance animation of every individual **Fantuan/maps/cross-business float
 - The existing **Motion off / Replay** controls still work. Replay resets the card observer so that cards animate again only when visible; reduced-motion users never have content hidden.
 - If IntersectionObserver is unsupported or JavaScript is off, all cards remain fully readable without waiting for an animation.
 - Real-Chrome browser smoke tests verify that a distant card starts static, animates on entering the viewport, and retains its one-time state.
+
+## Strict on-screen-only card animation (v10)
+
+The v9 observer started a card when it entered the viewport and immediately unobserved it. That let its CSS animation keep playing after it had scrolled offscreen. V10 fixes that state-machine bug.
+
+- A card starts its entrance only when at least **15%** enters the observer's visible region (bottom 8% reserved), not because the page loads or because the menu populates.
+- If the visitor scrolls it out of view **mid-animation**, the CSS animation's clock is **paused**. When the same card re-enters, the clock resumes at the interrupted frame.
+- Only the actual `animationend` event marks a card complete. Complete cards become static and are unobserved, so they do not replay on every scroll. The existing Replay control explicitly re-arms them.
+- Motion-off, reduced-motion and no-JavaScript conditions preserve readable static content; dynamically filtered Quickly's menu items register and unregister cleanly.
+- Browser tests validate that an offscreen card is static, an in-view card is running, the animation's time stops advancing offscreen, it resumes on re-entry and remains still after finishing. Unit tests cover near-edge intersections, replay, completion and the motion toggle.

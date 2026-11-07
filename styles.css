@@ -1227,9 +1227,19 @@ html.motion-off *,html.motion-off *::before,html.motion-off *::after{
    Each card animates ONCE, only after its individual IntersectionObserver
    callback marks it visible. A missing observer or disabled JS never hides
    content. Cards do not bob offscreen or consume continuous animation time. */
-.motion-on.card-reveal-ready [data-card-reveal].card-in-view {
+.motion-on.card-reveal-ready [data-card-reveal].card-in-view:not(.card-reveal-complete) {
   animation:card-enter-on-view .72s cubic-bezier(.18,.75,.23,1) both;
   animation-delay:var(--card-stagger,0ms);
+  /* The timeline does not advance offscreen, including during its delay. */
+  animation-play-state:paused;
+}
+.motion-on.card-reveal-ready [data-card-reveal].card-in-view.card-on-screen:not(.card-reveal-complete) {
+  animation-play-state:running;
+}
+.motion-on.card-reveal-ready [data-card-reveal].card-reveal-complete {
+  animation:none!important;
+  opacity:1;
+  transform:none;
 }
 @keyframes card-enter-on-view {
   from{opacity:.3;transform:translate3d(0,22px,0) scale(.985)}
@@ -1239,7 +1249,7 @@ html.motion-off *,html.motion-off *::before,html.motion-off *::after{
    until their observer reports intersection. */
 [data-card-reveal]:not(.card-in-view){opacity:1;transform:none}
 @media(hover:none){
-  .motion-on.card-reveal-ready [data-card-reveal].card-in-view{
+  .motion-on.card-reveal-ready [data-card-reveal].card-in-view:not(.card-reveal-complete){
     animation-duration:.62s
   }
 }

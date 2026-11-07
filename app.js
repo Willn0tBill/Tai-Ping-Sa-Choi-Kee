@@ -939,23 +939,56 @@ function initCardReveals() {
   if (!root || typeof IntersectionObserver !== 'function') return;
 
   const observed = new WeakSet();
+  const listeners = new WeakSet();
+  const visibleEnough = (entry) =>
+    entry.isIntersecting && entry.intersectionRatio >= 0.15;
+
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
       const card = entry.target;
-      if (!root.classList.contains('motion-on')) continue;
-      card.classList.add('card-in-view');
-      observer.unobserve(card);
-      observed.delete(card);
+      if (card.classList.contains('card-reveal-complete')) {
+        observer.unobserve(card);
+        observed.delete(card);
+        continue;
+      }
+      const onScreen = visibleEnough(entry) && root.classList.contains('motion-on');
+      if (onScreen) {
+        // First entry starts the animation. Subsequent entries resume it at
+        // the exact frame where it stopped, without restarting the timeline.
+        card.classList.add('card-in-view');
+        card.classList.add('card-on-screen');
+      } else {
+        // Keep the animation instance, but stop its clock the moment the card
+        // leaves the viewport. CSS animation-play-state handles the pause.
+        card.classList.remove('card-on-screen');
+      }
     }
-  }, {threshold: 0.07, rootMargin: '0px 0px -12px 0px'});
+  }, {
+    threshold: [0, 0.15, 0.5, 1],
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  function completed(event) {
+    const card = event.target;
+    if (event.animationName !== 'card-enter-on-view' ||
+        !card.classList.contains('card-in-view') ||
+        !card.classList.contains('card-on-screen')) return;
+    card.classList.add('card-reveal-complete');
+    card.classList.remove('card-in-view', 'card-on-screen');
+    observer.unobserve(card);
+    observed.delete(card);
+  }
 
   observeNewCards = (scope = document) => {
     const cards = Array.from(scope.querySelectorAll('[data-card-reveal]'));
     for (const [index, card] of cards.entries()) {
-      if (observed.has(card) || card.classList.contains('card-in-view')) continue;
+      if (observed.has(card) || card.classList.contains('card-reveal-complete')) continue;
       if (!card.style.getPropertyValue?.('--card-stagger')) {
         card.style.setProperty('--card-stagger', String((index % 3) * 65) + 'ms');
+      }
+      if (!listeners.has(card)) {
+        card.addEventListener('animationend', completed);
+        listeners.add(card);
       }
       observer.observe(card);
       observed.add(card);
@@ -966,16 +999,18 @@ function initCardReveals() {
     for (const card of scope.querySelectorAll('[data-card-reveal]')) {
       observer.unobserve(card);
       observed.delete(card);
+      card.removeEventListener?.('animationend', completed);
+      listeners.delete(card);
     }
   };
 
   rearmCardReveals = () => {
-    // Replay only cards that come back into view; offscreen cards do not
-    // animate in the background and are not considered "seen" prematurely.
+    // Replay only arms the observer. Nothing actually animates until the
+    // individual card is on-screen, and an interrupted card is rearmed too.
     for (const card of document.querySelectorAll('[data-card-reveal]')) {
       observer.unobserve(card);
       observed.delete(card);
-      card.classList.remove('card-in-view');
+      card.classList.remove('card-in-view', 'card-on-screen', 'card-reveal-complete');
     }
     observeNewCards();
   };

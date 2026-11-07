@@ -246,27 +246,83 @@ async function visit(file, width, height, name, mobile) {
     await page.click('[data-motion-replay]');
     assert.equal(await page.$eval('[data-motion-toggle]',e=>e.getAttribute('aria-pressed')),'true');
   }
-  // An individual card receives an entrance animation only upon scrolling
-  // into view. It is marked once, so later scrolling cannot replay it.
+  // Scroll-triggered cards must not run offscreen. Their CSS animation
+  // timeline pauses on exit and resumes, then completes exactly once.
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo({top:0,behavior:'instant'});
+    document.querySelector('[data-motion-replay]')?.click();
+  });
+  await page.addStyleTag({content:
+    '.motion-on.card-reveal-ready [data-card-reveal].card-in-view:not(.card-reveal-complete){animation-duration:2400ms!important;animation-delay:0ms!important}'
+  });
+  const farBeforeScroll=await page.$eval(farSelector,card=>({
+    entered:card.classList.contains('card-in-view'),
+    finished:card.classList.contains('card-reveal-complete'),
+    animation:getComputedStyle(card).animationName,
+    top:card.getBoundingClientRect().top
+  }));
+  assert.equal(farBeforeScroll.entered,false,name+': Replay must not animate far-offscreen cards '+JSON.stringify(farBeforeScroll));
+
   await page.evaluate(selector => {
-    const card=document.querySelector(selector);
-    card?.scrollIntoView({block:'center',behavior:'instant'});
+    document.querySelector(selector)?.scrollIntoView({block:'center',behavior:'instant'});
   },farSelector);
   await page.waitForFunction(
-    selector => !!document.querySelector(selector)?.classList.contains('card-in-view'),
+    selector=>document.querySelector(selector)?.classList.contains('card-on-screen'),
     {timeout:8000},farSelector
   );
-  const cardAfter = await page.$eval(farSelector,card=>({
-    inView:card.classList.contains('card-in-view'),
+  const cardRunning=await page.$eval(farSelector,card=>({
     animation:getComputedStyle(card).animationName,
-    stagger:getComputedStyle(card).animationDelay
+    playState:getComputedStyle(card).animationPlayState
   }));
-  assert.match(cardAfter.animation,/card-enter-on-view/,
-    name+': visible cards should use viewport-triggered entrance '+JSON.stringify(cardAfter));
+  assert.match(cardRunning.animation,/card-enter-on-view/,
+    name+': card entrance begins only in viewport '+JSON.stringify(cardRunning));
+  assert.equal(cardRunning.playState,'running',name+': visible animation must run');
+
+  if(width===390 || width===1500){
+    // Test interruption before the 2.4-second test animation completes.
+    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+    await page.waitForFunction(selector=>{
+      const card=document.querySelector(selector);
+      return card?.classList.contains('card-in-view') &&
+        !card.classList.contains('card-on-screen');
+    },{timeout:8000},farSelector);
+    const paused=await page.$eval(farSelector,card=>({
+      status:getComputedStyle(card).animationPlayState,
+      time:card.getAnimations()[0]?.currentTime ?? null,
+      complete:card.classList.contains('card-reveal-complete')
+    }));
+    assert.equal(paused.status,'paused',name+': card animation must pause offscreen');
+    assert.equal(paused.complete,false);
+    await new Promise(resolve=>setTimeout(resolve,180));
+    const pausedTime=await page.$eval(farSelector,card=>card.getAnimations()[0]?.currentTime ?? null);
+    assert.ok(paused.time!==null && pausedTime!==null && Math.abs(pausedTime-paused.time)<25,
+      name+': timeline must not advance offscreen '+JSON.stringify({paused,pausedTime}));
+
+    await page.evaluate(selector=>
+      document.querySelector(selector)?.scrollIntoView({block:'center',behavior:'instant'}),
+      farSelector);
+    await page.waitForFunction(selector=>
+      document.querySelector(selector)?.classList.contains('card-on-screen'),
+      {timeout:8000},farSelector);
+    assert.equal(await page.$eval(farSelector,card=>getComputedStyle(card).animationPlayState),'running',
+      name+': partially completed entrance should resume in view');
+  }
+  await page.waitForFunction(selector=>
+    document.querySelector(selector)?.classList.contains('card-reveal-complete'),
+    {timeout:8000},farSelector);
+  const finished=await page.$eval(farSelector,card=>({
+    complete:card.classList.contains('card-reveal-complete'),
+    animation:getComputedStyle(card).animationName
+  }));
+  assert.equal(finished.complete,true);
+  assert.equal(finished.animation,'none',name+': completed card should not keep animating');
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
-  await page.evaluate(selector => document.querySelector(selector)?.scrollIntoView({block:'center',behavior:'instant'}),farSelector);
-  assert.equal(await page.$eval(farSelector,card=>card.classList.contains('card-in-view')),true,
-    name+': a card must remain marked after its first entrance');
+  await page.evaluate(selector=>
+    document.querySelector(selector)?.scrollIntoView({block:'center',behavior:'instant'}),
+    farSelector);
+  assert.equal(await page.$eval(farSelector,card=>card.classList.contains('card-reveal-complete')),true,
+    name+': completed card should not replay on the next viewport visit');
 
   if (width === 1900) {
     // A second wide desktop width catches loops that were measured only once.
