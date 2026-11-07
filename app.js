@@ -56,7 +56,6 @@ function renderMenu() {
     card.appendChild(makeTextElement('h3', '', item.name));
     card.appendChild(makeTextElement('p', 'menu-zh', item.zh, 'zh-Hans'));
     const foot = makeTextElement('div', 'menu-card-bottom', item.note);
-    foot.appendChild(makeTextElement('span', '', '↗'));
     card.appendChild(foot);
     fragment.appendChild(card);
   }
