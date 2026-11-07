@@ -183,3 +183,14 @@ test('Chinese-first website layout retains English translations underneath', () 
   assert.match(js, /makeTextElement\('h3', 'menu-item-zh', item.zh, 'zh-Hans'\)/);
   assert.match(js, /makeTextElement\('p', 'menu-en', item.name, 'en'\)/);
 });
+
+test('photo assets are genuinely associated with the restaurant, not stock-photo placeholders', () => {
+  assert.ok(!/images\\.unsplash\\.com|unsplash\\.com|photo-1747016804753|photo-1756132539966|photo-1768204039907/.test(html),
+    'remove generic stock photo URLs');
+  assert.match(html, /src="https:\/\/cdn\.restaurants-us\.com\/3616-albums-2\.jpg"/);
+  assert.match(html, /src="https:\/\/cdn\.restaurants-us\.com\/3616-albums-1\.jpg"/);
+  assert.match(html, /src="https:\/\/s3-media0\.fl\.yelpcdn\.com\/bphoto\/ZBEJxeL9uK-M6cb3rGqtVw\/o\.jpg"/);
+  assert.match(html, /Photo permissions pending/);
+  assert.match(html, /正式商用前须取得照片授权/);
+  assert.equal((html.match(/<img\b/g) ?? []).length, 3);
+});
