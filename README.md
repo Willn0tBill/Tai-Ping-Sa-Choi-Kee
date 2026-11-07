@@ -32,7 +32,9 @@ Edit the `MENU_ITEMS` list near the top of `app.js`. Each item has:
 - `type`: `milk`, `fruit`, `slush`, or `snacks`
 - `tag`, `color`, and `note`: presentation metadata
 
-The included selection is a **demonstration based on historical/public references**. It is **not** a verified complete menu. Current products, names, availability, prices, allergen statements, and ordering options must come directly from the owner before launch.
+The current file mirrors **83 English/Chinese menu entries** from an archived store-specific PDF dated June 2022, including milk tea, flavored tea, special drinks, slush, smoothies, sea-salt foam, snacks, and toppings. Historical prices are preserved in `archivedPriceM` / `archivedPriceL` fields for owner review only; **they are intentionally not shown on the website**. The public page links back to the archived PDF and explicitly warns that products and prices may have changed.
+
+**Important:** This PDF also includes separate menus branded `Kitchen798`; those dishes are **not included** in the Quickly menu. Do not treat the combined document as one brand's catalog. Current products, availability, prices, allergen statements, and ordering options must come directly from the owner before launch.
 
 ## Owner approval checklist
 
