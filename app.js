@@ -816,13 +816,33 @@ function renderMenu() {
 
 function setCategory(category) {
   if (!['all', 'milk', 'tea', 'special', 'slush', 'smoothie', 'snacks', 'toppings'].includes(category)) return;
+  const changed = activeCategory !== category;
   activeCategory = category;
+  let selectedButton = null;
   for (const button of filterButtons) {
     const selected = button.dataset.filter === category;
     button.classList.toggle('is-active', selected);
     button.setAttribute('aria-pressed', String(selected));
+    if (selected) selectedButton = button;
   }
   renderMenu();
+  if (!changed) return;
+
+  // Reassure customers that the category changed; don't animate each typed character.
+  if (menuCount && document.documentElement?.classList.contains('motion-on')) {
+    menuCount.classList.remove('is-updated');
+    void menuCount.offsetWidth;
+    menuCount.classList.add('is-updated');
+  }
+
+  // A long row of category tabs should keep the active option in view on phones.
+  if (selectedButton && window.innerWidth <= 740 &&
+      typeof selectedButton.scrollIntoView === 'function') {
+    selectedButton.scrollIntoView({
+      block: 'nearest', inline: 'nearest',
+      behavior: document.documentElement?.classList.contains('motion-on') ? 'smooth' : 'auto'
+    });
+  }
 }
 
 for (const button of filterButtons) {
@@ -962,7 +982,118 @@ function initMotionControls() {
   sync();
 }
 
+
+/* Desktop chapter guide: an overview of real page sections, not decorative dots. */
+function initSectionRail() {
+  const rail = document.querySelector('.section-rail');
+  if (!rail) return;
+  const links = Array.from(rail.querySelectorAll('[data-section-link]'));
+  const sections = links.map(link => ({
+    link,
+    section: document.getElementById(link.dataset.sectionLink)
+  })).filter(item => item.section && typeof item.section.getBoundingClientRect === 'function');
+  if (!sections.length) return;
+
+  let scheduled = false;
+  function update() {
+    scheduled = false;
+    const threshold = (window.innerHeight || 800) * 0.42;
+    let active = sections[0];
+    for (const item of sections) {
+      if (item.section.getBoundingClientRect().top <= threshold) active = item;
+    }
+    for (const item of sections) {
+      if (item === active) item.link.setAttribute('aria-current', 'location');
+      else item.link.removeAttribute('aria-current');
+    }
+  }
+  function onScroll() {
+    if (scheduled) return;
+    scheduled = true;
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(update);
+    } else {
+      update();
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('hashchange', onScroll);
+  update();
+}
+
+/* Native dialog gallery for the real restaurant photographs.
+   Without JS / dialog support, the photo links still open the original image.
+   No AI images and no library downloads. */
+function initPhotoGallery() {
+  const dialog = document.querySelector('.photo-dialog');
+  const triggers = Array.from(document.querySelectorAll('[data-gallery-index]'));
+  if (!dialog || !triggers.length || typeof dialog.showModal !== 'function') return;
+
+  const image = dialog.querySelector('[data-photo-large]');
+  const caption = dialog.querySelector('[data-photo-caption]');
+  const captionEn = dialog.querySelector('[data-photo-caption-en]');
+  const count = dialog.querySelector('[data-photo-count]');
+  const close = dialog.querySelector('[data-photo-close]');
+  const previous = dialog.querySelector('[data-photo-prev]');
+  const next = dialog.querySelector('[data-photo-next]');
+  if (!image || !caption || !captionEn || !count || !close || !previous || !next) return;
+
+  let selected = 0;
+  let opener = null;
+
+  function select(index) {
+    selected = (index + triggers.length) % triggers.length;
+    const trigger = triggers[selected];
+    const thumb = trigger.querySelector('img');
+    if (!thumb) return;
+    image.src = trigger.href;
+    image.alt = thumb.alt;
+    caption.textContent = trigger.dataset.galleryTitle || '';
+    captionEn.textContent = trigger.dataset.galleryEn || '';
+    count.textContent = (selected + 1) + ' / ' + triggers.length;
+  }
+
+  triggers.forEach((trigger, index) => {
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      opener = trigger;
+      select(index);
+      if (!dialog.open) dialog.showModal();
+    });
+  });
+
+  previous.addEventListener('click', () => select(selected - 1));
+  next.addEventListener('click', () => select(selected + 1));
+  close.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('close', () => opener?.focus());
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('keydown', (event) => {
+    if (!dialog.open) return;
+    if (event.key === 'ArrowRight') { event.preventDefault(); select(selected + 1); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); select(selected - 1); }
+  });
+
+  // Touch customers can swipe between the three real photos.
+  let touchStart = null;
+  image.addEventListener('touchstart', (event) => {
+    touchStart = event.changedTouches?.[0]?.clientX ?? null;
+  }, {passive:true});
+  image.addEventListener('touchend', (event) => {
+    if (touchStart === null) return;
+    const end = event.changedTouches?.[0]?.clientX;
+    if (typeof end === 'number' && Math.abs(end - touchStart) > 45) {
+      select(selected + (end < touchStart ? 1 : -1));
+    }
+    touchStart = null;
+  }, {passive:true});
+}
+
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
 initMotionControls();
 initScrollReveals();
+initSectionRail();
+initPhotoGallery();

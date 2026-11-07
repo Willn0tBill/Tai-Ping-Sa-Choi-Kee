@@ -14,8 +14,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://cdn.restaurants-us.com" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=motion-v3">
-  <script src="app.js?v=motion-v3" defer></script>
+  <link rel="stylesheet" href="styles.css?v=motion-v4">
+  <script src="app.js?v=motion-v4" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">跳到主要内容 / Skip to content</a>
@@ -64,7 +64,10 @@
         <div class="hero-visual" data-reveal aria-label="Actual featured dish photographed at Tai Ping Sa Choi Kee">
           <div class="hero-visual-backdrop"></div>
           <div class="hero-photo-frame">
-            <img class="hero-photo" src="https://cdn.restaurants-us.com/3616-albums-2.jpg" alt="鱼香茄子煲，太平沙财记店内菜品照片。 Eggplant clay pot photographed at Tai Ping Sa Choi Kee." width="1000" height="1000" fetchpriority="high" decoding="async">
+            <a class="gallery-trigger" href="https://cdn.restaurants-us.com/3616-albums-2.jpg" target="_blank" rel="noopener noreferrer" data-gallery-index="0" data-gallery-title="鱼香茄子煲" data-gallery-en="Eggplant clay pot" aria-label="放大鱼香茄子煲照片 / View dish photograph">
+              <img class="hero-photo" src="https://cdn.restaurants-us.com/3616-albums-2.jpg" alt="鱼香茄子煲，太平沙财记店内菜品照片。 Eggplant clay pot photographed at Tai Ping Sa Choi Kee." width="1000" height="1000" fetchpriority="high" decoding="async">
+              <span class="gallery-zoom" aria-hidden="true">↗</span>
+            </a>
             <span class="hero-photo-caption" lang="zh-Hans">店内菜品实拍 <small lang="en">Restaurant gallery photo · Preview</small></span>
           </div>
         </div>
@@ -251,16 +254,17 @@
           </div>
           <p class="favorites-intro"><span lang="zh-Hans">真实门店外观与店内一角，帮助你轻松找到我们。</span><br><span lang="en">Photos associated with the Hacienda Heights restaurant. Image permissions pending.</span></p>
         </div>
-        <div class="feature-grid">
+        <div class="feature-grid" tabindex="0" aria-label="门店实景照片 / Restaurant gallery">
           <article data-reveal class="feature-card feature-store">
-            <div class="feature-image-wrap"><img src="https://cdn.restaurants-us.com/3616-albums-1.jpg" alt="太平沙财记与 Quickly 在 Hacienda Heights 的门店外观，蓝色店面及中英文招牌。 Real shared storefront with both signs visible." loading="lazy" decoding="async" width="1000" height="563"></div>
+            <div class="feature-image-wrap"><a class="gallery-trigger" href="https://cdn.restaurants-us.com/3616-albums-1.jpg" target="_blank" rel="noopener noreferrer" data-gallery-index="1" data-gallery-title="门店外观" data-gallery-en="Our storefront" aria-label="放大门店外观照片 / View storefront photo"><img src="https://cdn.restaurants-us.com/3616-albums-1.jpg" alt="太平沙财记与 Quickly 在 Hacienda Heights 的门店外观，蓝色店面及中英文招牌。 Real shared storefront with both signs visible." loading="lazy" decoding="async" width="1000" height="563"><span class="gallery-zoom" aria-hidden="true">↗</span></a></div>
             <div class="feature-info"><div><span class="feature-number">01 / 门店外观 · EXTERIOR</span><h3 lang="zh-Hans">认准这块招牌。<small lang="en">Our storefront on Halliburton Road.</small></h3></div><a href="#visit" class="round-arrow" aria-label="查看门店地址 / Find the location">↗</a></div>
           </article>
           <article data-reveal class="feature-card feature-inside">
-            <div class="feature-image-wrap"><img src="https://s3-media0.fl.yelpcdn.com/bphoto/ZBEJxeL9uK-M6cb3rGqtVw/o.jpg" alt="太平沙财记店内环境，柜台、桌椅及中式装饰。 Restaurant interior photograph from the Hacienda Heights listing." loading="lazy" decoding="async" width="1024" height="1024"></div>
+            <div class="feature-image-wrap"><a class="gallery-trigger" href="https://s3-media0.fl.yelpcdn.com/bphoto/ZBEJxeL9uK-M6cb3rGqtVw/o.jpg" target="_blank" rel="noopener noreferrer" data-gallery-index="2" data-gallery-title="店内环境" data-gallery-en="Inside the restaurant" aria-label="放大店内环境照片 / View interior photo"><img src="https://s3-media0.fl.yelpcdn.com/bphoto/ZBEJxeL9uK-M6cb3rGqtVw/o.jpg" alt="太平沙财记店内环境，柜台、桌椅及中式装饰。 Restaurant interior photograph from the Hacienda Heights listing." loading="lazy" decoding="async" width="1024" height="1024"><span class="gallery-zoom" aria-hidden="true">↗</span></a></div>
             <div class="feature-info"><div><span class="feature-number">02 / 店内环境 · INTERIOR</span><h3 lang="zh-Hans">坐下来，慢慢吃。<small lang="en">A look inside our restaurant.</small></h3></div><a href="#kitchen" class="round-arrow" aria-label="查看招牌菜 / See signature dishes">↗</a></div>
           </article>
         </div>
+        <p class="gallery-swipe-hint" lang="zh-Hans">左右滑动查看更多照片 <small lang="en">Swipe to explore photos →</small></p>
         <p class="preview-photo-notice"><span lang="zh-Hans">图片来自公开餐厅照片页面，仅供网站方案展示，正式商用前须取得照片授权。</span><span lang="en">Photos sourced from public restaurant listings for concept review; confirm reuse permission before commercial publication.</span>
           <a href="https://taipingsachoikee.restaurants-us.com/" target="_blank" rel="noopener noreferrer">Restaurant photo source</a> ·
           <a href="https://www.yelp.com/biz/tai-ping-sa-choi-kee-hacienda-heights" target="_blank" rel="noopener noreferrer">Interior photo source</a>
@@ -293,6 +297,25 @@
       </div>
     </section>
   </main>
+  <nav class="section-rail" aria-label="页面章节 / Page sections">
+    <a href="#top" data-section-link="top" aria-current="location"><span class="rail-indicator" aria-hidden="true"></span><span class="rail-label"><strong lang="zh-Hans">首页</strong><small lang="en">Home</small></span></a>
+    <a href="#order" data-section-link="order"><span class="rail-indicator" aria-hidden="true"></span><span class="rail-label"><strong lang="zh-Hans">在线点餐</strong><small lang="en">Order</small></span></a>
+    <a href="#kitchen" data-section-link="kitchen"><span class="rail-indicator" aria-hidden="true"></span><span class="rail-label"><strong lang="zh-Hans">招牌菜</strong><small lang="en">Kitchen</small></span></a>
+    <a href="#favorites" data-section-link="favorites"><span class="rail-indicator" aria-hidden="true"></span><span class="rail-label"><strong lang="zh-Hans">门店照片</strong><small lang="en">Photos</small></span></a>
+    <a href="#visit" data-section-link="visit"><span class="rail-indicator" aria-hidden="true"></span><span class="rail-label"><strong lang="zh-Hans">地址</strong><small lang="en">Visit</small></span></a>
+  </nav>
+  <dialog class="photo-dialog" aria-label="店内实拍画廊 / Restaurant photo gallery">
+    <button class="photo-close" type="button" data-photo-close aria-label="关闭照片 / Close photo">×</button>
+    <figure class="photo-dialog-figure">
+      <img data-photo-large alt="店内实拍照片 / Restaurant gallery photograph" width="1100" height="750" loading="lazy">
+      <figcaption><strong data-photo-caption lang="zh-Hans"></strong><small data-photo-caption-en lang="en"></small></figcaption>
+    </figure>
+    <div class="photo-dialog-footer">
+      <button type="button" data-photo-prev aria-label="上一张照片 / Previous photo"><span aria-hidden="true">←</span><span lang="zh-Hans">上一张</span></button>
+      <span data-photo-count aria-live="polite" aria-atomic="true">1 / 3</span>
+      <button type="button" data-photo-next aria-label="下一张照片 / Next photo"><span lang="zh-Hans">下一张</span><span aria-hidden="true">→</span></button>
+    </div>
+  </dialog>
   <footer class="site-footer">
     <div class="container footer-inner">
       <div><a class="footer-brand" href="#top" lang="zh-Hans">太平沙财记</a><p><span lang="en">TAI PING SA CHOI KEE</span><br><span lang="zh-Hans">粤式中餐 · 哈岗</span><br><small lang="en"><a href="quicklys.html">Quickly’s menu ↗</a> is a separate page at the same location.</small></p></div>

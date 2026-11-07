@@ -183,3 +183,17 @@ The hero, photos, and bilingual restaurant ticker have noticeable staggered / ge
 - No additional fonts, paid animation library, synthetic food images or fake brand logos were introduced.
 
 An automated DOM test checks the default reduced-motion state, explicit opt-in, persisted override and replay. Real browser visual inspection remains necessary for final QA; the CI suite cannot prove exactly how the effect looks on a customer's device.
+
+
+## Interactive restaurant experience (v4)
+
+This pass adds interactions that remain useful after the first-load animation finishes:
+
+- **Photo viewer:** the three existing, real Tai Ping Sa Choi Kee gallery photos open in an accessible native dialog, with next/previous controls, keyboard arrow navigation, Escape to close, focus return to the opened thumbnail, and swipe gestures on touchscreens. Without JavaScript or dialog support, each photo still links directly to its actual original image. No generated or substitute photos were introduced.
+- **Mobile storefront gallery:** horizontal scroll snapping reveals the next real image instead of stacking giant photos vertically; a bilingual swipe hint explains the interaction.
+- **Desktop section rail:** at widths of 1460px or more, a compact right-side navigation highlights the current page section and expands its Chinese-first labels on hover/focus. The rail is hidden on smaller viewports to avoid crowding.
+- **Menu interaction polish:** the selected Quickly’s category scrolls into view in the horizontally swipeable filter strip, and the menu count animates when the category changes while motion is enabled. Searches remain unaffected.
+- **Section emphasis:** a restrained animated underline draws beneath highlighted section headings; photo dialog uses a short entrance. Reduced motion and the existing explicit motion toggle continue to work.
+- **Browser verification:** the GitHub Actions verification workflow now runs real Chrome (via puppeteer-core without a bundled browser download) for both sites at 390px mobile and 1500px desktop widths. It checks layout overflow, nav interaction, animation computed styles, the native photo dialog, Quickly’s menu filter, and reduced-motion behavior. Screenshots are uploaded as a CI artifact for visual review.
+
+The two businesses keep independent menu ownership, contacts, Fantuan links and branding. The website remains an owner-unapproved concept, with original photo license confirmation still required before official commercial use.

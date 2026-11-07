@@ -203,7 +203,7 @@ test('photo assets are genuinely associated with the restaurant, not stock-photo
   assert.match(html, /src="https:\/\/s3-media0\.fl\.yelpcdn\.com\/bphoto\/ZBEJxeL9uK-M6cb3rGqtVw\/o\.jpg"/);
   assert.match(html, /Photo permissions pending/);
   assert.match(html, /正式商用前须取得照片授权/);
-  assert.equal((html.match(/<img\b/g) ?? []).length, 3);
+  assert.equal((html.match(/<img\b/g) ?? []).length, 4);
 });
 
 test('photo enhancement preserves original image URLs and applies non-generative CSS only', () => {
@@ -374,8 +374,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v3"/);
-    assert.match(page,/src="app\.js\?v=motion-v3" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v4"/);
+    assert.match(page,/src="app\.js\?v=motion-v4" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -435,4 +435,108 @@ test('motion control honors reduced-motion defaults and explicit replay/opt-in',
   assert.equal(savedOn.root.classList.contains('motion-on'),true,'explicit choice overrides OS default');
   const savedOff=boot(false,'off');
   assert.equal(savedOff.root.classList.contains('motion-off'),true,'explicit user pause persists');
+});
+
+
+test('real-photo gallery is accessible, bilingual and progressively enhanced', () => {
+  assert.equal((html.match(/data-gallery-index="[012]"/g)||[]).length,3);
+  assert.match(html, /<dialog class="photo-dialog" aria-label="店内实拍画廊/);
+  assert.match(html, /data-photo-close/);
+  assert.match(html, /data-photo-prev/);
+  assert.match(html, /data-photo-next/);
+  assert.match(html, /data-photo-count aria-live="polite"/);
+  assert.match(html, /data-photo-large alt="店内实拍照片/);
+  assert.match(html, /class="gallery-swipe-hint"/);
+  assert.match(css, /scroll-snap-type:x mandatory/);
+  assert.match(css, /@media\(max-width:740px\)\{[\s\S]*?\.feature-grid\{\s*display:flex;overflow-x:auto/);
+  assert.match(css, /\.motion-on \.photo-dialog\[open\]\{animation:gallery-open/);
+  assert.match(css, /@keyframes gallery-open/);
+  assert.ok(!quicklyHtml.includes('data-gallery-index='),'Quickly’s should not borrow Tai Ping’s photo carousel');
+  const dialog=new FakeElement('dialog');
+  dialog.open=false;
+  dialog.showModal=()=>{dialog.open=true;};
+  dialog.close=()=>{dialog.open=false;dialog.dispatch('close');};
+  const controls=Object.fromEntries(['[data-photo-large]','[data-photo-caption]','[data-photo-caption-en]','[data-photo-count]','[data-photo-close]','[data-photo-prev]','[data-photo-next]'].map(x=>[x,new FakeElement()]));
+  dialog.querySelector=(sel)=>controls[sel]??null;
+  const triggers=[0,1,2].map((index)=>{
+    const anchor=new FakeElement('a');
+    anchor.href='https://cdn.example.test/real-photo-'+index+'.jpg';
+    anchor.dataset.galleryIndex=String(index);
+    anchor.dataset.galleryTitle=['鱼香茄子煲','门店外观','店内环境'][index];
+    anchor.dataset.galleryEn=['Eggplant clay pot','Storefront','Interior'][index];
+    const img=new FakeElement('img');img.alt='Original image '+index;
+    anchor.querySelector=(sel)=>sel==='img'?img:null;
+    return anchor;
+  });
+  const doc={
+    getElementById:()=>null,
+    querySelector:(sel)=>sel==='.photo-dialog'?dialog:null,
+    querySelectorAll:(sel)=>sel==='[data-gallery-index]'?triggers:[],
+    addEventListener(){}
+  };
+  vm.runInNewContext(js,{document:doc,window:{innerWidth:390,addEventListener(){}},Date,console});
+  let prevented=false;
+  triggers[1].dispatch('click',{preventDefault:()=>{prevented=true;}});
+  assert.equal(prevented,true);
+  assert.equal(dialog.open,true);
+  assert.equal(controls['[data-photo-count]'].textContent,'2 / 3');
+  assert.equal(controls['[data-photo-caption]'].textContent,'门店外观');
+  assert.equal(controls['[data-photo-large]'].alt,'Original image 1');
+  controls['[data-photo-next]'].dispatch('click');
+  assert.equal(controls['[data-photo-count]'].textContent,'3 / 3');
+  dialog.dispatch('keydown',{key:'ArrowRight',preventDefault(){}});
+  assert.equal(controls['[data-photo-count]'].textContent,'1 / 3','next from last wraps');
+  controls['[data-photo-large]'].dispatch('touchstart',{changedTouches:[{clientX:250}]});
+  controls['[data-photo-large]'].dispatch('touchend',{changedTouches:[{clientX:100}]});
+  assert.equal(controls['[data-photo-count]'].textContent,'2 / 3','touch swipe advances');
+  controls['[data-photo-close]'].dispatch('click');
+  assert.equal(dialog.open,false);
+  assert.equal(triggers[1].focused,true,'focus returns to the photo opener');
+});
+
+test('desktop section rail indicates the page section without interfering with mobile navigation', () => {
+  assert.equal((html.match(/data-section-link="/g)||[]).length,5);
+  assert.equal((quicklyHtml.match(/data-section-link="/g)||[]).length,4);
+  assert.match(css, /@media\(min-width:1460px\)/);
+  assert.match(css, /\.section-rail a\[aria-current="location"\] \.rail-indicator/);
+  assert.match(js, /window.addEventListener\('scroll', onScroll, \{passive:true\}\)/);
+
+  const links=['top','order','menu','visit'].map(id=>{
+    const x=new FakeElement('a');x.dataset.sectionLink=id;
+    x.removeAttribute=(key)=>{delete x.attrs[key];};
+    return x;
+  });
+  const rail=new FakeElement('nav');rail.querySelectorAll=sel=>sel==='[data-section-link]'?links:[];
+  const positions={top:0,order:1400,menu:2800,visit:4400};
+  const nodes=Object.fromEntries(Object.keys(positions).map(id=>[id,{getBoundingClientRect:()=>({top:positions[id]})}]));
+  const listeners={};
+  const doc={
+    getElementById:id=>nodes[id]??null,
+    querySelector:sel=>sel==='.section-rail'?rail:null,
+    querySelectorAll:()=>[],addEventListener(){}
+  };
+  const win={innerWidth:1600,innerHeight:800,
+    addEventListener:(name,fn,opts)=>{listeners[name]={fn,opts};},
+    requestAnimationFrame:fn=>fn()};
+  vm.runInNewContext(js,{document:doc,window:win,Date,console});
+  assert.equal(links[0].getAttribute('aria-current'),'location');
+  positions.order=100;positions.menu=300;positions.visit=600;
+  listeners.scroll.fn();
+  assert.equal(links[2].getAttribute('aria-current'),'location','current location follows scrolling');
+  assert.equal(links[0].getAttribute('aria-current'),null);
+  assert.equal(listeners.scroll.opts.passive,true);
+  positions.visit=220;listeners.scroll.fn();
+  assert.equal(links[3].getAttribute('aria-current'),'location');
+});
+
+test('menu interactions provide smooth selection on mobile only when motion enabled', () => {
+  assert.match(css, /@keyframes count-update/);
+  assert.match(css, /\.motion-on \.menu-status #menu-count.is-updated/);
+  assert.match(js, /selectedButton.scrollIntoView/);
+  const {nodes,filters,window}=setup();
+  // The fixture has no documentElement or scrollIntoView; the app must fail safe.
+  window.innerWidth=390;
+  filters[6].dispatch('click');
+  assert.equal(nodes['menu-grid'].children.length,9);
+  assert.equal(filters[6].getAttribute('aria-pressed'),'true');
 });

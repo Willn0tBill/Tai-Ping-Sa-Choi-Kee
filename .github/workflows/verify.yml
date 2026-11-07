@@ -18,3 +18,15 @@ jobs:
         run: node --check app.js
       - name: Static and interaction tests
         run: node --test tests/site.test.mjs
+      - name: Install lightweight browser test driver
+        run: npm install --no-save --no-package-lock --ignore-scripts puppeteer-core@24
+      - name: Real Chrome phone and desktop checks
+        run: node tests/browser-smoke.mjs
+      - name: Save browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restaurant-browser-screenshots
+          path: artifacts/browser/*.png
+          if-no-files-found: ignore
+          retention-days: 7
