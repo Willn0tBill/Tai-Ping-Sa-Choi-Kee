@@ -100,7 +100,7 @@ test('menu search filters English and Chinese items and resets correctly', () =>
   assert.equal(nodes['menu-grid'].children.length,0);
   assert.equal(nodes['menu-empty'].hidden,false);
   nodes['clear-search'].dispatch('click');
-  assert.equal(nodes['menu-grid'].children.length,12);
+  assert.equal(nodes['menu-grid'].children.length,14);
   assert.equal(nodes['menu-empty'].hidden,true);
   nodes['menu-search'].value='taro';
   nodes['menu-search'].dispatch('input');
