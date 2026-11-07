@@ -15,22 +15,22 @@ An editorial, mobile-first, English + Chinese restaurant website **concept** for
 
 ## Local preview
 
-Open \`index.html\` in a browser, or serve the directory locally:
+Open `index.html` in a browser, or serve the directory locally:
 
-\`\`\`sh
+```sh
 python3 -m http.server 8080
-\`\`\`
+```
 
-Then visit \`http://localhost:8080\`. The site has no package install or build step.
+Then visit `http://localhost:8080`. The site has no package install or build step.
 
 ## Updating the menu
 
-Edit the \`MENU_ITEMS\` list near the top of \`app.js\`. Each item has:
+Edit the `MENU_ITEMS` list near the top of `app.js`. Each item has:
 
-- \`name\`: English item name
-- \`zh\`: Simplified Chinese item name
-- \`type\`: \`milk\`, \`fruit\`, \`slush\`, or \`snacks\`
-- \`tag\`, \`color\`, and \`note\`: presentation metadata
+- `name`: English item name
+- `zh`: Simplified Chinese item name
+- `type`: `milk`, `fruit`, `slush`, or `snacks`
+- `tag`, `color`, and `note`: presentation metadata
 
 The included selection is a **demonstration based on historical/public references**. It is **not** a verified complete menu. Current products, names, availability, prices, allergen statements, and ordering options must come directly from the owner before launch.
 
@@ -41,7 +41,7 @@ The included selection is a **demonstration based on historical/public reference
 - [ ] Replace all preview items with the owner's latest full bilingual menu, including accurate prices and options.
 - [ ] Replace illustrative Unsplash images with real, approved product and storefront photography.
 - [ ] Confirm promotions, contact links, accessibility, and legal copy.
-- [ ] Remove \`noindex\` metadata and the concept-preview disclaimer **only after** owner approval.
+- [ ] Remove `noindex` metadata and the concept-preview disclaimer **only after** owner approval.
 - [ ] Configure custom domain, HTTPS, and preferred deployment platform.
 - [ ] Confirm any analytics/cookie/privacy disclosures before adding third-party trackers.
 
@@ -59,9 +59,9 @@ Photos are illustrative and freely usable under the [Unsplash License](https://u
 
 ## Verification
 
-\`\`\`sh
+```sh
 node --check app.js
 node --test tests/site.test.mjs
-\`\`\`
+```
 
 This performs syntax and source smoke checks, **not** visual cross-browser QA. Before deployment, test interactions and accessibility on actual mobile browsers and verify all links with the owner.
