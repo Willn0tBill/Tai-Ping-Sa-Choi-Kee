@@ -1,14 +1,15 @@
-# Quickly — Hacienda Heights
+# Tai Ping Sa Choi Kee / 太平沙财记
 
-An editorial, mobile-first, English + Chinese restaurant website **concept** for the Quickly location at 15848 Halliburton Rd, Hacienda Heights, CA 91745.
+An editorial, mobile-first, bilingual restaurant website **concept** for Tai Ping Sa Choi Kee (太平沙财记) at 15848 Halliburton Rd, Hacienda Heights, CA 91745. Quickly has a separate drinks and snacks menu at the same address.
 
-> **Status:** Owner review preview. Not an official Quickly website; not approved for public representation of the business.
+> **Status:** Owner review preview. Not an official Tai Ping Sa Choi Kee or Quickly website; this is not approved for public representation of either business.
 
 ## What is included
 
 - Distinctive responsive visual design; no framework or build dependency.
 - English and Simplified Chinese shown together throughout the interface, without a language switcher.
-- Searchable bilingual menu transcribed from user-provided in-store menu photos, with visible medium / large or single-item prices and category filters.
+- Bilingual Tai Ping Sa Choi Kee kitchen-category overview; the full food menu and prices await confirmation.
+- Separate searchable bilingual Quickly drinks-and-snacks menu from in-store photographs, with visible prices and category filters.
 - Semantic HTML, keyboard-accessible navigation, focus indicators, skip link, and reduced-motion support.
 - Real address, click-to-call link, Google Maps directions, descriptive meta tags, and accessible image text.
 - Illustrative photos from Unsplash. The images are **not** photographs of this shop.
@@ -73,3 +74,11 @@ node --test tests/site.test.mjs
 ```
 
 This performs syntax and source smoke checks, **not** visual cross-browser QA. Before deployment, test interactions and accessibility on actual mobile browsers and verify all links with the owner.
+
+## Restaurant naming and contact
+
+- Website's primary identity: **Tai Ping Sa Choi Kee (太平沙财记)**.
+- Restaurant kitchen phone photographed on Tai Ping Sa Choi Kee take-out menu: **(626) 937-6555**.
+- Quickly drinks/snacks counter phone photographed on drinks menu: **(626) 937-6552**.
+- Both menus show **15848 Halliburton Rd, Hacienda Heights, CA 91745**.
+- **Rename the GitHub repository** using its Settings > General > Repository name control to `Tai-Ping-Sa-Choi-Kee`. The GitHub integration used for code changes does not expose repository-settings mutations. This README and website have been rebranded, but GitHub repository rename is a separate administrative action. Update GitHub Pages and external links afterward.
