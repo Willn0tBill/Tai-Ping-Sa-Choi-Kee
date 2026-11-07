@@ -277,3 +277,121 @@ h1,h2,h3{font-family:var(--font)}
 .signature-card-primary h3{font-size:32px}
 .signature-card-top{letter-spacing:.2px}
 }
+
+
+/* Chinese-first bilingual presentation. English remains directly beneath key labels. */
+:root{--zh-font:'Noto Sans SC',system-ui,sans-serif}
+body{font-family:var(--zh-font);line-height:1.55}
+.brand-text strong{font-family:var(--zh-font);font-size:25px;letter-spacing:1px;line-height:1.15;font-weight:800}
+.brand-text small{font-family:var(--font);font-size:8px;letter-spacing:.45px;white-space:nowrap;color:#61756a;margin-top:5px}
+.brand-mark{font-size:30px}
+.nav a{font-family:var(--zh-font);display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.3;font-size:16px;font-weight:800}
+.nav a span{color:var(--pine);font-weight:800;font-size:15px;margin:0}
+.nav a small{font:600 10px/1.35 var(--font);letter-spacing:.1px;color:#76877e}
+.nav a:hover span,.nav a:hover small{color:#d47739}
+.header-cta{display:inline-flex;align-items:center;gap:13px;padding:12px 18px;line-height:1.2}
+.header-cta>span:last-child{margin:0}
+.button-bilingual{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;line-height:1.2;text-align:left}
+.button-bilingual strong{font-family:var(--zh-font);font-size:15px;font-weight:800;letter-spacing:.2px}
+.button-bilingual small{font-family:var(--font);font-size:10px;letter-spacing:0;font-weight:600;opacity:.76}
+.header-cta .button-bilingual strong{font-size:13px}
+.header-cta .button-bilingual small{font-size:10px}
+.eyebrow{font-family:var(--zh-font);font-size:15px;letter-spacing:.3px}
+.eyebrow small{font:700 9px/1.3 var(--font);letter-spacing:1px}
+.hero h1.hero-restaurant-title{font-family:var(--zh-font);font-size:clamp(66px,6vw,94px);letter-spacing:-1.5px;white-space:nowrap;line-height:1.26;margin:0 0 10px}
+.hero-restaurant-title .highlight-word{white-space:nowrap}
+.hero-chinese{font:800 clamp(21px,2.4vw,27px)/1.45 var(--zh-font);margin:24px 0 6px;color:#355f50}
+.hero-name-en{font:700 11px/1.55 var(--font);letter-spacing:1.9px;color:#b07848;margin:0 0 19px}
+.hero-description{font:500 16px/1.9 var(--zh-font);color:#36564b;margin-bottom:9px;max-width:490px}
+.hero-description-en{font:500 13px/1.65 var(--font);color:#78887b;max-width:490px;margin:0}
+.hero-actions .button{gap:18px;padding:13px 22px;min-height:60px}
+.bilingual-link{display:inline-flex;align-items:center;gap:11px}
+.bilingual-link strong{font:800 14px var(--zh-font)}
+.bilingual-link small{font:600 10px var(--font);color:#7c8e82}
+.bilingual-link>span:last-child{margin:0}
+.hero-round-label span[lang]{font-family:var(--zh-font);font-size:18px;line-height:1.35}
+.hero-floating-note strong[lang]{font:800 15px var(--zh-font)}
+.hero-floating-note small[lang]{font:600 11px var(--font)}
+.ticker-track span{font-family:var(--zh-font);letter-spacing:1.3px;font-size:13px}
+.section-kicker{font-family:var(--zh-font);font-size:14px;letter-spacing:.3px}
+.section-kicker [lang="en"]{font:800 10px var(--font);letter-spacing:.9px;color:#8b9988}
+.section-heading h2{font-family:var(--zh-font);letter-spacing:-1px;font-size:clamp(44px,4.8vw,72px);line-height:1.35}
+.section-subtitle{font-family:var(--zh-font);font-size:16px;color:#526d5d}
+.section-subtitle-en{font:500 13px/1.7 var(--font);color:#859088;margin:5px 0 0}
+.kitchen-intro{font-size:15px;line-height:1.85}
+.kitchen-intro strong{font:700 16px/1.85 var(--zh-font)}
+.kitchen-intro span[lang="en"]{font:500 12px/1.75 var(--font);color:#859086}
+.signature-card-top span[lang="zh-Hans"]{display:flex;flex-direction:column;gap:3px;font:700 12px var(--zh-font);letter-spacing:.2px}
+.signature-card-top span[lang="zh-Hans"] small{font:700 9px var(--font);letter-spacing:.55px}
+.signature-card h3{font-size:clamp(22px,2.1vw,31px);margin-bottom:6px}
+.signature-card p{font:600 12px/1.55 var(--font);color:#728074}
+.signature-card-primary h3{font-size:clamp(35px,3.3vw,49px)}
+.signature-card-primary p{color:#d1e5d4}
+.kitchen-note>span{display:flex;flex-direction:column;gap:3px;font-size:13px}
+.kitchen-note>span small{font:500 11px/1.6 var(--font);color:#88978b}
+.kitchen-note>a{font:800 13px var(--zh-font)}
+.kitchen-note>a small{margin-left:4px;font:600 10px var(--font)}
+.menu-filters .filter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:9px 14px;min-height:54px}
+.menu-filters .filter span{margin:0;font:800 14px/1.15 var(--zh-font);opacity:1}
+.menu-filters .filter small{font:600 10px/1.15 var(--font);opacity:.8}
+.menu-card-top{font:800 13px var(--zh-font);text-transform:none;letter-spacing:0}
+.menu-category-en{display:block;font:700 10px/1.45 var(--font);letter-spacing:.35px;color:#92a198;margin-top:3px}
+.menu-card h3.menu-item-zh{font:800 24px/1.35 var(--zh-font);letter-spacing:0;margin:0 0 4px}
+.menu-card p.menu-en{font:600 12px/1.55 var(--font);color:#6f8277;margin:0}
+.menu-card-bottom.menu-price{font:800 14px/1.35 var(--font);color:#244b3e}
+.menu-status #menu-count{font-family:var(--zh-font);font-size:13px}
+.menu-disclaimer{font:500 11px/1.6 var(--zh-font)}
+.menu-callout strong[lang="zh-Hans"]{font:800 17px var(--zh-font)}
+.menu-callout span[lang="en"]{font:500 12px/1.65 var(--font)}
+.feature-info h3{font-family:var(--zh-font);font-size:clamp(24px,2.5vw,33px);letter-spacing:0;line-height:1.35}
+.feature-info h3 small{display:block;font:600 12px/1.4 var(--font);letter-spacing:0;margin-top:8px;color:#6b8577}
+.favorites-intro span[lang="zh-Hans"]{font:600 15px/1.8 var(--zh-font)}
+.favorites-intro span[lang="en"]{font:500 12px/1.7 var(--font);color:#819084}
+.visit-copy h2{font-family:var(--zh-font);letter-spacing:-1px;font-size:clamp(49px,5.5vw,79px);line-height:1.35}
+.visit-zh[lang="en"]{font:600 14px var(--font);color:#d0ebb1}
+.visit-description{font:500 15px/1.85 var(--zh-font);color:#d9e7de}
+.visit-description-en{font:500 12px/1.7 var(--font);color:#bed4c9;max-width:540px;margin:0}
+.visit-buttons .button{justify-content:space-between;gap:14px;padding:12px 17px;min-height:61px;font:700 12px var(--font)}
+.visit-buttons .button-bilingual strong{font-size:14px}
+.visit-address>div>span{font:800 11px var(--zh-font)}
+.footer-brand{font:800 clamp(31px,3.7vw,47px)/1.2 var(--zh-font);letter-spacing:0}
+.footer-inner p span[lang="en"]{font:700 11px/1.65 var(--font);letter-spacing:1px}
+.footer-inner p span[lang="zh-Hans"]{font:500 13px/1.7 var(--zh-font)}
+.footer-actions a{display:flex;flex-direction:column;gap:3px;font:800 14px var(--zh-font)}
+.footer-actions a small{font:500 10px var(--font);color:#849489}
+@media(max-width:1100px){
+.brand-text strong{font-size:23px}.brand-text small{font-size:7px}
+.hero h1.hero-restaurant-title{font-size:clamp(61px,5.8vw,83px)}
+.nav a span{font-size:14px}.nav a small{font-size:9px}
+}
+@media(max-width:800px){
+.nav a{align-items:flex-start;gap:4px;padding:11px 4px}
+.nav a span{font-size:16px}.nav a small{font-size:11px}
+.hero h1.hero-restaurant-title{font-size:clamp(65px,9vw,88px)}
+}
+@media(max-width:560px){
+.brand-text strong{font-size:20px}.brand-text small{font-size:6.2px;letter-spacing:0}
+.hero h1.hero-restaurant-title{font-size:clamp(45px,10.8vw,64px);letter-spacing:-1.8px}
+.hero-chinese{font-size:20px}
+.hero-name-en{font-size:9px;letter-spacing:1.1px}
+.hero-description{font-size:14px}
+.hero-description-en{font-size:12px}
+.hero-actions{gap:17px}
+.hero-actions .button{padding:12px 16px}
+.button .button-bilingual small{display:block;font-size:9px}
+.bilingual-link{gap:7px}
+.bilingual-link small{font-size:9px}
+.eyebrow{flex-wrap:wrap;font-size:12px}
+.eyebrow small{font-size:9px}
+.hero-round-label span[lang]{font-size:12px}
+.section-heading h2{font-size:clamp(38px,10vw,57px)}
+.section-subtitle{font-size:14px}
+.signature-card h3{font-size:20px}.signature-card-primary h3{font-size:34px}
+.menu-filters .filter{padding:9px 10px;min-height:50px}
+.menu-filters .filter span{font-size:13px}
+.menu-filters .filter small{font-size:9px}
+.menu-card h3.menu-item-zh{font-size:22px}
+.feature-info h3{font-size:25px}
+.visit-copy h2{font-size:clamp(43px,10vw,61px)}
+.footer-brand{font-size:33px}
+}
