@@ -221,15 +221,15 @@ test('official branding policy avoids any invented logo or seal', () => {
   assert.ok(!html.includes('class="visit-stamp"'), 'no custom seal pretending to be a restaurant emblem');
   assert.ok(!html.includes('hero-round-label'), 'no invented badge in hero');
   assert.match(html, /class="visit-address-panel"/);
-  assert.match(css, /Official-logo-only policy/);
+  assert.match(css, /no invented logo marks/);
 });
 
 
 test('Quickly’s has its own page with a properly named menu and cross-navigation', () => {
   assert.match(html, /href="quicklys\.html"/);
-  assert.match(quicklyHtml, /<title>Quickly’s \| 快可立/);
-  assert.match(quicklyHtml, /<h1 id="quicklys-heading" lang="en">Quickly’s/);
-  assert.match(quicklyHtml, /<span lang="zh-Hans">Quickly’s<\/span>/);
+  assert.match(quicklyHtml, /<title>快可立 \| Quickly’s/);
+  assert.match(quicklyHtml, /<h1 id="quicklys-heading" lang="zh-Hans">快可立<\/h1>/);
+  assert.match(quicklyHtml, /<span lang="zh-Hans">快可立<\/span><small lang="en">Quickly’s<\/small>/);
   assert.ok(!html.includes('<section class="menu-section'), 'Tai Ping homepage must not host Quickly menu');
   assert.match(quicklyHtml, /<section class="menu-section/);
   assert.match(quicklyHtml, /<div class="menu-grid" id="menu-grid">/);
@@ -243,4 +243,27 @@ test('Quickly’s has its own page with a properly named menu and cross-navigati
   assert.ok(!quicklyHtml.includes('rel="icon"'), 'do not fabricate a Quickly’s logo');
   assert.ok(!quicklyHtml.includes('images.unsplash.com'), 'no random stock images');
   assert.match(quicklyHtml, /noindex,nofollow/);
+});
+
+test('mobile header collapses before content overlaps and never forces CTA onto phone width', () => {
+  for (const doc of [html, quicklyHtml]) {
+    assert.match(doc, /class="menu-toggle"/);
+    assert.match(doc, /aria-controls="site-nav"/);
+    assert.match(doc, /class="nav-call" href="tel:\+1626937655[25]"/);
+    assert.match(doc, /<span class="brand-text"><strong lang="zh-Hans">/);
+  }
+  assert.match(css, /@media\(max-width:1100px\)\{[\s\S]*?\.nav\{display:none/);
+  assert.match(css, /\.nav\.is-open\{display:flex\}/);
+  assert.match(css, /@media\(max-width:740px\)\{[\s\S]*?\.header-cta\{display:none\}/);
+  assert.ok(!css.includes('.header-cta span{font-size:17px'), 'global child-span rule caused unwanted oversized fragments');
+  assert.ok(!css.includes('.nav a span{display:none'), 'Chinese nav labels must not disappear');
+});
+test('Quickly’s starts with Chinese brand name, not English-first typography', () => {
+  assert.match(quicklyHtml, /<span class="brand-text"><strong lang="zh-Hans">快可立<\/strong><small lang="en">Quickly’s/);
+  assert.match(quicklyHtml, /<h1 id="quicklys-heading" lang="zh-Hans">快可立<\/h1>/);
+  assert.match(quicklyHtml, /class="quicklys-english-title" lang="en">Quickly’s<\/p>/);
+  assert.match(quicklyHtml, /<p class="quicklys-description" lang="zh-Hans">/);
+  assert.match(quicklyHtml, /<p class="quicklys-description-en" lang="en">/);
+  assert.match(css, /\.quicklys-intro h1\{font:/);
+  assert.match(css, /\.quicklys-english-title\{font:/);
 });
