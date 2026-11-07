@@ -31,7 +31,7 @@ test('static page has useful structure, labels and verified contact links', () =
     assert.match(tag, /alt="[^"]+"/);
     assert.match(tag, /loading="lazy"|fetchpriority="high"/);
   }
-  for (const file of ['index.html', 'styles.css', 'app.js', 'favicon.svg']) {
+  for (const file of ['index.html', 'styles.css', 'app.js']) {
     assert.equal(existsSync(new URL('../' + file, import.meta.url)), true, file + ' missing');
   }
 });
@@ -203,4 +203,14 @@ test('photo enhancement preserves original image URLs and applies non-generative
   assert.match(css, /\.hero-photo\{[\s\S]*?filter:brightness\(1\.045\) contrast\(1\.085\) saturate\(1\.08\)/);
   assert.match(css, /\.feature-image-wrap img\{[\s\S]*?filter:brightness\(1\.04\) contrast\(1\.08\) saturate\(1\.065\)/);
   assert.ok(!html.includes('images.unsplash.com'));
+});
+
+test('official branding policy avoids any invented logo or seal', () => {
+  assert.match(html, /<span class="brand-text"><strong lang="zh-Hans">太平沙财记<\/strong><small lang="en">TAI PING SA CHOI KEE/);
+  assert.ok(!html.includes('rel="icon"'), 'no custom favicon until the official asset is supplied');
+  assert.ok(!html.includes('class="brand-mark"'), 'no custom 太 symbol');
+  assert.ok(!html.includes('class="visit-stamp"'), 'no custom seal pretending to be a restaurant emblem');
+  assert.ok(!html.includes('hero-round-label'), 'no invented badge in hero');
+  assert.match(html, /class="visit-address-panel"/);
+  assert.match(css, /Official-logo-only policy/);
 });
