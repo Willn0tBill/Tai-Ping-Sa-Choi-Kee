@@ -17,6 +17,8 @@ test('static page has useful structure, labels and verified contact links', () =
   assert.match(html, /lang="zh-Hans"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /Website concept preview/);
+  assert.match(html, /2022 printed menu/);
+  assert.match(html, /Availability and current prices unconfirmed/);
   assert.ok(!html.includes('application/ld+json'), 'unapproved demo must not imply verified official schema');
   for (const tag of html.match(/<img\b[^>]*>/g) ?? []) {
     assert.match(tag, /alt="[^"]+"/);
@@ -85,10 +87,10 @@ function setup() {
 
 test('menu search filters English and Chinese items and resets correctly', () => {
   const {nodes,filters} = setup();
-  assert.equal(nodes['menu-grid'].children.length,12);
-  filters[4].dispatch('click');
-  assert.equal(nodes['menu-grid'].children.length,4);
-  assert.equal(filters[4].getAttribute('aria-pressed'),'true');
+  assert.equal(nodes['menu-grid'].children.length,14);
+  filters[7].dispatch('click');
+  assert.equal(nodes['menu-grid'].children.length,13);
+  assert.equal(filters[7].getAttribute('aria-pressed'),'true');
   nodes['menu-search'].value='盐酥鸡';
   nodes['menu-search'].dispatch('input');
   assert.equal(nodes['menu-grid'].children.length,1);
@@ -102,7 +104,7 @@ test('menu search filters English and Chinese items and resets correctly', () =>
   assert.equal(nodes['menu-empty'].hidden,true);
   nodes['menu-search'].value='taro';
   nodes['menu-search'].dispatch('input');
-  assert.equal(nodes['menu-grid'].children.length,2);
+  assert.equal(nodes['menu-grid'].children.length,3);
 });
 
 test('mobile nav toggles accessibly and feature links select categories', () => {
@@ -114,8 +116,24 @@ test('mobile nav toggles accessibly and feature links select categories', () => 
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
   assert.equal(toggle.focused,true);
   feature.dispatch('click');
-  assert.equal(nodes['menu-grid'].children.length,3);
+  assert.equal(nodes['menu-grid'].children.length,14);
   toggle.dispatch('click');
   nodes['site-nav'].link.dispatch('click');
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
+});
+
+test('the archival menu covers all eight printed sections, and has not mixed Kitchen798 dishes in', () => {
+  const match = js.match(/const MENU_ITEMS = (\[[\s\S]*?\]);/);
+  assert.ok(match, 'menu catalog should be a static, auditable data array');
+  const entries = JSON.parse(match[1]);
+  assert.equal(entries.length, 83);
+  const actualCounts = Object.fromEntries([...new Set(entries.map(e => e.type))].map(type => [type, entries.filter(e => e.type === type).length]));
+  assert.deepEqual(actualCounts, {milk:14,tea:12,special:4,slush:16,smoothie:10,foam:4,snacks:13,toppings:10});
+  for (const e of entries) {
+    assert.ok(e.name && e.zh, 'every entry needs English and Chinese');
+    assert.ok(Object.hasOwn(e, 'archivedPriceM'), 'historical owner-review price stored');
+  }
+  assert.equal(entries.some(e => /Kung Pao Chicken|Mongolian Beef/.test(e.name)), false);
+  assert.equal(html.includes('data-filter="toppings"'), true);
+  assert.equal(html.includes('data-filter="smoothie"'), true);
 });
