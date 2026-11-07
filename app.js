@@ -716,16 +716,6 @@ const MENU_ITEMS = [
     "archivedPriceL": null
   },
   {
-    "name": "Fried Combination (3 items)",
-    "zh": "酥炸拼盘（任选三样）",
-    "type": "snacks",
-    "tag": "Snacks",
-    "categoryZh": "小吃",
-    "color": "#e5b56e",
-    "archivedPriceM": null,
-    "archivedPriceL": null
-  },
-  {
     "name": "Small Fried Combination",
     "zh": "小拼盘",
     "type": "snacks",
