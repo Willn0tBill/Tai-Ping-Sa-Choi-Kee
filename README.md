@@ -7,6 +7,7 @@ An editorial, mobile-first, bilingual restaurant website **concept** for Tai Pin
 ## What is included
 
 - Distinctive responsive visual design; no framework or build dependency.
+- Restaurant name presented as Chinese-first typography; no invented logo, icon, seal or favicon.
 - English and Simplified Chinese shown together throughout the interface, without a language switcher.
 - Bilingual Tai Ping Sa Choi Kee kitchen-category overview; the full food menu and prices await confirmation.
 - Separate searchable bilingual Quickly drinks-and-snacks menu from in-store photographs, with visible prices and category filters.
@@ -101,3 +102,7 @@ Chinese (Simplified, `zh-Hans`) is the primary interface language, with smaller 
 ## Real-photo enhancement (no generated replacements)
 
 The existing restaurant dish, storefront, and interior URLs remain unchanged. We apply restrained, non-destructive browser-side exposure, contrast, saturation, slight warm grading, soft edge falloff, sensible crops and improved editorial framing in CSS. This is **not** AI recreation or AI upscaling. The source photographs and details are untouched; appearance can vary slightly across browsers. High-resolution owner-provided originals would enable better native editing and faster self-hosting without relying on external sites. No generated food images are included.
+
+## Brand assets: official only
+
+The owner has not supplied a standalone official logo file. Although their photographed sign clearly shows the Chinese and English restaurant names, that does not authorize fabricating a separate mark or using an invented orange `太` badge. Therefore the custom icon, decorative faux brand seal, and `favicon.svg` have been removed. The site uses a clean typographic name **太平沙财记 / TAI PING SA CHOI KEE**. Add a logo and favicon only after obtaining the actual restaurant-provided artwork with permission.
