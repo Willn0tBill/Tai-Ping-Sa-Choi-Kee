@@ -8,7 +8,7 @@ An editorial, mobile-first, English + Chinese restaurant website **concept** for
 
 - Distinctive responsive visual design; no framework or build dependency.
 - English and Simplified Chinese shown together throughout the interface, without a language switcher.
-- Searchable bilingual menu highlights with category filters.
+- Searchable bilingual menu transcribed from user-provided in-store menu photos, with visible medium / large or single-item prices and category filters.
 - Semantic HTML, keyboard-accessible navigation, focus indicators, skip link, and reduced-motion support.
 - Real address, click-to-call link, Google Maps directions, descriptive meta tags, and accessible image text.
 - Illustrative photos from Unsplash. The images are **not** photographs of this shop.
@@ -29,18 +29,24 @@ Edit the `MENU_ITEMS` list near the top of `app.js`. Each item has:
 
 - `name`: English item name
 - `zh`: Simplified Chinese item name
-- `type`: `milk`, `fruit`, `slush`, or `snacks`
-- `tag`, `color`, and `note`: presentation metadata
+- `type`: `milk`, `tea`, `special`, `slush`, `smoothie`, `snacks`, or `toppings`
+- `priceM` / `priceL` for drinks or `price` for toppings and snacks, plus `tag`, `categoryZh`, and `color` for presentation
 
-The current file mirrors **83 English/Chinese menu entries** from an archived store-specific PDF dated June 2022, including milk tea, flavored tea, special drinks, slush, smoothies, sea-salt foam, snacks, and toppings. Historical prices are preserved in `archivedPriceM` / `archivedPriceL` fields for owner review only; **they are intentionally not shown on the website**. The public page links back to the archived PDF and explicitly warns that products and prices may have changed.
+The current site includes **77 English/Chinese items** transcribed from the user's photographs of the menu at **Quickly, 15848 Halliburton Rd**. We include **14 milk teas, 12 flavored teas, 3 special drinks, 17 slushes, 11 smoothies, 9 snacks, and 11 toppings**. Prices are visible and represent the printed and handwritten prices photographed; **the photos' capture date and the continuing accuracy of the prices have not been independently established. The owner must confirm before launch**.
 
-**Important:** This PDF also includes separate menus branded `Kitchen798`; those dishes are **not included** in the Quickly menu. Do not treat the combined document as one brand's catalog. Current products, availability, prices, allergen statements, and ordering options must come directly from the owner before launch.
+Specific review notes:
+- The photographed milk-tea list has a crossed-out row and one lower row whose Chinese text reads `芒果奶茶` (Mango Milk Tea) but whose printed English text says `Oreo Milk Tea`. The crossed-out and mismatched rows were **not imported** pending confirmation.
+- The printed Barley Milk Tea price appears overridden by handwritten **$5.28 M / $5.78 L**; Coconut Milk Tea reads **$4.38 M / $4.88 L**. Confirm both.
+- The handwritten snack combination prices appear to be **$11.29 small** and **$26.29 large**, and the selection rules need confirmation.
+- The menu states an additional **$0.49 card-transaction charge** and that spice cannot be served on the side. Confirm current policy and any applicable legal/price-display requirements before putting those notices on the public site.
+- Two additional photos display a different menu branded **Tai Pin Sa Choi Kee / 太平沙财记** at the same address and phone number. Those dishes have **not** been merged into Quickly's menu; ask the owner whether they should have their own section or site.
+- The old June 2022 MenuSifu PDF is no longer the data source. Its outdated prices and the former sea-salt foam section were removed.
 
 ## Owner approval checklist
 
 - [ ] Obtain permission to represent the business and confirm branding rights.
 - [ ] Confirm exact store name, address, phone, hours/holiday hours, and preferred ordering URL.
-- [ ] Replace all preview items with the owner's latest full bilingual menu, including accurate prices and options.
+- [ ] Have owner review all 77 transcribed bilingual entries and prices against the latest in-store menu, and clarify the ambiguous milk tea line and combination rules.
 - [ ] Replace illustrative Unsplash images with real, approved product and storefront photography.
 - [ ] Confirm promotions, contact links, accessibility, and legal copy.
 - [ ] Remove `noindex` metadata and the concept-preview disclaimer **only after** owner approval.
