@@ -105,8 +105,15 @@ The existing restaurant dish, storefront, and interior URLs remain unchanged. We
 
 ## Brand assets: official only
 
-The owner has not supplied a standalone official logo file. Although their photographed sign clearly shows the Chinese and English restaurant names, that does not authorize fabricating a separate mark or using an invented orange `太` badge. Therefore the custom icon, decorative faux brand seal, and `favicon.svg` have been removed. The site uses a clean typographic name **太平沙财记 / TAI PING SA CHOI KEE**. Add a logo and favicon only after obtaining the actual restaurant-provided artwork with permission.
+The owner has not supplied a standalone official logo file. Although their photographed sign clearly shows the Chinese and English restaurant names, that does not authorize fabricating a separate mark or using an invented orange `太` badge. Therefore the custom icon, decorative faux brand seal, and `favicon.svg` have been removed. The main page uses the typographic name **太平沙财记 / TAI PING SA CHOI KEE** and the second page uses the text-only name **Quickly’s / 快可立**. Add a logo and favicon only after obtaining the actual restaurant-provided artwork with permission.
 
 ## Business distinction — do not merge menus
 
 **Tai Ping Sa Choi Kee / 太平沙财记** is the Chinese-food restaurant and primary identity of this website, with Chinese kitchen number **(626) 937-6555**. **Quickly / 快可立** has the **drinks AND snacks** menu and contact number **(626) 937-6552**. They share the photographed address, but do **not** label Quickly's milk tea, slushes, toppings or fried snacks as Tai Ping dishes. The Quickly section is explicitly labeled as a separate business menu. This distinction must be preserved in future redesigns and menu imports.
+
+## Separate Quickly’s page (current architecture)
+
+- **`index.html` — 太平沙财记 / Tai Ping Sa Choi Kee**: Chinese kitchen, signature dishes, location and restaurant contact (+1 626-937-6555). It must not render Quickly’s drinks/snacks catalog in its body.
+- **`quicklys.html` — Quickly’s**: distinct, internally linked page with its own bilingual 77-item drinks, snacks and toppings menu, in-page search, price display and Quickly’s contact (+1 626-937-6552). The restaurant site remains accessible by a cross-link.
+- Both businesses share the same street address; that does **not** mean they share branding, menus or phone numbers. Navigation labels use **“Quickly’s”**, not **“Drinks & Snacks”** as the business name.
+- Both pages reuse `styles.css`, `app.js`, responsive navigation, the photographed storefront where appropriate, and `noindex,nofollow` while owner approval remains outstanding.
