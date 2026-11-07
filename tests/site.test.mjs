@@ -101,7 +101,10 @@ test('menu search filters English and Chinese items and resets correctly', () =>
   nodes['menu-search'].value='盐酥鸡';
   nodes['menu-search'].dispatch('input');
   assert.equal(nodes['menu-grid'].children.length,1);
-  assert.equal(nodes['menu-grid'].children[0].children[1].textContent,'Popcorn Chicken');
+  assert.equal(nodes['menu-grid'].children[0].children[1].textContent,'盐酥鸡');
+  assert.equal(nodes['menu-grid'].children[0].children[2].textContent,'Popcorn Chicken');
+  assert.equal(nodes['menu-grid'].children[0].children[1].lang,'zh-Hans');
+  assert.equal(nodes['menu-grid'].children[0].children[2].lang,'en');
   nodes['menu-search'].value='unavailable item';
   nodes['menu-search'].dispatch('input');
   assert.equal(nodes['menu-grid'].children.length,0);
@@ -164,4 +167,19 @@ test('actual restaurant food board has bilingual featured dishes without invente
   assert.ok(!/\$\d/.test(kitchen), 'no unverified food prices');
   assert.match(css, /\.signature-grid/);
   assert.match(css, /@media\(max-width:740px\)/);
+});
+
+test('Chinese-first website layout retains English translations underneath', () => {
+  assert.match(html, /<html lang="zh-Hans">/);
+  assert.match(html, /<title>太平沙财记 \| Tai Ping Sa Choi Kee/);
+  assert.match(html, /<h1 id="hero-heading" class="hero-restaurant-title" lang="zh-Hans">太平/);
+  assert.match(html, /<a href="#kitchen"><span lang="zh-Hans">中餐菜单<\/span><small lang="en">Kitchen<\/small><\/a>/);
+  assert.match(html, /data-filter="milk"[^>]*><span lang="zh-Hans">奶茶<\/span><small lang="en">Milk tea<\/small><\/button>/);
+  assert.match(html, /<h2 id="kitchen-heading" lang="zh-Hans">/);
+  assert.match(html, /<h2 id="menu-heading" lang="zh-Hans">/);
+  assert.match(html, /<h2 id="visit-heading" lang="zh-Hans">/);
+  assert.match(css, /\.menu-card h3\.menu-item-zh/);
+  assert.match(css, /\.menu-card p\.menu-en/);
+  assert.match(js, /makeTextElement\('h3', 'menu-item-zh', item.zh, 'zh-Hans'\)/);
+  assert.match(js, /makeTextElement\('p', 'menu-en', item.name, 'en'\)/);
 });
