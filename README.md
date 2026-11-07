@@ -228,3 +228,14 @@ This pass directly addresses the earlier desktop/tablet shortcomings seen in rea
 - **QA:** Additional source-level and real Chrome regression checks ensure three card columns, no photo overlap, no horizontal scrolling, no accidental reduction of mobile tap targets, and the correct business-specific Fantuan and map links.
 
 No new brand imagery, synthetic food photography, invented reviews, pricing, or unverified claims. Still a concept until the owner approves.
+
+## Seamless responsive ticker v8
+
+The dark-green Chinese/English marquee used to contain only two short hard-coded text sequences. On wide desktop screens (e.g. 1900px), their total width was smaller than the viewport. That caused a large blank stretch, and the -50% travel could visibly reset.
+
+The `initTickerLoop()` routine now measures the actual ticker and original sequence, builds **two identical, full-viewport-width-or-wider** repeating text groups, and sets animation duration based on real width so motion speed remains consistent between phones and desktop monitors. It recalculates after window resize, container resize and font readiness. CSS moves the whole track **exactly half its width**, so the second group takes the first group's place at the loop boundary. Both Tai Ping and Quickly’s use their own existing text, not fabricated promotional claims.
+
+- With JS disabled, the banner is static, not broken.
+- The existing motion toggle, replay button, hover-to-pause, and reduced-motion preference still apply.
+- Real Chrome tests check coverage and group seams at five animation phases, at phone/tablet/desktop/1900px wide layouts, and after resizing a wide window to 2370px.
+- No other menu, contact, photo, or branding content changed.

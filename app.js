@@ -1091,9 +1091,67 @@ function initPhotoGallery() {
   }, {passive:true});
 }
 
+
+/* Seamless bilingual marquee.
+   The old markup only contained two short copies (about 1,200px total),
+   leaving a gap on wide screens. Build two IDENTICAL strips, each at least
+   as wide as the viewport, so a -50% travel always has new text behind it.
+   Recalculate when the viewport or the downloaded font changes. */
+function initTickerLoop() {
+  if (typeof document.querySelectorAll !== 'function') return;
+  for (const ticker of document.querySelectorAll('.ticker')) {
+    const track = ticker.querySelector('.ticker-track');
+    const copies = track?.querySelectorAll('.ticker-copy');
+    if (!copies || copies.length !== 2) continue;
+
+    const baseMarkup = copies[0].innerHTML;
+    let repeats = 1;
+    let scheduled = false;
+
+    function sizeTicker() {
+      scheduled = false;
+      const viewportWidth = ticker.getBoundingClientRect().width;
+      const currentGroupWidth = copies[0].getBoundingClientRect().width;
+      if (viewportWidth < 1 || currentGroupWidth < 1) return;
+
+      const baseWidth = currentGroupWidth / repeats;
+      const needed = Math.max(1, Math.min(64, Math.ceil((viewportWidth + 48) / baseWidth)));
+      if (needed !== repeats || copies[1].innerHTML !== copies[0].innerHTML) {
+        repeats = needed;
+        const repeatedMarkup = baseMarkup.repeat(repeats);
+        copies[0].innerHTML = repeatedMarkup;
+        copies[1].innerHTML = repeatedMarkup;
+      }
+      const groupWidth = copies[0].getBoundingClientRect().width;
+      const duration = Math.max(12, Math.round(groupWidth / 65));
+      track.style.setProperty('--ticker-duration', duration + 's');
+    }
+
+    function schedule() {
+      if (scheduled) return;
+      scheduled = true;
+      if (typeof window.requestAnimationFrame === 'function') {
+        window.requestAnimationFrame(sizeTicker);
+      } else {
+        sizeTicker();
+      }
+    }
+
+    schedule();
+    window.addEventListener('resize', schedule, {passive: true});
+    if (typeof ResizeObserver === 'function') {
+      const observer = new ResizeObserver(schedule);
+      observer.observe(ticker);
+    }
+    // Chinese and Latin fonts can change measured strip widths after loading.
+    if (document.fonts?.ready?.then) document.fonts.ready.then(schedule, () => {});
+  }
+}
+
 if (year) year.textContent = String(new Date().getFullYear());
 renderMenu();
 initMotionControls();
+initTickerLoop();
 initScrollReveals();
 initSectionRail();
 initPhotoGallery();

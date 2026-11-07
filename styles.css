@@ -1196,3 +1196,33 @@ html.motion-off *,html.motion-off *::before,html.motion-off *::after{
   transition:none!important;animation:none!important
  }
 }
+
+
+/* Seamless marquees v8: each of two identical spans is expanded by JS to be
+   wider than the container. Exactly -50% of the two-span track = one full
+   span's width; the second span takes its place without a blank or snap. */
+.ticker{position:relative;width:100%;overflow:hidden}
+.ticker-track{
+  display:flex;width:max-content;min-width:100%;flex-wrap:nowrap;
+  align-items:center;justify-content:space-around;gap:0
+}
+.ticker-track>.ticker-copy{
+  display:block;flex:none;width:max-content;white-space:nowrap;
+  font-family:var(--font);font-size:11px;line-height:1.4;letter-spacing:.085em
+}
+.motion-on .ticker-track{
+  animation-name:ticker-travel;
+  animation-duration:var(--ticker-duration,23s);
+  animation-timing-function:linear;
+  animation-iteration-count:infinite
+}
+@keyframes ticker-travel{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+@media(hover:none){
+  .motion-on .ticker:hover .ticker-track{animation-play-state:running}
+}
+@media(prefers-reduced-motion:reduce){
+  html:not(.motion-on) .ticker-track{transform:none!important}
+}

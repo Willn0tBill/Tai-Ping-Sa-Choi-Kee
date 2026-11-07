@@ -46,6 +46,60 @@ const browser = await puppeteer.launch({
 const output = path.join(root, 'artifacts', 'browser');
 await mkdir(output, {recursive:true});
 
+async function verifyTickerLoop(page, name) {
+  const result = await page.evaluate(async () => {
+    const ticker = document.querySelector('.ticker');
+    const track = ticker.querySelector('.ticker-track');
+    const copies = Array.from(track.querySelectorAll('.ticker-copy'));
+    const area = ticker.getBoundingClientRect();
+    const widths = copies.map(node => node.getBoundingClientRect().width);
+    const animation = track.getAnimations().find(a => a.animationName === 'ticker-travel');
+    if (!animation) return {error:'ticker-travel animation missing'};
+    animation.pause();
+    const duration = animation.effect.getComputedTiming().duration;
+    const phases = [];
+    for (const position of [0, .17, .5, .79, .99]) {
+      animation.currentTime = duration * position;
+      await new Promise(requestAnimationFrame);
+      const [a,b] = copies.map(node => node.getBoundingClientRect());
+      const viewport = ticker.getBoundingClientRect();
+      phases.push({
+        position,
+        left:Math.min(a.left,b.left) - viewport.left,
+        right:Math.max(a.right,b.right) - viewport.right,
+        seam:b.left-a.right
+      });
+    }
+    animation.play();
+    return {
+      container:area.width,
+      widths,
+      copiesMatch:copies.length===2 && copies[0].innerHTML===copies[1].innerHTML,
+      textLength:copies[0]?.textContent?.length,
+      duration,
+      phases
+    };
+  });
+  assert.ok(!result.error,name+': '+result.error);
+  assert.equal(result.copiesMatch,true,name+': two groups must be identical '+JSON.stringify(result));
+  assert.ok(result.widths.length===2 && result.widths.every(w=>w>=result.container+40),
+    name+': each strip must cover full viewport '+JSON.stringify(result));
+  assert.ok(Math.abs(result.widths[0]-result.widths[1])<1,
+    name+': both duplicate strips must be same width '+JSON.stringify(result));
+  assert.ok(result.duration>=12000,
+    name+': marquee should move at a comfortable visible speed '+JSON.stringify(result));
+  for (const phase of result.phases) {
+    assert.ok(phase.left<2 && phase.right>-2,
+      name+': text coverage must fill the viewport at every animation phase '+JSON.stringify(result));
+    assert.ok(Math.abs(phase.seam)<1.5,
+      name+': moving groups should meet without gaps '+JSON.stringify(result));
+  }
+  console.log('PASS '+name+' ticker '+JSON.stringify({
+    width:result.container,strip:Math.round(result.widths[0]),
+    duration:result.duration,phases:result.phases.length
+  }));
+}
+
 async function visit(file, width, height, name, mobile) {
   const page = await browser.newPage();
   const errors = [];
@@ -73,6 +127,7 @@ async function visit(file, width, height, name, mobile) {
   // can look blank while the elements are still entering.
   await new Promise(resolve=>setTimeout(resolve,1500));
   await page.screenshot({path:path.join(output,name+'.png'),fullPage:false});
+  await verifyTickerLoop(page, name);
 
   const floating = await page.evaluate(() => {
     const group = document.querySelector('.hero-floating-actions');
@@ -173,6 +228,16 @@ async function visit(file, width, height, name, mobile) {
     await page.click('[data-motion-replay]');
     assert.equal(await page.$eval('[data-motion-toggle]',e=>e.getAttribute('aria-pressed')),'true');
   }
+  if (width === 1900) {
+    // A second wide desktop width catches loops that were measured only once.
+    await page.setViewport({width:2370,height,deviceScaleFactor:1.5,isMobile:false,hasTouch:false});
+    await page.waitForFunction(() => {
+      const ticker = document.querySelector('.ticker');
+      const first = ticker?.querySelector('.ticker-copy');
+      return first?.getBoundingClientRect().width >= ticker.getBoundingClientRect().width + 40;
+    },{timeout:10000});
+    await verifyTickerLoop(page,name+'-resized-2370');
+  }
   assert.deepEqual(errors,[],name+': uncaught browser errors');
   await page.close();
   console.log('PASS '+name+' '+JSON.stringify(animated));
@@ -185,6 +250,8 @@ try {
   await visit('quicklys.html',820,1100,'quickly-tablet',false);
   await visit('index.html',1500,900,'tai-desktop',false);
   await visit('quicklys.html',1500,900,'quickly-desktop',false);
+  await visit('index.html',1900,900,'tai-wide',false);
+  await visit('quicklys.html',1900,900,'quickly-wide',false);
   const reduced = await browser.newPage();
   await reduced.setViewport({width:390,height:844,isMobile:true,hasTouch:true});
   await reduced.emulateMediaFeatures([{name:'prefers-reduced-motion',value:'reduce'}]);
@@ -192,6 +259,8 @@ try {
   await reduced.evaluate(()=>localStorage.removeItem('restaurantMotionPreference'));
   await reduced.reload({waitUntil:'domcontentloaded'});
   await reduced.waitForFunction(()=>document.documentElement.classList.contains('motion-ready'));
+  assert.equal(await reduced.$eval('.ticker-track',el=>getComputedStyle(el).animationName),'none',
+    'reduced-motion users should not see a moving banner');
   assert.equal(await reduced.evaluate(()=>document.documentElement.classList.contains('motion-off')),true,
     'Reduce Motion starts with animations paused');
   // The replay button is below the hero on mobile. Scroll to a stable,

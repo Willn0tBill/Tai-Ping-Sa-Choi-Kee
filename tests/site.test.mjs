@@ -374,8 +374,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v7"/);
-    assert.match(page,/src="app\.js\?v=motion-v7" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v8"/);
+    assert.match(page,/src="app\.js\?v=motion-v8" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -574,8 +574,8 @@ test('floating hero cards use verified actions and keep business identities sepa
     assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
     assert.match(hero,/在线点餐/);
     assert.match(hero,/同一地址 · 独立菜单/);
-    assert.match(doc,/href="styles\.css\?v=motion-v7"/);
-    assert.match(doc,/src="app\.js\?v=motion-v7" defer/);
+    assert.match(doc,/href="styles\.css\?v=motion-v8"/);
+    assert.match(doc,/src="app\.js\?v=motion-v8" defer/);
   }
   const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
   const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
@@ -612,9 +612,31 @@ test('desktop and tablet editorial compositions use full-width action row withou
   assert.match(v7,/\.feature-image-wrap\{height:385px\}/);
   assert.match(v7,/\.quicklys-page \.menu-results \.menu-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   for(const page of [html,quicklyHtml]){
-    assert.match(page,/href="styles\.css\?v=motion-v7"/);
-    assert.match(page,/src="app\.js\?v=motion-v7" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v8"/);
+    assert.match(page,/src="app\.js\?v=motion-v8" defer/);
     assert.equal((page.match(/class="float-card float-card-/g)||[]).length,3);
   }
   assert.match(v7,/@media\(prefers-reduced-motion:reduce\)/);
+});
+
+
+test('ticker groups are identical and dynamically expanded for a seamless wrap',()=>{
+  for(const page of [html, quicklyHtml]){
+    const ticker=page.match(/<div class="ticker" aria-hidden="true">([\s\S]*?)<\/div><\/div>/);
+    assert.ok(ticker,'two-copy ticker should exist');
+    const copies=[...ticker[1].matchAll(/<span class="ticker-copy">([\s\S]*?)<\/span>/g)].map(m=>m[1]);
+    assert.equal(copies.length,2,'marquee requires exactly two equal groups');
+    assert.equal(copies[0],copies[1],'the sequence must be identical at the looping seam');
+    assert.ok(copies[0].includes('<b>✳</b>'),'repeats should keep the separator');
+    assert.match(page,/href="styles\.css\?v=motion-v8"/);
+    assert.match(page,/src="app\.js\?v=motion-v8" defer/);
+  }
+  assert.match(js,/function initTickerLoop\(\)/);
+  assert.match(js,/baseMarkup\.repeat\(repeats\)/);
+  assert.match(js,/viewportWidth \+ 48/);
+  assert.match(js,/window\.addEventListener\('resize', schedule, \{passive: true\}\)/);
+  assert.match(js,/new ResizeObserver\(schedule\)/);
+  assert.match(js,/document\.fonts\?\.ready\?\.then/);
+  assert.match(css,/\.motion-on \.ticker-track\{\s*animation-name:ticker-travel;\s*animation-duration:var\(--ticker-duration,23s\)/);
+  assert.match(css,/@keyframes ticker-travel\{\s*from\{transform:translate3d\(0,0,0\)\}\s*to\{transform:translate3d\(-50%,0,0\)\}/);
 });
