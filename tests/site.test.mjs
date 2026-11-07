@@ -66,7 +66,7 @@ function setup() {
   nodes['site-nav'].link=new FakeElement('a');
   const toggle=new FakeElement('button');
   toggle.setAttribute('aria-expanded','false');
-  const filters=['all','milk','fruit','slush','snacks'].map(value=>{
+  const filters=['all','milk','tea','special','slush','smoothie','foam','snacks','toppings'].map(value=>{
     const b=new FakeElement('button');b.dataset.filter=value;return b;
   });
   const feature=new FakeElement('a');
