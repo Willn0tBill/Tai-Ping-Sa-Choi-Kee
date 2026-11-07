@@ -228,3 +228,52 @@ h1,h2,h3{font-family:var(--font)}
 .kitchen-note{align-items:flex-start;flex-direction:column}
 .visit-stamp strong[lang]{font-size:115px}.footer-brand{font-size:30px;letter-spacing:-1.25px}
 }
+
+
+/* In-store featured food board / 招牌推荐 */
+.kitchen-heading{align-items:end}
+.kitchen-heading .section-subtitle{font-family:'Noto Sans SC',sans-serif;font-size:17px;font-weight:600;color:#4d6f62}
+.kitchen-intro{font-size:14px;line-height:1.85;color:#64756d;max-width:345px;margin:0 5px 8px 0}
+.kitchen-intro strong{font-weight:700;color:#3a584b}
+.signature-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.signature-card{position:relative;overflow:hidden;border:1px solid #e6dece;background:#fffdf8;border-radius:19px;min-height:194px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;isolation:isolate;transition:transform .24s ease,box-shadow .24s ease}
+.signature-card:hover{transform:translateY(-3px);box-shadow:0 13px 31px rgba(29,56,42,.11)}
+.signature-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--font);font-size:9px;letter-spacing:1.1px;font-weight:800;color:#779083;position:relative;z-index:2}
+.signature-card-top span:first-child{font-size:11px;color:#a2a992}
+.signature-card-content{position:relative;z-index:2}
+.signature-card h3{font-family:'Noto Sans SC',sans-serif;font-size:clamp(20px,2vw,28px);line-height:1.35;letter-spacing:0;font-weight:800;margin:18px 0 8px;color:#173d34}
+.signature-card p{font-family:var(--font);font-size:12px;line-height:1.5;font-weight:700;color:#596b60;margin:0}
+.signature-card-mark{position:absolute;right:-11px;bottom:-23px;font-size:114px;line-height:1;opacity:.06;color:#1d583a;font-family:var(--font);pointer-events:none}
+.signature-card-primary{grid-column:span 2;min-height:230px;padding:26px 29px;background:#194338;border-color:#194338}
+.signature-card-primary .signature-card-top,.signature-card-primary .signature-card-top span:first-child{color:#b7d7c4}
+.signature-card-primary h3{font-size:clamp(30px,3.3vw,46px);color:#fff0c9}
+.signature-card-primary p{font-size:15px;color:#d1e5d4}
+.signature-card-primary .signature-card-mark{color:#d8efac;opacity:.12;font-size:175px}
+.signature-card[data-tone="seafood"]{background:#f7e2d5}
+.signature-card[data-tone="rice"]{background:#e3eed7}
+.signature-card[data-tone="claypot"]{background:#f9efd8}
+.signature-card[data-tone="special"]{background:#fff8ef}
+.signature-card[data-tone="noodles"]:not(.signature-card-primary){background:#e9f0e5}
+.signature-card-primary[data-tone="noodles"]{background:#194338}
+@media(max-width:1050px){
+.signature-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.signature-card-primary{grid-column:span 2}
+}
+@media(max-width:740px){
+.kitchen-heading{align-items:start}
+.kitchen-intro{max-width:600px}
+.signature-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.signature-card{min-height:160px;padding:16px}
+.signature-card-primary{grid-column:span 2;min-height:205px;padding:24px}
+.signature-card h3{font-size:20px}
+.signature-card-primary h3{font-size:34px}
+.signature-card p{font-size:11px}
+.signature-card-primary p{font-size:14px}
+.signature-card-top{font-size:8px}
+}
+@media(max-width:420px){
+.signature-card{min-height:164px}
+.signature-card h3{font-size:18px}
+.signature-card-primary h3{font-size:32px}
+.signature-card-top{letter-spacing:.2px}
+}
