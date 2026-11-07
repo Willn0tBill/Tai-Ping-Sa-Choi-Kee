@@ -374,8 +374,8 @@ test('motion is explicit, replayable and visibly distinct from a scroll-progress
     assert.match(page,/data-motion-replay/);
     assert.match(page,/class="scroll-cue" href="#order"/);
     assert.equal((page.match(/class="ticker-copy"/g)||[]).length,2,'marquee repeats seamlessly');
-    assert.match(page,/href="styles\.css\?v=motion-v6"/);
-    assert.match(page,/src="app\.js\?v=motion-v6" defer/);
+    assert.match(page,/href="styles\.css\?v=motion-v7"/);
+    assert.match(page,/src="app\.js\?v=motion-v7" defer/);
   }
   for(const name of ['hero-text-rise','hero-photo-rise','section-rise','ticker-travel','photo-float','photo-pan']){
     assert.ok(css.includes('@keyframes '+name),'missing visible animation: '+name);
@@ -574,8 +574,8 @@ test('floating hero cards use verified actions and keep business identities sepa
     assert.match(hero,/target="_blank" rel="noopener noreferrer"/);
     assert.match(hero,/在线点餐/);
     assert.match(hero,/同一地址 · 独立菜单/);
-    assert.match(doc,/href="styles\.css\?v=motion-v6"/);
-    assert.match(doc,/src="app\.js\?v=motion-v6" defer/);
+    assert.match(doc,/href="styles\.css\?v=motion-v7"/);
+    assert.match(doc,/src="app\.js\?v=motion-v7" defer/);
   }
   const tai=html.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
   const quick=quicklyHtml.split('class="hero-floating-actions"')[1]?.split('class="ticker"')[0];
@@ -595,4 +595,26 @@ test('floating hero cards use verified actions and keep business identities sepa
   assert.match(css,/\.motion-on \.float-card\{animation:none\}/);
   assert.match(css,/html:not\(\.motion-on\) \.float-card\{animation:none!important/);
   assert.ok(!/(?:fake|rating|review-count|discount-percent)/.test(tai),'no fake reviews or discounts on floating cards');
+});
+
+
+test('desktop and tablet editorial compositions use full-width action row without hiding photography',()=>{
+  assert.match(css,/Cross-device editorial refinement v7/);
+  const v7=css.split('Cross-device editorial refinement v7')[1];
+  assert.match(v7,/@media\(min-width:901px\)\{/);
+  assert.match(v7,/\.hero-floating-actions\{\s*position:relative;/);
+  assert.match(v7,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(v7,/@media\(min-width:741px\) and \(max-width:900px\)/);
+  assert.match(v7,/\.float-card,.float-card-other\{\s*display:flex/);
+  assert.match(v7,/\.quicklys-store-photo\{\s*aspect-ratio:4\/3/);
+  assert.match(v7,/\.quicklys-store-photo img\{object-position:50% 40%\}/);
+  assert.match(v7,/\.service-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(v7,/\.feature-image-wrap\{height:385px\}/);
+  assert.match(v7,/\.quicklys-page \.menu-results \.menu-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  for(const page of [html,quicklyHtml]){
+    assert.match(page,/href="styles\.css\?v=motion-v7"/);
+    assert.match(page,/src="app\.js\?v=motion-v7" defer/);
+    assert.equal((page.match(/class="float-card float-card-/g)||[]).length,3);
+  }
+  assert.match(v7,/@media\(prefers-reduced-motion:reduce\)/);
 });

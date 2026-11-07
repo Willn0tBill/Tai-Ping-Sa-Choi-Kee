@@ -215,3 +215,16 @@ Each business homepage now has three restrained, **clickable floating cards** al
 The cards float by 7px only on motion-enabled desktop browsers; they pause on hover and do not animate on phones/tablets or when motion is off. At widths 741–900px they occupy their own row; at 740px and below they sit immediately **after** the actual food/storefront photo, as two balanced cards and one full-width cross-business card, without blocking the photo or ordering links. Their size, color contrast, and hover/focus treatments use the site's restrained design system. No fake brand logo or synthetic photography is introduced.
 
 Chrome smoke tests now cover **390px phone, 820px tablet, and 1500px desktop** layouts on both pages, and verify the floating cards, independent order links, map URLs, photo visibility, and lack of horizontal overflow. The current site is still a concept pending owner approval.
+
+## Cross-device polish — editorial desktop and tablet layout (v7)
+
+This pass directly addresses the earlier desktop/tablet shortcomings seen in real Chrome screenshots. The three floating utility cards were covering the lower portion of the real restaurant photography and the third card often occupied an awkward full-width second row on tablets.
+
+- **Desktop (901px+):** Two-column Chinese-led hero with a fully unobstructed food/storefront image, followed by a cohesive, elevated **three-column action row** for Fantuan, Apple/Google Maps and the other business. The utility cards retain a restrained float motion if enabled, but never overlap the food photography.
+- **Tablet (741–900px):** Dedicated two-column hero with three equally spaced horizontal action cards, a shorter photo presentation, and compact typography. No more two-card row plus dangling third card.
+- **Phones (up to 740px):** Preserved the approved photo-first stacked layout; useful cards remain tappable below the image, not as floating overlays.
+- **Full-page desktop polish:** More intentional spacing and rhythm across signature dishes, Yelp/Fantuan/directions sections, real-photo gallery, and contact/location. At large desktop widths, Quickly’s menu uses three readable product columns alongside its information sidebar; tablet stays at two columns and phone at one.
+- **Better real Quicklys storefront framing:** The wide photographic crop now shows more of both signs on desktop/tablet, rather than using a nearly square crop.
+- **QA:** Additional source-level and real Chrome regression checks ensure three card columns, no photo overlap, no horizontal scrolling, no accidental reduction of mobile tap targets, and the correct business-specific Fantuan and map links.
+
+No new brand imagery, synthetic food photography, invented reviews, pricing, or unverified claims. Still a concept until the owner approves.

@@ -90,14 +90,35 @@ async function visit(file, width, height, name, mobile) {
   });
   assert.equal(floating.cards,3,name+': exactly three useful floating cards');
   assert.ok(floating.width>=150,name+': cards should be readable '+JSON.stringify(floating));
-  if (mobile) {
-    assert.equal(floating.layout,'relative',name+': mobile cards must sit in layout, not cover photos');
-    assert.ok(floating.top>=floating.imageBottom-3,
-      name+': floating cards should follow the real photo on phones '+JSON.stringify(floating));
-  } else if (width > 900) {
-    assert.equal(floating.layout,'absolute',name+': floating cards should appear near the photograph on desktop');
-  } else {
-    assert.equal(floating.layout,'relative',name+': tablet cards should occupy their own row');
+  assert.equal(floating.layout,'relative',name+': floating cards should not overlap photos on any device');
+  assert.ok(floating.top>=floating.imageBottom-3,
+    name+': action cards should start below the real photo '+JSON.stringify(floating));
+  if (!mobile) {
+    const cardRow=await page.evaluate(()=>{
+      const cards=Array.from(document.querySelectorAll('.hero-floating-actions>.float-card'));
+      const rects=cards.map(card=>card.getBoundingClientRect());
+      return {
+        columns:getComputedStyle(document.querySelector('.hero-floating-actions')).gridTemplateColumns.split(' ').length,
+        tops:rects.map(x=>x.top),
+        widths:rects.map(x=>x.width),
+        photoBottom:document.querySelector('.hero-visual,.quicklys-store-photo').getBoundingClientRect().bottom
+      };
+    });
+    assert.equal(cardRow.columns,3,name+': desktop/tablet cards should form three balanced columns '+JSON.stringify(cardRow));
+    assert.ok(Math.max(...cardRow.tops)-Math.min(...cardRow.tops)<3,
+      name+': all cards should share one row '+JSON.stringify(cardRow));
+    assert.ok(cardRow.widths.every(w=>w>160),
+      name+': desktop/tablet cards should have usable width '+JSON.stringify(cardRow));
+    if (file==='quicklys.html') {
+      const menuLayout=await page.evaluate(()=>{
+        const cards=Array.from(document.querySelectorAll('.menu-card')).slice(0,3);
+        return cards.map(el=>el.getBoundingClientRect().top);
+      });
+      if(width>=1101)assert.ok(Math.max(...menuLayout)-Math.min(...menuLayout)<3,
+        name+': large desktop Quickly menu should fit three useful columns');
+      else assert.ok(menuLayout[2]>menuLayout[1]+20,
+        name+': tablet Quickly menu should remain two readable columns');
+    }
   }
   for (const href of [
     'https://maps.apple.com/?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&dirflg=d',
