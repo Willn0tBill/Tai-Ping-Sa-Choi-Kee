@@ -545,3 +545,57 @@ body{font-family:var(--zh-font);line-height:1.55}
   .visit-address-panel p[lang="zh-Hans"]{font-size:36px}
   .visit-address-panel address{font-size:17px}
 }
+
+
+/* Quickly’s lives on its own page: no invented franchise logo. */
+.quicklys-page{background:#fff8f1}
+.quicklys-page .brand-text strong{font-family:var(--font);font-weight:800;font-size:clamp(24px,2.5vw,34px);letter-spacing:-1.3px;color:var(--pine)}
+.quicklys-page .brand-text small{font-family:var(--zh-font);font-size:11px;letter-spacing:0}
+.quicklys-page .site-header{background:rgba(255,248,241,.95)}
+.quicklys-page .nav a[aria-current="page"] span{color:#d77943}
+.quicklys-hero{padding:clamp(58px,7vw,100px) 0;background:radial-gradient(ellipse at 74% 60%,#ffe3d1 0%,transparent 52%),#fff8f1}
+.quicklys-hero-layout{display:grid;grid-template-columns:1.06fr .94fr;align-items:center;gap:clamp(25px,5vw,65px)}
+.quicklys-intro{min-width:0}
+.quicklys-intro h1{font:800 clamp(69px,8vw,112px)/1.08 var(--font);letter-spacing:-6px;color:var(--pine);margin:17px 0 23px}
+.quicklys-tagline{font:800 clamp(19px,2.3vw,28px)/1.4 var(--zh-font);color:#bb6e47;margin:0 0 6px}
+.quicklys-subtag{font:700 13px/1.6 var(--font);color:#758279;margin:0 0 28px}
+.quicklys-description{font:500 16px/1.8 var(--zh-font);color:#435f51;max-width:550px;margin:0 0 9px}
+.quicklys-description-en{font:500 13px/1.7 var(--font);color:#7a887c;max-width:550px;margin:0}
+.quicklys-intro .hero-actions{margin-top:29px}
+.quicklys-store-photo{position:relative;aspect-ratio:4/4.25;min-width:0;border-radius:26px;overflow:hidden;background:#e5ddcd;border:8px solid #fff;box-shadow:0 22px 60px rgba(37,52,39,.15)}
+.quicklys-store-photo img{height:100%;width:100%;object-fit:cover;object-position:center;filter:brightness(1.055) contrast(1.07) saturate(1.06);transition:transform .35s ease}
+.quicklys-store-photo:hover img{transform:scale(1.02)}
+.quicklys-photo-label{position:absolute;bottom:17px;left:17px;right:17px;padding:13px 16px;background:rgba(24,57,45,.88);backdrop-filter:blur(8px);color:#fff;border-radius:11px;display:flex;flex-direction:column;gap:2px}
+.quicklys-photo-label span{font:800 15px/1.4 var(--zh-font)}
+.quicklys-photo-label small{font:600 11px/1.5 var(--font);color:#ecf1e4}
+.quicklys-page .menu-section{background:#fffcf7}
+.quicklys-page .menu-toolbar{border-color:#e8dfd2}
+.quicklys-visit{background:#f4eee4}
+.quicklys-visit-layout{display:flex;align-items:center;justify-content:space-between;gap:40px}
+.quicklys-visit-layout h2{font:800 clamp(44px,5vw,66px)/1.32 var(--zh-font);letter-spacing:-1px}
+.quicklys-visit-layout h2 em{font-style:normal;color:#d87e4b}
+.quicklys-location-note{font:500 14px/1.75 var(--zh-font);color:#63796b;margin:19px 0 0}
+.quicklys-visit-actions{display:flex;flex-direction:column;gap:12px;min-width:255px}
+.quicklys-visit-actions a{justify-content:space-between}
+.quicklys-source-note{padding-top:38px;display:flex;flex-direction:column;gap:4px;color:#88948a}
+.quicklys-source-note small{font:500 11px/1.5 var(--zh-font)}
+.quicklys-source-note small[lang="en"]{font-family:var(--font)}
+.quicklys-page .footer-brand{font-family:var(--font);letter-spacing:-1.3px}
+@media(max-width:900px){
+ .quicklys-hero-layout{grid-template-columns:1fr;gap:40px}
+ .quicklys-intro h1{font-size:clamp(69px,11vw,102px)}
+ .quicklys-store-photo{aspect-ratio:16/10;max-width:100%;border-radius:20px}
+ .quicklys-visit-layout{flex-direction:column;align-items:flex-start}
+ .quicklys-visit-actions{flex-direction:row;flex-wrap:wrap}
+}
+@media(max-width:560px){
+ .quicklys-hero{padding:49px 0 63px}
+ .quicklys-intro h1{font-size:clamp(60px,14vw,84px);letter-spacing:-4px;margin:10px 0 20px}
+ .quicklys-tagline{font-size:19px}
+ .quicklys-description{font-size:14px}
+ .quicklys-store-photo{aspect-ratio:1/1;border-width:5px;border-radius:18px}
+ .quicklys-photo-label{left:10px;right:10px;bottom:10px}
+ .quicklys-visit-actions{flex-direction:column;width:100%}
+ .quicklys-visit-actions a{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.quicklys-store-photo img{transition:none}.quicklys-store-photo:hover img{transform:none}}
