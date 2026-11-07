@@ -781,7 +781,7 @@ test('marquee sizes synchronously and preserves its animation phase after reflow
   assert.match(js,/nextAnimation\.currentTime = phase \* duration \* 1000/);
   assert.match(js,/ticker\.classList\.add\('ticker-ready'\)/);
   assert.match(js,/sizeTicker\(\);\s*window\.addEventListener\('resize', schedule, \{passive: true\}\)/);
-  assert.match(js,/document\.fonts\?\.ready\?\.then\(schedule/);
+  assert.match(js,/document\.fonts\?\.ready\?\.then\) document\.fonts\.ready\.then\(schedule/);
   assert.match(css,/\.ticker:not\(\.ticker-ready\) \.ticker-track\{animation:none!important\}/);
   assert.match(html,/href="styles\.css\?v=motion-v11"/);
   assert.match(quicklyHtml,/href="styles\.css\?v=motion-v11"/);
