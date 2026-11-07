@@ -103,7 +103,7 @@ async function visit(file, width, height, name, mobile) {
     'https://maps.apple.com/?daddr=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745&dirflg=d',
     'https://www.google.com/maps/dir/?api=1&destination=15848%20Halliburton%20Rd%2C%20Hacienda%20Heights%2C%20CA%2091745'
   ]) {
-    const found=await page.$eval('.float-card-map-actions a',(anchors,url)=>anchors.some(a=>a.href===url),href);
+    const found=await page.evaluate(url=>Array.from(document.querySelectorAll('.float-card-map-actions a')).some(a=>a.href===url),href);
     assert.equal(found,true,name+': accurate directions link '+href);
   }
 
