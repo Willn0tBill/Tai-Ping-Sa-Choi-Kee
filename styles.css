@@ -395,3 +395,27 @@ body{font-family:var(--zh-font);line-height:1.55}
 .visit-copy h2{font-size:clamp(43px,10vw,61px)}
 .footer-brand{font-size:33px}
 }
+
+
+/* Real-location photographs: no generic food photography. */
+.hero-photo-frame{position:relative}
+.hero-photo{object-position:center center}
+.hero-photo-caption{position:absolute;left:18px;right:18px;bottom:19px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:max-content;max-width:calc(100% - 36px);padding:11px 15px;background:rgba(20,48,40,.88);backdrop-filter:blur(10px);border:1px solid #ffffff55;color:#fff;border-radius:11px;font:700 12px/1.25 var(--zh-font);transform:rotate(-4deg)}
+.hero-photo-caption small{font:600 10px/1.4 var(--font);color:#e4e9dc}
+.feature-store{background:#f6dfc6}
+.feature-inside{background:#deebe1}
+.feature-store .feature-image-wrap img{object-position:center 34%}
+.feature-inside .feature-image-wrap img{object-position:center 44%}
+.feature-image-wrap{background:#e8e0d3}
+.feature-image-wrap img{width:100%;height:100%;object-fit:cover}
+.feature-number{font-size:11px;color:#547563}
+.preview-photo-notice{margin:27px 3px 0;max-width:1100px;color:#64796d;font:500 12px/1.75 var(--zh-font)}
+.preview-photo-notice span{display:block}
+.preview-photo-notice span[lang="en"]{font:500 11px/1.75 var(--font);color:#87958b;margin-top:3px}
+.preview-photo-notice a{color:#2d614e;text-decoration:underline;text-underline-offset:3px;margin-top:7px;display:inline-block;font:600 11px/1.7 var(--font)}
+@media(max-width:560px){
+.hero-photo-caption{padding:9px 11px;font-size:10px;left:9px;bottom:9px;max-width:calc(100% - 18px)}
+.hero-photo-caption small{font-size:8px}
+.feature-store .feature-image-wrap img{object-position:center 25%}
+.preview-photo-notice{font-size:11px}
+}
