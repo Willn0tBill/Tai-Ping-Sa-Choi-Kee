@@ -14,6 +14,13 @@ test('static page has useful structure, labels and verified contact links', () =
   assert.match(html, /name="robots" content="noindex,nofollow"/);
   assert.match(html, /tel:\+16269376552/);
   assert.match(html, /15848 Halliburton Rd/);
+  assert.match(html, /Tai Ping Sa Choi Kee/);
+  assert.match(html, /太平沙财记/);
+  assert.match(html, /id="kitchen"/);
+  assert.match(html, /tel:\+16269376555/);
+  assert.match(html, /tel:\+16269376552/);
+  assert.ok(!html.includes('Quickly Hacienda Heights | Boba & Bites'));
+
   assert.match(html, /lang="zh-Hans"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /Website concept preview/);
