@@ -4,13 +4,21 @@ import { readFileSync, existsSync } from 'node:fs';
 import vm from 'node:vm';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const quicklyHtml = readFileSync(new URL('../quicklys.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
 const js = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 
 test('static page has useful structure, labels and verified contact links', () => {
-  for (const id of ['main', 'menu', 'favorites', 'visit', 'menu-grid']) {
+  for (const id of ['main','kitchen','favorites','visit']) {
     assert.match(html, new RegExp('id="' + id + '"'));
   }
+  for (const id of ['main','menu','menu-grid','menu-search','visit']) {
+    assert.match(quicklyHtml, new RegExp('id="' + id + '"'));
+  }
+  assert.ok(!html.includes('id="menu-grid"'),'Quickly menu should not render on restaurant homepage');
+  assert.ok(!html.includes('id="menu-heading"'),'separate menu should live only on Quickly’s page');
+  assert.match(html, /href="quicklys\.html"/);
+  assert.match(quicklyHtml, /href="index\.html"/);
   assert.match(html, /name="robots" content="noindex,nofollow"/);
   assert.match(html, /tel:\+16269376552/);
   assert.match(html, /15848 Halliburton Rd/);
@@ -24,14 +32,14 @@ test('static page has useful structure, labels and verified contact links', () =
   assert.match(html, /lang="zh-Hans"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /Website concept preview/);
-  assert.match(html, /Quickly prices from photographed menu/);
-  assert.match(html, /subject to confirmation/);
+  assert.match(quicklyHtml, /Prices transcribed from the photographed menu/);
+  assert.match(quicklyHtml, /verify before ordering/);
   assert.ok(!html.includes('application/ld+json'), 'unapproved demo must not imply verified official schema');
   for (const tag of html.match(/<img\b[^>]*>/g) ?? []) {
     assert.match(tag, /alt="[^"]+"/);
     assert.match(tag, /loading="lazy"|fetchpriority="high"/);
   }
-  for (const file of ['index.html', 'styles.css', 'app.js']) {
+  for (const file of ['index.html', 'quicklys.html', 'styles.css', 'app.js']) {
     assert.equal(existsSync(new URL('../' + file, import.meta.url)), true, file + ' missing');
   }
 });
@@ -42,6 +50,7 @@ test('responsive layout supports reduced motion and keyboard focus', () => {
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(css, /:focus-visible/);
   assert.match(html, /class="skip-link"/);
+  assert.match(quicklyHtml, /class="skip-link"/);
 });
 
 class FakeElement {
@@ -144,9 +153,9 @@ test('photographed Quickly menu has seven categories, prices, and no separate re
     assert.ok(Number.isFinite(e.price) || (Number.isFinite(e.priceM) && Number.isFinite(e.priceL)), 'photographed menu price stored');
   }
   assert.equal(entries.some(e => /Kung Pao Chicken|Mongolian Beef/.test(e.name)), false);
-  assert.equal(html.includes('data-filter="toppings"'), true);
-  assert.equal(html.includes('data-filter="smoothie"'), true);
-  assert.equal(html.includes('data-filter="foam"'), false);
+  assert.equal(quicklyHtml.includes('data-filter="toppings"'), true);
+  assert.equal(quicklyHtml.includes('data-filter="smoothie"'), true);
+  assert.equal(quicklyHtml.includes('data-filter="foam"'), false);
   assert.equal(entries.find(e => e.name === 'Popcorn Chicken').price, 8.29);
   assert.equal(entries.find(e => e.name === 'Barley Milk Tea').priceM, 5.28);
   assert.equal(entries.find(e => e.name === 'Mango Slush').priceM, 4.28);
@@ -156,7 +165,7 @@ test('photographed Quickly menu has seven categories, prices, and no separate re
 });
 
 test('actual restaurant food board has bilingual featured dishes without invented prices', () => {
-  const kitchen = html.split('<section class="kitchen-section')[1]?.split('<section class="menu-section')[0];
+  const kitchen = html.split('<section class="kitchen-section')[1]?.split('<section class="favorites-section')[0];
   assert.ok(kitchen, 'missing kitchen feature section');
   assert.equal((kitchen.match(/class="signature-card(?: signature-card-primary)?"/g) || []).length, 13);
   for (const dish of ['干炒牛河', '港式生炒骨', '海鲜两面黄', '椒盐鲜鱿', '清平白切鸡', '鱼香茄子煲', '蚵仔煎蛋', '牛杂捞面', 'XO海鲜炒饭', '椒盐大虾', '招牌牛腩饭', '姜葱油泡猪肝', '海鲜豆腐煲']) {
@@ -174,9 +183,9 @@ test('Chinese-first website layout retains English translations underneath', () 
   assert.match(html, /<title>太平沙财记 \| Tai Ping Sa Choi Kee/);
   assert.match(html, /<h1 id="hero-heading" class="hero-restaurant-title" lang="zh-Hans">太平/);
   assert.match(html, /<a href="#kitchen"><span lang="zh-Hans">中餐菜单<\/span><small lang="en">Kitchen<\/small><\/a>/);
-  assert.match(html, /data-filter="milk"[^>]*><span lang="zh-Hans">奶茶<\/span><small lang="en">Milk tea<\/small><\/button>/);
+  assert.match(quicklyHtml, /data-filter="milk"[^>]*><span lang="zh-Hans">奶茶<\/span><small lang="en">Milk tea<\/small><\/button>/);
   assert.match(html, /<h2 id="kitchen-heading" lang="zh-Hans">/);
-  assert.match(html, /<h2 id="menu-heading" lang="zh-Hans">/);
+  assert.match(quicklyHtml, /<h2 id="menu-heading" lang="zh-Hans">/);
   assert.match(html, /<h2 id="visit-heading" lang="zh-Hans">/);
   assert.match(css, /\.menu-card h3\.menu-item-zh/);
   assert.match(css, /\.menu-card p\.menu-en/);
@@ -215,16 +224,23 @@ test('official branding policy avoids any invented logo or seal', () => {
   assert.match(css, /Official-logo-only policy/);
 });
 
-test('Quickly owns drinks and snacks; restaurant kitchen is separate', () => {
-  const main = html.split('<section class="kitchen-section')[1]?.split('<section class="menu-section')[0];
-  const quickly = html.split('<section class="menu-section')[1]?.split('<section class="favorites-section')[0];
-  assert.ok(main && quickly, 'both independent sections should exist');
-  assert.match(main, /太平沙财记/);
-  assert.match(quickly, /Quickly 奶茶与小吃/);
-  assert.match(quickly, /Quickly’s own drinks-and-snacks menu/);
-  assert.match(quickly, /并非太平沙财记的中餐菜品/);
-  assert.match(quickly, /tel:\+16269376552/);
-  assert.match(main, /tel:\+16269376555/);
-  assert.ok(!html.includes('家常中餐 · 奶茶饮品 · 哈岗'), 'footer must not claim Quickly drinks as Tai Ping products');
-  assert.match(html, /separate menus and phone numbers/);
+
+test('Quickly’s has its own page with a properly named menu and cross-navigation', () => {
+  assert.match(html, /href="quicklys\.html"/);
+  assert.match(quicklyHtml, /<title>Quickly’s \| 快可立/);
+  assert.match(quicklyHtml, /<h1 id="quicklys-heading" lang="en">Quickly’s/);
+  assert.match(quicklyHtml, /<span lang="zh-Hans">Quickly’s<\/span>/);
+  assert.ok(!html.includes('<section class="menu-section'), 'Tai Ping homepage must not host Quickly menu');
+  assert.match(quicklyHtml, /<section class="menu-section/);
+  assert.match(quicklyHtml, /<div class="menu-grid" id="menu-grid">/);
+  assert.match(quicklyHtml, /data-filter="snacks"/);
+  assert.match(quicklyHtml, /data-filter="milk"/);
+  assert.match(quicklyHtml, /href="index\.html"/);
+  assert.match(quicklyHtml, /tel:\+16269376552/);
+  assert.match(html, /tel:\+16269376555/);
+  assert.match(quicklyHtml, /same location/);
+  assert.match(css, /\.quicklys-hero/);
+  assert.ok(!quicklyHtml.includes('rel="icon"'), 'do not fabricate a Quickly’s logo');
+  assert.ok(!quicklyHtml.includes('images.unsplash.com'), 'no random stock images');
+  assert.match(quicklyHtml, /noindex,nofollow/);
 });
