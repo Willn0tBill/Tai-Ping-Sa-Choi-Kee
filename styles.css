@@ -419,3 +419,99 @@ body{font-family:var(--zh-font);line-height:1.55}
 .feature-store .feature-image-wrap img{object-position:center 25%}
 .preview-photo-notice{font-size:11px}
 }
+
+
+/* Authentic photo treatment: CSS-only adjustments to ORIGINAL gallery images.
+   No generative assets; no retouching of food ingredients or storefront details. */
+.hero-visual{isolation:isolate}
+.hero-visual-backdrop{
+  inset:7% 3% 3% 2%;
+  border-radius:26px;
+  transform:none;
+  background:linear-gradient(145deg,#e8dac5 0%,#d8c0a5 50%,#bfa888 100%);
+  opacity:.46
+}
+.hero-visual-backdrop::before{inset:4%;border-radius:23px;border:1px solid rgba(255,255,255,.40)}
+.hero-photo-frame{
+  width:91%;
+  height:92%;
+  border:6px solid rgba(255,252,245,.93);
+  border-radius:24px;
+  transform:none;
+  box-shadow:0 14px 35px rgba(32,32,24,.13),0 36px 75px rgba(29,44,33,.17);
+  background:#d4b59e;
+  overflow:hidden;
+  isolation:isolate
+}
+.hero-photo{
+  transform:none;
+  object-fit:cover;
+  object-position:center 50%;
+  filter:brightness(1.045) contrast(1.085) saturate(1.08) sepia(.035);
+  transition:transform .55s ease,filter .55s ease
+}
+.hero-photo-frame::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  border-radius:inherit;
+  box-shadow:inset 0 0 75px rgba(34,18,10,.12),inset 0 15px 28px rgba(255,247,227,.09)
+}
+.hero-photo-frame:hover .hero-photo{
+  transform:scale(1.025);
+  filter:brightness(1.07) contrast(1.10) saturate(1.10) sepia(.03)
+}
+.hero-round-label,.hero-floating-note,.hero-orbit{display:none}
+.hero-photo-caption{
+  z-index:2;transform:none;border-radius:9px;left:19px;bottom:19px;
+  padding:10px 13px;background:rgba(22,49,39,.80);
+  color:white;backdrop-filter:blur(7px);
+  text-shadow:0 1px 1px rgba(0,0,0,.15)
+}
+.feature-image-wrap{position:relative;overflow:hidden;background:#d4c7b5}
+.feature-image-wrap::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(22,25,20,.12),transparent 28%);
+  box-shadow:inset 0 0 30px rgba(0,0,0,.04)
+}
+.feature-image-wrap img{
+  filter:brightness(1.04) contrast(1.08) saturate(1.065);
+  transform:scale(1);
+  transition:filter .5s ease,transform .5s ease
+}
+.feature-card:hover .feature-image-wrap img{
+  transform:scale(1.02);
+  filter:brightness(1.075) contrast(1.07) saturate(1.065)
+}
+.feature-store .feature-image-wrap img{
+  object-position:center 40%;
+  filter:brightness(1.075) contrast(1.085) saturate(1.08)
+}
+.feature-inside .feature-image-wrap img{
+  object-position:center 45%;
+  filter:brightness(1.10) contrast(1.08) saturate(1.03)
+}
+.feature-store:hover .feature-image-wrap img{filter:brightness(1.09) contrast(1.085) saturate(1.08)}
+.feature-inside:hover .feature-image-wrap img{filter:brightness(1.125) contrast(1.07) saturate(1.04)}
+.feature-card{border-radius:19px}
+.feature-image-wrap{height:380px}
+.feature-info{min-height:145px}
+@media(max-width:1100px){
+  .hero-photo-frame{width:95%;height:92%}
+  .feature-image-wrap{height:310px}
+}
+@media(max-width:800px){
+  .hero-visual{height:460px}
+  .hero-photo-frame{width:91%;height:93%}
+  .feature-image-wrap{height:290px}
+}
+@media(max-width:560px){
+  .hero-visual{height:360px;width:100%;margin-top:16px}
+  .hero-visual-backdrop{inset:5% 1% 2%}
+  .hero-photo-frame{width:95%;height:95%;border:4px solid #fff9ef;border-radius:17px}
+  .hero-photo-caption{left:10px;bottom:10px;padding:9px 10px}
+  .feature-image-wrap{height:270px}
+  .feature-info{min-height:135px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-photo,.feature-image-wrap img{transition:none}
+  .hero-photo-frame:hover .hero-photo,.feature-card:hover .feature-image-wrap img{transform:none}
+}
