@@ -17,8 +17,8 @@ test('static page has useful structure, labels and verified contact links', () =
   assert.match(html, /lang="zh-Hans"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /Website concept preview/);
-  assert.match(html, /2022 printed menu/);
-  assert.match(html, /Availability and current prices unconfirmed/);
+  assert.match(html, /in-store menu photograph/);
+  assert.match(html, /Please confirm with the shop/);
   assert.ok(!html.includes('application/ld+json'), 'unapproved demo must not imply verified official schema');
   for (const tag of html.match(/<img\b[^>]*>/g) ?? []) {
     assert.match(tag, /alt="[^"]+"/);
@@ -66,7 +66,7 @@ function setup() {
   nodes['site-nav'].link=new FakeElement('a');
   const toggle=new FakeElement('button');
   toggle.setAttribute('aria-expanded','false');
-  const filters=['all','milk','tea','special','slush','smoothie','foam','snacks','toppings'].map(value=>{
+  const filters=['all','milk','tea','special','slush','smoothie','snacks','toppings'].map(value=>{
     const b=new FakeElement('button');b.dataset.filter=value;return b;
   });
   const feature=new FakeElement('a');
@@ -88,9 +88,9 @@ function setup() {
 test('menu search filters English and Chinese items and resets correctly', () => {
   const {nodes,filters} = setup();
   assert.equal(nodes['menu-grid'].children.length,14);
-  filters[7].dispatch('click');
-  assert.equal(nodes['menu-grid'].children.length,13);
-  assert.equal(filters[7].getAttribute('aria-pressed'),'true');
+  filters[6].dispatch('click');
+  assert.equal(nodes['menu-grid'].children.length,9);
+  assert.equal(filters[6].getAttribute('aria-pressed'),'true');
   nodes['menu-search'].value='盐酥鸡';
   nodes['menu-search'].dispatch('input');
   assert.equal(nodes['menu-grid'].children.length,1);
@@ -122,18 +122,25 @@ test('mobile nav toggles accessibly and feature links select categories', () => 
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
 });
 
-test('the archival menu covers all eight printed sections, and has not mixed Kitchen798 dishes in', () => {
+test('photographed Quickly menu has seven categories, prices, and no separate restaurant dishes', () => {
   const match = js.match(/const MENU_ITEMS = (\[[\s\S]*?\]);/);
   assert.ok(match, 'menu catalog should be a static, auditable data array');
   const entries = JSON.parse(match[1]);
-  assert.equal(entries.length, 83);
+  assert.equal(entries.length, 77);
   const actualCounts = Object.fromEntries([...new Set(entries.map(e => e.type))].map(type => [type, entries.filter(e => e.type === type).length]));
-  assert.deepEqual(actualCounts, {milk:14,tea:12,special:4,slush:16,smoothie:10,foam:4,snacks:13,toppings:10});
+  assert.deepEqual(actualCounts, {milk:14,tea:12,special:3,slush:17,smoothie:11,snacks:9,toppings:11});
   for (const e of entries) {
     assert.ok(e.name && e.zh, 'every entry needs English and Chinese');
-    assert.ok(Object.hasOwn(e, 'archivedPriceM'), 'historical owner-review price stored');
+    assert.ok(Number.isFinite(e.price) || (Number.isFinite(e.priceM) && Number.isFinite(e.priceL)), 'photographed menu price stored');
   }
   assert.equal(entries.some(e => /Kung Pao Chicken|Mongolian Beef/.test(e.name)), false);
   assert.equal(html.includes('data-filter="toppings"'), true);
   assert.equal(html.includes('data-filter="smoothie"'), true);
+  assert.equal(html.includes('data-filter="foam"'), false);
+  assert.equal(entries.find(e => e.name === 'Popcorn Chicken').price, 8.29);
+  assert.equal(entries.find(e => e.name === 'Barley Milk Tea').priceM, 5.28);
+  assert.equal(entries.find(e => e.name === 'Mango Slush').priceM, 4.28);
+  assert.equal(entries.find(e => e.name === 'Oreo Slush').priceL, 4.98);
+  assert.equal(entries.find(e => e.name === 'Crystal Boba').price, 1);
+  assert.equal(js.includes('const priceLabel'), true);
 });
